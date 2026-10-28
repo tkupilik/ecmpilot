@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="880" viewBox="0 0 1160 880" role="img" aria-labelledby="title desc">
+  <title id="title">eCMPilot: Home, Climate and Charging concepts</title>
+  <desc id="desc">Static companion wireframes. Values and capabilities are simulated. Home has a battery summary, climate and charging controls; climate uses the vehicle preset; charging offers Now or Later.</desc>
+  <defs>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#202823} .muted{fill:#626d65} .small{font-size:12px} .caption{font-size:11px;letter-spacing:1.5px;font-weight:700} .body{font-size:14px} .label{font-size:12px;fill:#626d65} .heading{font-size:20px;font-weight:700} .button{font-size:14px;font-weight:600;fill:#fff} .value{font-size:26px;font-weight:600} .rule{stroke:#e2e5de} .outline{fill:#fff;stroke:#e2e5de} .accent{fill:#9a4d0b} .green{fill:#32724b}
+    </style>
+    <filter id="shadow" x="-20%" y="-10%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#25352b" flood-opacity=".09"/></filter>
+  </defs>
+  <rect width="1160" height="880" fill="#f1f0ec"/>
+  <text x="38" y="33" class="caption muted">eCMPilot · ANDROID CONTROL CONCEPT</text>
+  <text x="38" y="57" class="body muted">Simulated data · capability-dependent controls · 23 October 2026</text>
+  <text x="45" y="95" class="caption">01 / HOME</text><text x="430" y="95" class="caption">02 / CLIMATE</text><text x="815" y="95" class="caption">03 / CHARGING</text>
+
+  <g transform="translate(30 115)" filter="url(#shadow)">
+    <rect width="345" height="735" rx="32" fill="#283029"/>
+    <rect x="7" y="7" width="331" height="721" rx="26" fill="#fff"/>
+    <text x="28" y="32" class="small" font-weight="700">9:41</text><text x="267" y="32" class="small">Wi-Fi ▰</text>
+    <text x="27" y="69" class="heading">eCMPilot</text><rect x="140" y="53" width="37" height="18" rx="4" fill="#f1f0ec"/><text x="145" y="66" font-size="9" class="muted">DEMO</text>
+    <circle cx="302" cy="62" r="10" fill="none" stroke="#626d65"/><circle cx="302" cy="62" r="3" fill="none" stroke="#626d65"/>
+    <text x="27" y="92" class="body muted">Opel Corsa-e</text><circle cx="31" cy="113" r="3" fill="#32724b"/><text x="42" y="117" class="small green">Connected · Updated just now</text>
+    <rect x="22" y="136" width="301" height="177" rx="20" fill="#eaf4ec"/>
+    <text x="40" y="161" class="caption green">BATTERY</text><text x="38" y="223" font-size="60" font-weight="600" letter-spacing="-4">68<tspan font-size="25" letter-spacing="0"> %</tspan></text>
+    <text x="298" y="208" text-anchor="end" font-size="22" font-weight="600">218 km</text><text x="298" y="229" text-anchor="end" class="label">Estimated range</text>
+    <rect x="40" y="243" width="265" height="7" rx="3.5" fill="#cbded0"/><rect x="40" y="243" width="180" height="7" rx="3.5" fill="#32724b"/>
+    <text x="40" y="275" class="body" font-weight="600">AC charging · 7.2 kW</text><text x="40" y="295" class="label">About 2 h 15 min remaining</text>
+    <rect x="22" y="327" width="301" height="176" rx="20" class="outline"/>
+    <rect x="39" y="343" width="27" height="27" rx="9" fill="#fcf0df"/><text x="48" y="362" font-size="18" fill="#d3741b">°</text><text x="76" y="362" class="body" font-weight="700">Climate</text>
+    <text x="40" y="391" class="label">Cabin</text><text x="185" y="391" class="label">Outside</text><text x="39" y="421" class="value">16°C</text><text x="184" y="421" class="value">9°C</text>
+    <text x="40" y="442" class="label">Off · Vehicle preset</text><rect x="39" y="454" width="267" height="34" rx="10" class="accent"/><text x="172" y="477" text-anchor="middle" class="button">Start climate</text>
+    <rect x="22" y="517" width="301" height="121" rx="20" class="outline"/><rect x="39" y="531" width="27" height="27" rx="9" fill="#fcf0df"/><text x="48" y="550" font-size="17" fill="#d3741b">ϟ</text><text x="76" y="550" class="body" font-weight="700">Charging</text>
+    <text x="40" y="578" class="body" font-weight="600">Charging now</text><text x="303" y="578" class="label" text-anchor="end">Cable connected</text>
+    <rect x="39" y="590" width="267" height="34" rx="10" class="outline"/><text x="172" y="613" text-anchor="middle" class="body" font-weight="600">Charging options</text>
+    <text x="28" y="664" class="label">Battery temperature</text><text x="316" y="664" text-anchor="end" class="small">24–27 °C</text><text x="28" y="689" class="label">Odometer</text><text x="316" y="689" text-anchor="end" class="small">42,810 km</text><text x="172" y="715" text-anchor="middle" class="label">Vehicle details</text>
+  </g>
+
+  <g transform="translate(415 115)" filter="url(#shadow)">
+    <rect width="345" height="735" rx="32" fill="#283029"/><rect x="7" y="7" width="331" height="721" rx="26" fill="#e4e9e1"/>
+    <text x="28" y="69" class="heading muted">eCMPilot</text><rect x="22" y="136" width="301" height="177" rx="20" fill="#cbd6c9"/>
+    <rect x="7" y="318" width="331" height="410" rx="25" fill="#fff"/><rect x="155" y="329" width="35" height="4" rx="2" fill="#e2e5de"/>
+    <text x="29" y="372" font-size="23" font-weight="650">Climate</text><text x="305" y="370" class="heading muted">×</text><text x="29" y="402" class="body muted">Cabin 16°C · Outside 9°C</text>
+    <text x="29" y="454" font-size="18" font-weight="650">Prepare the cabin</text><text x="29" y="481" class="body muted">Heat or cool using the vehicle preset.</text>
+    <text x="29" y="537" class="body muted">Temperature</text><text x="316" y="537" text-anchor="end" class="body" font-weight="600">Vehicle preset</text><line x1="29" y1="555" x2="316" y2="555" class="rule"/>
+    <text x="29" y="590" class="body muted">Duration</text><text x="316" y="590" text-anchor="end" class="body" font-weight="600">Vehicle cycle</text><line x1="29" y1="608" x2="316" y2="608" class="rule"/>
+    <rect x="29" y="651" width="99" height="48" rx="13" class="outline"/><text x="78" y="681" text-anchor="middle" class="body" font-weight="600">Cancel</text><rect x="138" y="651" width="178" height="48" rx="13" class="accent"/><text x="227" y="681" text-anchor="middle" class="button">Start climate</text>
+  </g>
+
+  <g transform="translate(800 115)" filter="url(#shadow)">
+    <rect width="345" height="735" rx="32" fill="#283029"/><rect x="7" y="7" width="331" height="721" rx="26" fill="#e4e9e1"/>
+    <text x="28" y="69" class="heading muted">eCMPilot</text><rect x="22" y="136" width="301" height="177" rx="20" fill="#cbd6c9"/>
+    <rect x="7" y="267" width="331" height="461" rx="25" fill="#fff"/><rect x="155" y="279" width="35" height="4" rx="2" fill="#e2e5de"/>
+    <text x="29" y="322" font-size="23" font-weight="650">Charging</text><text x="305" y="321" class="heading muted">×</text><text x="29" y="352" class="body muted">Charging now · Cable connected</text>
+    <text x="29" y="399" font-size="17" font-weight="650">Charging mode</text><rect x="29" y="418" width="287" height="51" rx="13" fill="#f1f0ec"/><rect x="173" y="422" width="139" height="43" rx="10" fill="#fff"/><text x="99" y="450" text-anchor="middle" class="body muted">Now</text><text x="242" y="450" text-anchor="middle" class="body" font-weight="600">Later</text>
+    <text x="29" y="502" class="body" font-weight="600">Start time</text><rect x="29" y="515" width="287" height="49" rx="12" class="outline"/><text x="43" y="547" font-size="23" font-weight="500">23:00</text><text x="29" y="589" class="label">Vehicle local time · Europe/Prague</text>
+    <rect x="29" y="606" width="287" height="31" rx="8" fill="#eaf4ec"/><text x="40" y="626" font-size="11" class="green">The saved setting works without your phone.</text>
+    <rect x="29" y="659" width="99" height="40" rx="12" class="outline"/><text x="78" y="685" text-anchor="middle" class="body" font-weight="600">Cancel</text><rect x="138" y="659" width="178" height="40" rx="12" class="accent"/><text x="227" y="685" text-anchor="middle" class="button">Apply</text>
+  </g>
+</svg>

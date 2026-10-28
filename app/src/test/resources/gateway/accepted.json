@@ -1,0 +1,1 @@
+{"v":0,"type":"status","gw":"ecmpilot-test","boot":"0123456789abcdef0123456789abcdef","reply_to":"00000000000000000000000000000004","seq":3,"now_ms":1000,"command":{"id":"00000000000000000000000000000004","revision":1,"domain_rev":1,"phase":"accepted","error":null}}
