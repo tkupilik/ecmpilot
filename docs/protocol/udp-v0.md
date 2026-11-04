@@ -1,6 +1,6 @@
 # Local UDP protocol: v0 design draft
 
-2026-10-23. **Experimental implemented profile:** Android client and Python simulator use envelope version `v: 0`. ESP32 gateway 0.3.0 implements this binding for varstore observations and explicit bench commands; CAN vehicle integration remains future work. The binding is a local-network lab/simulator profile, not an authenticated vehicle-control service. See [app design](../app-design.md) and [testing instructions](../testing.md).
+2026-10-23. **Experimental implemented profile:** Android client and Python simulator use envelope version `v: 0`. ESP32 gateway 0.3.0 implements this binding for varstore observations and explicit bench commands; the INFO backend now implements experimental explicit refresh/charge-mode requests. See [passive connection and vehicle refresh](../vehicle-refresh.md). The binding is a local-network lab/simulator profile, not an authenticated vehicle-control service. See [app design](../app-design.md) and [testing instructions](../testing.md).
 
 ## Shape and scope
 
@@ -76,7 +76,20 @@ Firmware 0.3.0 adds optional `info.control_backend`: `none` by default, or `vars
 
 Test commands publish gateway `request.*` varstore targets and wait for matching fresh observed state, without CAN access or optimistic observations. Forced samples count as current effective test input (UDP age zero); ordinary samples retain their actual age. Deferred test mode only checks mode/time readback and installs no schedule. The firmware accepts ASCII request vocabulary, enforces the byte cap, and may omit optional electrical/battery-temperature fields to fit a full state reply. Full mapping and setup are in the gateway repository's `docs/udp.md`.
 
-The Android implementation can also read optional `state.vehicle.parked`, `state.charge.start_local`, and optional aged readings `voltage_v` / `current_a`. Current is positive for battery discharge, matching the sibling dashboard convention. An unknown transport security profile leaves controls disabled rather than being treated as `lab-plain`.
+The Android implementation can also read optional `state.vehicle.parked`, `state.charge.start_local`, and optional aged readings `voltage_v` / `current_a`. Current is positive for battery discharge, matching the sibling dashboard convention.
+
+The LCD gateway additionally exposes optional aged readings
+`aux_battery_soc_pct` (0–100%, 0.5% source resolution) and
+`aux_battery_voltage_v` (0–32 V parser bound, 0.1 V source resolution).
+They describe the **12 V battery**, independently of traction `soc_pct` and
+`voltage_v`. Home and Vehicle details render them with one decimal and stale
+indication after 5000 ms. Absent fields or invalid/unavailable source codes give
+unknown readings, with no fallback to traction values. These additions keep
+schema v0 and the 1024-byte limit. The native LCD serializer prioritizes these
+two readings over its existing optional HV voltage/current and battery-temperature
+fields if a worst-case reply requires size reduction.
+
+An unknown transport security profile leaves controls disabled rather than being treated as `lab-plain`.
 
 ## Expiry without clock synchronization
 
@@ -232,3 +245,45 @@ The vehicle state and command handler stay transport-independent. MQTT can later
 | Later authenticated profile | Forged/modified/replayed traffic does not bypass authentication; no downgrade. |
 
 Before implementing networking, also check current [Android local-network permission guidance](https://developer.android.com/privacy-and-security/local-network-permission) and [NSD guidance](https://developer.android.com/develop/connectivity/wifi/use-nsd). Match the actual target SDK; do not assume that an `INTERNET` declaration alone covers every supported Android release or managed-device policy.
+
+## Front climate setpoint observations — 2026-10-31
+
+Optional aged readings climate_left_setpoint_c / climate_right_setpoint_c describe
+**selected temperatures**, derived from2AD reference and350 zone offsets. They
+are not measured cabin_c and do not establish heating activity. evaporator_c is
+a separate measured sensor candidate, source range-40..85°C. Numeric zone parser
+bounds are0..60°C; missing, unavailable or nonnumeric source codes yield unknown.
+All use the existing value/age_ms structure and v0 byte budget. Home/details show
+left/right setpoints; details also shows evaporator. No temperature write added.
+
+
+## INFO preconditioning addition, 2026-11-03
+
+The weekly-program extension advertises `climate_programs` in `info.fields` and
+`climate.programs.set` in operations, with confirmation and persistent_schedule.
+Passive `climate.programs.get` returns `programs.rev` and four `slots` containing
+24-bit `raw`/`age_ms` values or null. Set args are four-slot arrays `base` and
+`slots`, sharing the climate command domain. Reserved bits cannot change;
+enabled slots require weekdays and a valid vehicle-local time. The gateway
+compares fresh observed values with the editor's base before sending31B/11B,
+preserves ASAP, and requires both new2E0/0E0 readbacks to confirm. See the gateway
+[full contract](../../../ecmpilot-gw/docs/preconditioning-programs.md).
+
+The info-can-experimental backend may advertise climate.set with enabled true/false
+and confirmation true. The `verified` flag remains false: the current evidence
+is a Start/Stop capture plus app acknowledgement. Android requires the explicit
+experimental-control opt-in and the advertised operation. Stale/asleep readings
+do not prevent an explicit request; the GW wakes BSI, preserves the four programs,
+sends31B/11B and waits for new2E0 ASAP plus active/inactive feedback, bounded to30 s.
+The button is disabled until the receipt completes or times out; displayed state
+always comes from the gateway observation. The wire operation/schema stays v0.
+
+## Passive vehicle details extension
+
+A gateway advertising `vehicle_details` in `info.fields` supports a bound
+`vehicle.details.get` request with empty args. Its normal status envelope holds
+`details.body` (five aperture bits, known mask, door age, locking state and own
+lock age) and `details.trips` (independently aged trip values and six history
+slots). It never wakes the car. Regular status and details remain separate
+1024-byte datagrams. See [screen/data contract](../home-screens.md) and the
+[GW wire format](../../../ecmpilot-gw/docs/vehicle-details.md).

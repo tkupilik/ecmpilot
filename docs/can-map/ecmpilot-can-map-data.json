@@ -1,0 +1,1101 @@
+{
+  "revision": "2026-10-28 / 2",
+  "vehicle": "Opel Corsa-e P2JO / P2J0",
+  "scope": "Consolidated CAN topology, not a complete vehicle harness or VIN-verified installation pinout",
+  "sources": {
+    "T": {
+      "sheet": "D3CZV9GG",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\Comfort and Convinience\\Audio_Navigation_Telematics_Telephone_Multimedia\\Independent Telematic Unit\\wiring.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "A": {
+      "sheet": "D3CZV75G / D3CZV75R",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\HS CAN 1 Multiplexed Network Interconnection\\wiring 1.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "AP": {
+      "sheet": "D3CZV75R",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\HS CAN 1 Multiplexed Network Interconnection\\principle 1.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "B": {
+      "sheet": "D3CZV7AG / D3CZV7AR",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\ENT INFO CAN Interconnection\\wiring.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "BP": {
+      "sheet": "D3CZV7AR",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\ENT INFO CAN Interconnection\\principle.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "C": {
+      "sheet": "D3CZV7CG",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\ECAN Network Interconnection\\wiring.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "D": {
+      "sheet": "D3CZV77G",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\HS CAN 2 Multiplexed Network Interconnection\\wiring 1.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "D2": {
+      "sheet": "D3CZV78G",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\HS CAN 2 Multiplexed Network Interconnection\\wiring 2.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "D3": {
+      "sheet": "D3CZV76G",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\HS CAN 2 Multiplexed Network Interconnection\\wiring 3.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "E": {
+      "sheet": "D3CZV7DG / D3CZV7DR",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\Multiplexed Passenger Compartment CAN Interconnection\\wiring.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "EP": {
+      "sheet": "D3CZV7DR",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\Multiplexed Passenger Compartment CAN Interconnection\\principle.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "F": {
+      "sheet": "D3CZV7BG",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\ADAS CAN Interconnection\\wiring.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "L": {
+      "sheet": "D3CZV79G",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Interconnections\\CAN Network Interconnection\\wiring.pdf",
+      "pages": [
+        1
+      ]
+    },
+    "P": {
+      "sheet": "BSI F14 supply classification",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Matching of Fuses\\Allocation of BSI1 Fuses.pdf",
+      "pages": [
+        1,
+        2,
+        3
+      ]
+    },
+    "Q": {
+      "sheet": "D3CZV7FG",
+      "path": "C:\\work\\bev\\service manual\\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\\EWD\\General Points\\Sockets_Terminals_Connectors\\Diagnostic Socket\\wiring.pdf",
+      "pages": [
+        1
+      ]
+    }
+  },
+  "owner_evidence": {
+    "U01": "Owner states VCU 1775 internally connects OBC eCAN branch and motor/battery eCAN branch. No measurement record supplied."
+  },
+  "unresolved_colour_codes": [
+    "RB",
+    "BB"
+  ],
+  "endpoints": [
+    {
+      "unit": "C001",
+      "connector": "16V NR",
+      "pins": [
+        [
+          3,
+          "9028",
+          "GR"
+        ],
+        [
+          8,
+          "9029",
+          "MR"
+        ]
+      ],
+      "source": "Q",
+      "note": "Second diagnostic pair; internal network assignment unknown"
+    },
+    {
+      "unit": "BSI1",
+      "connector": "60V NR",
+      "pins": [
+        [
+          8,
+          "9028",
+          "GR"
+        ],
+        [
+          10,
+          "9029",
+          "MR"
+        ]
+      ],
+      "source": "Q",
+      "note": "Second OBD diagnostic pair; no join to named CAN networks established"
+    },
+    {
+      "unit": "BSI1",
+      "name": "Telematics port",
+      "connector": "60V BE",
+      "pins": [
+        [
+          10,
+          "9A35A",
+          "VE"
+        ],
+        [
+          8,
+          "9A36A",
+          "MR"
+        ]
+      ],
+      "source": "A,T",
+      "note": null
+    },
+    {
+      "unit": "84C4",
+      "name": "Telematics / eCall",
+      "connector": "18V NR",
+      "pins": [
+        [
+          8,
+          "9A35A",
+          "VE"
+        ],
+        [
+          17,
+          "9A36A",
+          "MR"
+        ]
+      ],
+      "source": "A,T",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "OBD port",
+      "connector": "60V NR",
+      "pins": [
+        [
+          15,
+          "9064",
+          "GR"
+        ],
+        [
+          13,
+          "9065",
+          "MR"
+        ]
+      ],
+      "source": "A",
+      "note": null
+    },
+    {
+      "unit": "C001",
+      "name": "Diagnostic socket / OBD",
+      "connector": "16V NR",
+      "pins": [
+        [
+          6,
+          "9064",
+          "GR"
+        ],
+        [
+          14,
+          "9065",
+          "MR"
+        ]
+      ],
+      "source": "A",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "Camera port - variant",
+      "connector": "35V NR",
+      "pins": [
+        [
+          26,
+          "9A35",
+          "RS"
+        ],
+        [
+          24,
+          "9A36",
+          "OR"
+        ]
+      ],
+      "source": "A",
+      "note": null
+    },
+    {
+      "unit": "7573",
+      "name": "Driver-assistance camera",
+      "connector": "12V BE",
+      "pins": [
+        [
+          8,
+          "9A35",
+          "RS"
+        ],
+        [
+          9,
+          "9A36",
+          "OR"
+        ]
+      ],
+      "source": "A",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "Main vehicle port",
+      "connector": "60V NR",
+      "pins": [
+        [
+          5,
+          "9A35C",
+          "BG"
+        ],
+        [
+          3,
+          "9A36C",
+          "GR"
+        ]
+      ],
+      "source": "A,AP",
+      "note": null
+    },
+    {
+      "unit": "1603",
+      "name": "Drive selector",
+      "connector": "6V BE",
+      "pins": [
+        [
+          1,
+          "9A35L",
+          "VE"
+        ],
+        [
+          4,
+          "9A36L",
+          "VE"
+        ]
+      ],
+      "source": "A,AP",
+      "note": null
+    },
+    {
+      "unit": "6606",
+      "name": "Headlamp-control ECU",
+      "connector": "18V NR",
+      "pins": [
+        [
+          7,
+          "9A35G",
+          "MR"
+        ],
+        [
+          16,
+          "9A36G",
+          "VE"
+        ]
+      ],
+      "source": "A,AP",
+      "note": null
+    },
+    {
+      "unit": "7126",
+      "name": "Steering ECU",
+      "connector": "3V GR",
+      "pins": [
+        [
+          2,
+          "9A35F",
+          "RB"
+        ],
+        [
+          3,
+          "9A36F",
+          "BE"
+        ]
+      ],
+      "source": "A,AP",
+      "note": null
+    },
+    {
+      "unit": "7500",
+      "name": "Parking ECU - variant",
+      "connector": "18V NR",
+      "pins": [
+        [
+          8,
+          "9A35Y",
+          "BA"
+        ],
+        [
+          9,
+          "9A36Y",
+          "VI"
+        ]
+      ],
+      "source": "A,AP",
+      "note": null
+    },
+    {
+      "unit": "7800",
+      "name": "ESP - main bus port",
+      "connector": "46V NR",
+      "pins": [
+        [
+          5,
+          "9A35H",
+          "GR"
+        ],
+        [
+          19,
+          "9A36H",
+          "GR"
+        ]
+      ],
+      "source": "A,AP",
+      "note": null
+    },
+    {
+      "unit": "1775",
+      "name": "VCU - HS CAN1",
+      "connector": "70V NR",
+      "pins": [
+        [
+          53,
+          "9A35Z",
+          "RS/BA"
+        ],
+        [
+          37,
+          "9A36Z",
+          "VE/BA"
+        ]
+      ],
+      "source": "A,AP",
+      "note": null
+    },
+    {
+      "unit": "7800",
+      "name": "ESP - VCU branch port",
+      "connector": "46V NR",
+      "pins": [
+        [
+          4,
+          "9A35Z",
+          "RS/BA"
+        ],
+        [
+          18,
+          "9A36Z",
+          "VE/BA"
+        ]
+      ],
+      "source": "A,AP",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "Dashboard branch",
+      "connector": "60V BE",
+      "pins": [
+        [
+          27,
+          "9034",
+          "RS"
+        ],
+        [
+          29,
+          "9035",
+          "VI"
+        ]
+      ],
+      "source": "B,BP",
+      "note": null
+    },
+    {
+      "unit": "84C4",
+      "name": "Telematics / eCall",
+      "connector": "18V NR",
+      "pins": [
+        [
+          9,
+          "9034C",
+          "RS"
+        ],
+        [
+          18,
+          "9035C",
+          "VI"
+        ]
+      ],
+      "source": "B,BP",
+      "note": null
+    },
+    {
+      "unit": "8480",
+      "name": "Radio / infotainment",
+      "connector": "56V NR",
+      "pins": [
+        [
+          10,
+          "9034H",
+          "RS"
+        ],
+        [
+          21,
+          "9035H",
+          "VI"
+        ]
+      ],
+      "source": "B,BP",
+      "note": null
+    },
+    {
+      "unit": "0004",
+      "name": "Instrument cluster",
+      "connector": "18V BA",
+      "pins": [
+        [
+          9,
+          "9034D",
+          "RS"
+        ],
+        [
+          7,
+          "9035D",
+          "VI"
+        ]
+      ],
+      "source": "B,BP",
+      "note": null
+    },
+    {
+      "unit": "84C6",
+      "name": "Multifunction panel",
+      "connector": "6V NR",
+      "pins": [
+        [
+          5,
+          "9034R",
+          "RS"
+        ],
+        [
+          4,
+          "9035R",
+          "VI"
+        ]
+      ],
+      "source": "B,BP",
+      "note": null
+    },
+    {
+      "unit": "8240",
+      "name": "Hands-free access - via IC91B",
+      "connector": "26V BE",
+      "pins": [
+        [
+          21,
+          "9034K",
+          "BA"
+        ],
+        [
+          22,
+          "9035K",
+          "VE"
+        ]
+      ],
+      "source": "B,BP",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "Second ENT INFO run",
+      "connector": "60V JN",
+      "pins": [
+        [
+          34,
+          "9034A",
+          "BE"
+        ],
+        [
+          36,
+          "9035A",
+          "BG"
+        ]
+      ],
+      "source": "B,BP",
+      "note": null
+    },
+    {
+      "unit": "7500",
+      "name": "Parking ECU - variant",
+      "connector": "26V JN",
+      "pins": [
+        [
+          26,
+          "9034A",
+          "BE"
+        ],
+        [
+          25,
+          "9035A",
+          "BG"
+        ]
+      ],
+      "source": "B,BP",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "F14 / 5 A supply",
+      "connector": "16V GR",
+      "pins": [
+        [
+          5,
+          "ZE55A",
+          "BG"
+        ]
+      ],
+      "source": "T,P",
+      "note": null
+    },
+    {
+      "unit": "84C4",
+      "name": "Supply",
+      "connector": "18V NR",
+      "pins": [
+        [
+          14,
+          "ZE55C",
+          "RS"
+        ]
+      ],
+      "source": "T,P",
+      "note": null
+    },
+    {
+      "unit": "1775",
+      "connector": "120V NR",
+      "pins": [
+        [
+          36,
+          "93P5",
+          "VE"
+        ],
+        [
+          57,
+          "93P6",
+          "RS"
+        ]
+      ],
+      "source": "C"
+    },
+    {
+      "unit": "1775",
+      "connector": "70V NR",
+      "pins": [
+        [
+          35,
+          "93P5B",
+          "VE"
+        ],
+        [
+          51,
+          "93P6B",
+          "VE"
+        ]
+      ],
+      "source": "C"
+    },
+    {
+      "unit": "70B4",
+      "name": "Park actuator",
+      "connector": "4V NR",
+      "pins": [
+        [
+          2,
+          "93P5A",
+          "BG"
+        ],
+        [
+          3,
+          "93P6A",
+          "RG"
+        ]
+      ],
+      "source": "C",
+      "note": null
+    },
+    {
+      "unit": "1917",
+      "name": "Traction-motor controller",
+      "connector": "10V NR",
+      "pins": [
+        [
+          2,
+          "93P5C",
+          "JN"
+        ],
+        [
+          7,
+          "93P6C",
+          "BG"
+        ]
+      ],
+      "source": "C",
+      "note": null
+    },
+    {
+      "unit": "1778",
+      "name": "Traction-battery interface",
+      "connector": "27V NR",
+      "pins": [
+        [
+          2,
+          "93P5B",
+          "BA"
+        ],
+        [
+          1,
+          "93P6B",
+          "VE"
+        ]
+      ],
+      "source": "C",
+      "note": null
+    },
+    {
+      "unit": "1708",
+      "name": "Charger / DC-DC",
+      "connector": "32V NR",
+      "pins": [
+        [
+          "E2",
+          "93P5B",
+          "VE"
+        ],
+        [
+          "E1",
+          "93P6B",
+          "VE"
+        ]
+      ],
+      "source": "C",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "Main HS CAN2",
+      "connector": "60V NR",
+      "pins": [
+        [
+          46,
+          "9A37",
+          "MR"
+        ],
+        [
+          44,
+          "9A38",
+          "BG"
+        ]
+      ],
+      "source": "D",
+      "note": null
+    },
+    {
+      "unit": "1775",
+      "name": "VCU - HS CAN2",
+      "connector": "70V NR",
+      "pins": [
+        [
+          48,
+          "9A37E",
+          "RG"
+        ],
+        [
+          32,
+          "9A38E",
+          "VI"
+        ]
+      ],
+      "source": "D",
+      "note": null
+    },
+    {
+      "unit": "7800",
+      "name": "ESP - HS CAN2",
+      "connector": "46V NR",
+      "pins": [
+        [
+          11,
+          "9A37A",
+          "BE"
+        ],
+        [
+          25,
+          "9A38A",
+          "BA"
+        ]
+      ],
+      "source": "D",
+      "note": null
+    },
+    {
+      "unit": "2524",
+      "name": "Pedestrian sound - via IC02A",
+      "connector": "4V NR",
+      "pins": [
+        [
+          3,
+          "9A37",
+          "BA"
+        ],
+        [
+          2,
+          "9A38",
+          "JN"
+        ]
+      ],
+      "source": "D",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "Camera run - baseline",
+      "connector": "35V NR",
+      "pins": [
+        [
+          8,
+          "9A37",
+          "VI"
+        ],
+        [
+          6,
+          "9A38",
+          "VE"
+        ]
+      ],
+      "source": "D",
+      "note": null
+    },
+    {
+      "unit": "7573",
+      "name": "Camera - HS CAN2",
+      "connector": "12V BE",
+      "pins": [
+        [
+          4,
+          "9A37",
+          "VI"
+        ],
+        [
+          5,
+          "9A38",
+          "VE"
+        ]
+      ],
+      "source": "D",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "Blue-connector branch",
+      "connector": "60V BE",
+      "pins": [
+        [
+          16,
+          "9038F",
+          "BA"
+        ],
+        [
+          18,
+          "9039F",
+          "GR"
+        ]
+      ],
+      "source": "E,EP",
+      "note": null
+    },
+    {
+      "unit": "CV00",
+      "name": "Steering-column controls",
+      "connector": "18V NR",
+      "pins": [
+        [
+          12,
+          "9038G",
+          "BA"
+        ],
+        [
+          13,
+          "9039G",
+          "GR"
+        ]
+      ],
+      "source": "E,EP",
+      "note": null
+    },
+    {
+      "unit": "8080",
+      "name": "Climate-control ECU",
+      "connector": "6V NR",
+      "pins": [
+        [
+          4,
+          "9038D",
+          "BA"
+        ],
+        [
+          5,
+          "9039D",
+          "GR"
+        ]
+      ],
+      "source": "E,EP",
+      "note": null
+    },
+    {
+      "unit": "AE00",
+      "name": "Steering lock",
+      "connector": "6V BA",
+      "pins": [
+        [
+          4,
+          "9038E",
+          "BA"
+        ],
+        [
+          5,
+          "9039E",
+          "GR"
+        ]
+      ],
+      "source": "E,EP",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "Brown-connector branch",
+      "connector": "60V MR",
+      "pins": [
+        [
+          23,
+          "9038J",
+          "BG"
+        ],
+        [
+          25,
+          "9039J",
+          "BE"
+        ]
+      ],
+      "source": "E,EP",
+      "note": null
+    },
+    {
+      "unit": "6570",
+      "name": "Airbag ECU - via IC91B / 19,20",
+      "connector": "30V NR",
+      "pins": [
+        [
+          30,
+          "9038C",
+          "BE"
+        ],
+        [
+          29,
+          "9039C",
+          "VI"
+        ]
+      ],
+      "source": "E,EP",
+      "note": null
+    },
+    {
+      "unit": "6036",
+      "name": "Driver door - via ICV4B / 17,18",
+      "connector": "20V JN",
+      "pins": [
+        [
+          2,
+          "9038",
+          "OR"
+        ],
+        [
+          9,
+          "9039",
+          "BE"
+        ]
+      ],
+      "source": "E,EP",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "ADAS radar port",
+      "connector": "60V NR",
+      "pins": [
+        [
+          28,
+          "9A33B",
+          "BB"
+        ],
+        [
+          26,
+          "9A34B",
+          "BG/BA"
+        ]
+      ],
+      "source": "F",
+      "note": null
+    },
+    {
+      "unit": "7571",
+      "name": "Radar - via ICY4 / 4,1",
+      "connector": "6V NR",
+      "pins": [
+        [
+          2,
+          "9A33",
+          "VI"
+        ],
+        [
+          1,
+          "9A34",
+          "BG"
+        ]
+      ],
+      "source": "F",
+      "note": null
+    },
+    {
+      "unit": "BSI1",
+      "name": "ADAS camera port",
+      "connector": "35V NR",
+      "pins": [
+        [
+          6,
+          "9A33",
+          "VI"
+        ],
+        [
+          8,
+          "9A34",
+          "MR"
+        ]
+      ],
+      "source": "F",
+      "note": null
+    },
+    {
+      "unit": "7573",
+      "name": "Camera - ADAS layout",
+      "connector": "12V BE",
+      "pins": [
+        [
+          5,
+          "9A33",
+          "VI"
+        ],
+        [
+          4,
+          "9A34",
+          "MR"
+        ]
+      ],
+      "source": "F",
+      "note": null
+    },
+    {
+      "unit": "6606",
+      "name": "Local headlamp CAN",
+      "connector": "18V NR",
+      "pins": [
+        [
+          15,
+          "9A43A",
+          "GR"
+        ],
+        [
+          6,
+          "9A44A",
+          "BA"
+        ]
+      ],
+      "source": "L",
+      "note": null
+    },
+    {
+      "unit": "2610",
+      "name": "Left headlamp",
+      "connector": "10V NR",
+      "pins": [
+        [
+          2,
+          "9A43B",
+          "RG"
+        ],
+        [
+          7,
+          "9A44B",
+          "BG"
+        ]
+      ],
+      "source": "L",
+      "note": null
+    },
+    {
+      "unit": "2615",
+      "name": "Right headlamp",
+      "connector": "10V NR",
+      "pins": [
+        [
+          2,
+          "9A43C",
+          "MR"
+        ],
+        [
+          7,
+          "9A44C",
+          "VE"
+        ]
+      ],
+      "source": "L",
+      "note": null
+    }
+  ],
+  "verification": {
+    "page_count": 1,
+    "embedded_images": 0,
+    "endpoint_count": 52,
+    "text_labels": 332
+  }
+}

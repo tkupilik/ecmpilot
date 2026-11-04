@@ -1,0 +1,19 @@
+{
+  "tests": 22,
+  "test_result": "passed",
+  "lint": "passed",
+  "build_log": "C:\\work\\bev\\ecmpilot\\artifacts\\status-ui-build.log",
+  "apk": "C:\\work\\bev\\ecmpilot\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
+  "sha256": "96e0b4a96887514d529f33feccfbf1a7226ae460e70488a060cf1538dbf95956",
+  "installed": true,
+  "device_model": "Samsung SM-A556B",
+  "launched": true,
+  "pid_at_check": 14613,
+  "screenshot": "C:\\work\\bev\\ecmpilot\\artifacts\\status-ui-phone.png",
+  "source_sha256": {
+    "app\\src\\main\\java\\cz\\ecmpilot\\ui\\PilotApp.kt": "dc00cfa4425f841d48652319e4f1f952b785dcb3c921692f81ea860601cf51d5",
+    "app\\src\\main\\java\\cz\\ecmpilot\\model\\Vehicle.kt": "74a5245dcda6ecc5614d484b4ebbbea0df0a25e8c6fb068ff92a4c00a3393164",
+    "app\\src\\main\\java\\cz\\ecmpilot\\protocol\\Protocol.kt": "9dd12dddc754888410a1aa83969894200117b9ad475130aa47cab17ff856b311",
+    "app\\src\\main\\java\\cz\\ecmpilot\\protocol\\DemoConnection.kt": "b2e8c559c9d430b6993fb0d2da90680e675b2254abb6f47b4517a33bc5c90aad"
+  }
+}

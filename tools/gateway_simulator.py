@@ -81,12 +81,19 @@ class Gateway:
         if not isinstance(rid, str) or not ID.fullmatch(rid):
             raise ValueError("Missing/invalid request ID")
         response = {"v": 0, "type": "status", "gw": self.id, "boot": self.boot, "reply_to": rid, "seq": self.seq, "now_ms": self.now()}
+        correlation = request.get("correlation_id")
+        session = request.get("client_session")
+        context = {}
+        if type(correlation) is int and 1 <= correlation <= 0xffffffff and isinstance(session, str) and ID.fullmatch(session):
+            context = {"correlation_id": correlation, "client_session": session}
+            response["correlation_id"] = correlation
         op = request.get("op")
         write = op in ("climate.set", "charge.mode.set")
 
         def reject(code, reason=None):
             if write:
                 response["command"] = {"id": rid, "revision": 1, "phase": "rejected", "error": code}
+                response["command"].update(context)
                 if reason:
                     response["command"]["reason"] = reason
             else:
@@ -98,7 +105,9 @@ class Gateway:
         client = request.get("client")
         if not isinstance(client, str) or not ID.fullmatch(client):
             return reject("invalid_argument")
-        if set(request) - {"v", "type", "gw", "boot", "client", "id", "deadline_ms", "domain_rev", "op", "args"}:
+        if ("correlation_id" in request or "client_session" in request) and not context:
+            return reject("invalid_argument")
+        if set(request) - {"v", "type", "gw", "boot", "client", "id", "deadline_ms", "domain_rev", "op", "args", "client_session", "correlation_id"}:
             return reject("unsupported_argument")
         if request.get("gw") not in (None, self.id) or write and request.get("gw") != self.id:
             return reject("wrong_gateway")
@@ -109,15 +118,19 @@ class Gateway:
             response["info"] = self.info()
         elif op == "state.get" and not args:
             response["state"] = self.state()
-        elif op == "command.get" and set(args) == {"command_id"}:
-            old = self.commands.get((client, args["command_id"]))
+        elif op == "command.get" and (set(args) == {"command_id"} or not args and context):
+            old = self.commands.get((client, args["command_id"])) if args else next((value for (owner, _), value in self.commands.items()
+                if owner == client and value["result"].get("correlation_id") == correlation and value["result"].get("client_session") == session), None)
             if old:
                 response["command"] = dict(old["result"])
             else:
                 response["error"] = "result_unknown"
         elif write:
-            fingerprint = json.dumps(request, sort_keys=True, separators=(",", ":"))
+            fingerprint = json.dumps({k:v for k,v in request.items() if k != "id"}, sort_keys=True, separators=(",", ":"))
             old = self.commands.get((client, rid))
+            if old is None and context:
+                old = next((value for (owner, _), value in self.commands.items() if owner == client and
+                    value["result"].get("correlation_id") == correlation and value["result"].get("client_session") == session), None)
             if old:
                 if old["fingerprint"] != fingerprint:
                     return reject("id_conflict")
@@ -159,6 +172,7 @@ class Gateway:
                 previous["result"].update(phase="failed", error="superseded", revision=2)
             self.revs[domain] += 1
             result = {"id": rid, "revision": 1, "domain_rev": self.revs[domain], "phase": "accepted", "error": None}
+            result.update(context)
             self.commands[(client, rid)] = {"fingerprint": fingerprint, "created": self.now(), "domain": domain, "rev": self.revs[domain], "args": args, "result": result}
             response["command"] = dict(result)
         else:

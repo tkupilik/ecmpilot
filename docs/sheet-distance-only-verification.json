@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-03",
+  "apk_sha256": "6fc81e617fe8db8dd8f86f85426fd142956ca30ffc8aa2b5fa9b1823cbc7c47f",
+  "policy": {
+    "distance_dp": 56,
+    "velocity_shortcut": false
+  },
+  "build": "artifacts/sheet-distance-only-build.log",
+  "device": {
+    "serial": "DEVICE_SERIAL",
+    "installed": true,
+    "result": "passed",
+    "log": "artifacts/sheet-distance-only-device.log",
+    "test": "distanceControlsDismissalWithoutAFlingShortcutAcrossAllDialogs",
+    "dialogs": 6,
+    "checks": [
+      "Slow30dp pull stays open",
+      "Fast40dp flick stays open",
+      "Deliberate120dp pull dismisses"
+    ],
+    "demo_only": true,
+    "original_settings_restored": true
+  }
+}

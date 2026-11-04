@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-03",
+  "scope": "Shared modal inset stability and collapsed disabled preconditioning plans",
+  "build": "artifacts/sheet-stability-final-build.log",
+  "test_build": "artifacts/sheet-gesture-real-drag-build.log",
+  "device_log": "artifacts/sheet-stability-device-final.log",
+  "device": "DEVICE_SERIAL",
+  "tests": 2,
+  "dialogs": [
+    "Doors & locks",
+    "Charging",
+    "Preconditioning",
+    "Trips & consumption",
+    "Vehicle details",
+    "Connection"
+  ],
+  "checks": [
+    "Upward swipes settle; sheet top varies at most 1 px over 30 samples after settling",
+    "Disabled plans hide editors; master on/off expands/collapses configured plans",
+    "Empty plans remain configurable through Set up",
+    "In-process demo schedule confirmation; original connection settings restored"
+  ],
+  "apk_sha256": "8BB4CB9623B2D6D377F2D12BEF1D2E5FF1AB6C8B91C102D0CEB9EBFBE781B1CF",
+  "installed": true,
+  "vehicle_commands_sent": false
+}

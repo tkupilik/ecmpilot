@@ -6,6 +6,20 @@ from gateway_simulator import Gateway
 
 
 class GatewayTests(unittest.TestCase):
+    def test_correlation_deduplicates_new_message_ids_and_echoes_reads(self):
+        request = self.request()
+        request.update(correlation_id=1042, client_session='a'*32)
+        first = self.gateway.handle(request)
+        self.assertEqual(1042, first['correlation_id'])
+        duplicate = dict(request, id=uuid.uuid4().hex)
+        self.assertEqual(first['command'], self.gateway.handle(duplicate)['command'])
+        self.time = 2
+        result = self.gateway.handle(duplicate)['command']
+        self.assertEqual((request['id'],1042,'a'*32,'succeeded'),tuple(result[k] for k in ('id','correlation_id','client_session','phase')))
+        self.assertEqual(1,self.gateway.executions)
+        read = dict(self.request('state.get', {}),correlation_id=1043,client_session='a'*32)
+        self.assertEqual(1043,self.gateway.handle(read)['correlation_id'])
+
     def setUp(self):
         self.time = 0.0
         self.gateway = Gateway(clock=lambda: self.time)

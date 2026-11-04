@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-03",
+  "apk": "app\\build\\outputs\\apk\\debug\\app-debug.apk",
+  "apk_sha256": "521f2a7f36636c3eff97613dbe408a3a1eda65385f6c7eedf7f5ecf1e76a8339",
+  "build": {
+    "result": "passed",
+    "log": "artifacts/vehicle-action-gesture-build.log"
+  },
+  "unit_tests": {
+    "tests": 37,
+    "failures": 0
+  },
+  "device": {
+    "serial": "DEVICE_SERIAL",
+    "model": "Samsung SM-A556B",
+    "installed": true,
+    "result": "passed",
+    "tests": 3,
+    "log": "artifacts/vehicle-action-gesture-device-unlocked.log",
+    "transport": "Demo only; original settings restored; no live vehicle commands"
+  },
+  "assertions": [
+    "Refresh, charging, preconditioning and schedule edits share one progress spinner.",
+    "Success has no result card or popup; errors/unconfirmed results have a descriptive dismissible popup.",
+    "Details labels traction percentage SOC.",
+    "All six dialogs survive a slow100dp pull, dismiss on a slow240dp pull and retain short fast-fling dismissal.",
+    "All six dialogs settle without vertical oscillation after upward content swipes."
+  ],
+  "gesture_policy": {
+    "distance_dp": 160,
+    "velocity_dp_per_s": 125
+  },
+  "version_unchanged": true
+}

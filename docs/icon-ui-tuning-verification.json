@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-04",
+  "scope": [
+    "Selected car/lightning adaptive launcher icon",
+    "Charge-limit help only in Gateway; Charging slider 30-100 percent",
+    "Outside badge in Prepare; no front setpoints in Preconditioning",
+    "Remove consumption history subtitle",
+    "Only copy-review items 1 and 2 approved/implemented"
+  ],
+  "copy_review": {
+    "approved": [
+      1,
+      2
+    ],
+    "not_approved": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  "icon": {
+    "concept_tool": "Built-in imagegen; native VectorDrawable adaptation",
+    "reference": "docs/assets/launcher-car-lightning-reference.png",
+    "vector_preview": "docs/assets/launcher-car-lightning.svg",
+    "mask_preview": "artifacts/launcher-preview.png",
+    "scale": 0.91,
+    "safe_circle_radius_dp": 33,
+    "foreground_max_radius_dp": 32.89,
+    "outside_safe_circle_pixels_alpha_at_least_128": 0,
+    "raster_analysis_dimensions": [
+      1080,
+      1080
+    ]
+  },
+  "jvm_tests": {
+    "tests": 47,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "build_log": "artifacts/icon-ui-tuning-build.log"
+  },
+  "device_tests": {
+    "passed": 2,
+    "classes": [
+      "AutoRefreshUiTest",
+      "VehicleAppearanceTest"
+    ],
+    "log": "artifacts/icon-ui-tuning-device-tests.log",
+    "charge_limit_boundaries_saved": [
+      30,
+      100,
+      85
+    ],
+    "mode": "In-process demo only",
+    "original_settings_restored": true,
+    "vehicle_commands_to_real_gateway": false
+  },
+  "visual_review": [
+    "artifacts/launcher-preview.png",
+    "artifacts/icon-ui-preconditioning-dark.png"
+  ],
+  "apk": {
+    "path": "app/build/outputs/apk/debug/app-debug.apk",
+    "bytes": 31301442,
+    "sha256": "9b30f9b2e07ce3fc55a7691f30659911a373d696c6e04553f34137c6e8dee704",
+    "version_name": "0.2.0",
+    "version_code": 2,
+    "installed": true,
+    "device": "Samsung SM-A556B",
+    "installed_local_time": "2026-11-04 15:32:55 Europe/Prague",
+    "package_log": "artifacts/icon-ui-tuning-package.log"
+  },
+  "gateway_firmware_changed": false
+}

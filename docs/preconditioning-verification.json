@@ -1,0 +1,12 @@
+{
+  "tests": 26,
+  "result": "passed",
+  "lint": "passed",
+  "apk": "C:\\work\\bev\\ecmpilot\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
+  "sha256": "9128b810cc0f748d0716f63ae54357186a0527010a606cb57685f9e8f5ed4c2a",
+  "build_log": "C:\\work\\bev\\ecmpilot\\artifacts\\preconditioning-build.log",
+  "installed": true,
+  "device_model": "Samsung SM-A556B",
+  "launched": true,
+  "pid_at_check": 23247
+}

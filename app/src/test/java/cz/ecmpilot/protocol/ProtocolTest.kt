@@ -88,6 +88,42 @@ class ProtocolTest {
         assertEquals(true, state.awake); assertEquals("off", state.climate.state)
         assertTrue(state.climate.stamp.fresh(1000))
         assertEquals("accepted", fixture("accepted").command!!.phase)
+        val aux = fixture("aux-battery").state!!
+        assertEquals(12.6, aux.reading("aux_battery_voltage_v")!!.value!!, .001)
+        assertEquals(81.5, aux.reading("aux_battery_soc_pct")!!.value!!, .001)
+        assertNull(aux.reading("voltage_v")?.value)
+        val climate = fixture("climate-setpoints").state!!
+        assertEquals(20.0, climate.reading("climate_left_setpoint_c")!!.value!!, .001)
+        assertEquals(21.0, climate.reading("climate_right_setpoint_c")!!.value!!, .001)
+        assertEquals(5.5, climate.reading("evaporator_c")!!.value!!, .001)
+        assertNull(climate.reading("cabin_c")!!.value)
+    }
+    @Test fun auxiliaryBatteryIsSeparateFromHvAndRetainsFreshness() {
+        val packet = base().apply { add("state", JsonParser.parseString("""{"aux_battery_soc_pct":{"value":81.5,"age_ms":1200},"aux_battery_voltage_v":{"value":12.6,"age_ms":1300},"voltage_v":{"value":416.25,"age_ms":25}}""")) }
+        val readings = parse(packet).state!!
+        assertEquals(81.5, readings.reading("aux_battery_soc_pct")!!.value!!, .001)
+        assertEquals(12.6, readings.reading("aux_battery_voltage_v")!!.value!!, .001)
+        assertEquals(416.25, readings.reading("voltage_v")!!.value!!, .001)
+        assertTrue(readings.reading("aux_battery_soc_pct")!!.fresh(1000))
+        assertFalse(readings.reading("aux_battery_soc_pct")!!.fresh(6000))
+        val invalid = base().apply { add("state", JsonParser.parseString("""{"aux_battery_soc_pct":{"value":101,"age_ms":0},"aux_battery_voltage_v":{"value":99,"age_ms":0}}""")) }
+        assertNull(parse(invalid).state!!.reading("aux_battery_soc_pct")!!.value)
+        assertNull(parse(invalid).state!!.reading("aux_battery_voltage_v")!!.value)
+        assertNull(parse(base()).state?.reading("aux_battery_soc_pct"))
+    }
+    @Test fun climateSetpointsAndEvaporatorStaySeparateFromCabinAndState() {
+        val packet = base().apply { add("state", JsonParser.parseString("""{"climate_left_setpoint_c":{"value":20,"age_ms":250},"climate_right_setpoint_c":{"value":21,"age_ms":500},"evaporator_c":{"value":5.5,"age_ms":500},"cabin_c":{"value":19,"age_ms":10},"climate":{"state":"unknown"}}""")) }
+        val state = parse(packet).state!!
+        assertEquals(20.0, state.reading("climate_left_setpoint_c")!!.value!!, .001)
+        assertEquals(21.0, state.reading("climate_right_setpoint_c")!!.value!!, .001)
+        assertEquals(5.5, state.reading("evaporator_c")!!.value!!, .001)
+        assertEquals(19.0, state.reading("cabin_c")!!.value!!, .001)
+        assertEquals("unknown", state.climate.state)
+        assertTrue(state.reading("climate_left_setpoint_c")!!.fresh(1000))
+        assertFalse(state.reading("climate_left_setpoint_c")!!.fresh(6000))
+        packet.add("state", JsonParser.parseString("""{"climate_left_setpoint_c":{"value":99,"age_ms":0},"evaporator_c":{"value":100,"age_ms":0}}"""))
+        assertNull(parse(packet).state!!.reading("climate_left_setpoint_c")!!.value)
+        assertNull(parse(packet).state!!.reading("evaporator_c")!!.value)
     }
     @Test fun demoAcceptanceDoesNotChangeObservedClimate() = runBlocking {
         var now = 0L

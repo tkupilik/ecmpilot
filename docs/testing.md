@@ -4,6 +4,14 @@ The Android app is a native Compose implementation. Its initial source is in-pro
 
 ## Automated checks
 
+[UDP correlation and recovery](udp-correlation.md) adds actual loopback tests for
+lost replies, 3.1 s delay, incorrect correlation and a late old reply after a
+read timeout. These tests need no emulator, phone or vehicle.
+
+See [automatic refresh](auto-refresh.md) for the gateway-owned timer settings and
+demo-only editor checks. The shared sheet dismissal threshold is now 100 physical
+pixels, with velocity-based dismissal disabled; gesture test distances use pixels.
+
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\dev.ps1 check
 python -m unittest discover -s tools -p 'test_*.py' -v
@@ -15,9 +23,14 @@ The helper disables persistent Kotlin compilation daemons and limits Gradle work
 
 ## ESP32 varstore backend
 
-Use firmware 0.3.0 from `ecmpilot-gw` and Android 0.2.0. Seed its HTTP varstore with the gateway repository's `tools/udp_bench.py`, connect the app to its LAN IP/42840, opt into experimental local controls and Refresh. Confirm TEST is shown. A phone request updates gateway `request.*` signals but does not change observations; force matching climate/mode/time readback in the web tool to complete it. No CAN device is needed. Test timeout and stale/invalid values too. This physical phone-to-board path has not been exercised in the workstation checks.
+Use firmware 0.3.0 from `ecmpilot-gw` and Android 0.2.0. Seed its HTTP varstore with the gateway repository's `tools/udp_bench.py`, connect the app to its LAN IP/42840, opt into experimental local controls and Refresh. Confirm TEST is shown. A phone request updates gateway `request.*` signals but does not change observations; force matching climate/mode/time readback in the web tool to complete it. No CAN device is needed. In this backend Refresh is a simulated explicit action; actual INFO control is described in [vehicle refresh](vehicle-refresh.md). Test timeout and stale/invalid values too. This physical phone-to-board path has not been exercised in the workstation checks.
 
 JVM tests decode the actual C codec's compact response fixtures under `app/src/test/resources/gateway`, in addition to checking explicit test-backend capability gating.
+`aux-battery.json` is an 863-byte compact `state.get` reply produced by the LCD
+firmware's native C serializer after decoding BSI396 sample `00 8E A3 00 C8 09`.
+It reports auxiliary 12.6 V/81.5%, independent of traction data. Keep the fixture
+compact so it obeys the production 1024-byte datagram cap. Tests cover missing,
+stale and out-of-range auxiliary readings and compatibility with older replies.
 
 ## In-process demo scenes
 
@@ -41,7 +54,7 @@ python tools\gateway_simulator.py --bind 192.168.1.80 --port 42840
 
 Use the computer's actual local IP. Windows Firewall must allow the chosen local UDP traffic. The simulator cannot access CAN hardware or the car; its reported verified capabilities apply to simulated functions only.
 
-In the app choose Local gateway, grant local-network access if required, and opt into experimental local controls. The simulator identifies as `simulated-corsa`; forget the saved gateway before changing from it to a different gateway identity. Android sockets are bound to an available local Wi-Fi/Ethernet network, so a phone's mobile-data default route is not used for gateway communication. Public/multicast addresses are rejected by this local-only client.
+In the app choose Local gateway, grant local-network access if required, and opt into experimental local controls. The simulator identifies as `simulated-corsa`; forget the saved gateway before changing from it to a different gateway identity. Android sockets normally bind to physical Wi-Fi/Ethernet. With an active VPN, an `EPERM` rejection of that bind selects a fresh socket with Android's normal VPN/routing policy. Physical LAN presence and local-unicast address validation are still required. VPN restrictions can still prevent delivery. Recent diagnostics records the selected route.
 
 Useful reproducible cases:
 
@@ -75,6 +88,24 @@ adb -s emulator-5580 pull /sdcard/Android/data/cz.ecmpilot/files/. artifacts/scr
 
 The local development helper's `check` command deliberately runs host JVM tests/lint only, without starting or modifying any Android device.
 
+### Read-only gateway check with a VPN
+
+`LocalConnectionDeviceTest` does not use the UI test's settings reset. It exercises
+the actual connection factory and protocol under the phone's current VPN policy,
+querying only `info.get` and `state.get`. It does not change VPN/settings or send
+vehicle commands. Without an explicit `gatewayHosts` argument it skips networking.
+After building/installing the debug and androidTest APKs manually, run:
+
+```powershell
+adb -s YOUR_DEVICE shell am instrument -w -r -e class cz.ecmpilot.LocalConnectionDeviceTest -e gatewayHosts '192.168.1.220,opel-dash.lan' cz.ecmpilot.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+Test both VPN active (including non-bypassable mode) and VPN inactive. On active
+VPNs rejecting explicit LAN binding, `PilotNetworkTest` logs the system-route
+fallback; normal Wi-Fi logs the direct local binding. Check gateway identity and
+both replies for the hostname and numeric address. Run these opt-in checks only
+against the intended gateway; unlike `PilotAppTest`, they preserve saved settings.
+
 ## Implementation limits
 
 - UDP schema v0, simulator and local client are implemented; firmware/CAN integration and real-car command support are not.
@@ -83,3 +114,8 @@ The local development helper's `check` command deliberately runs host JVM tests/
 - Adjustable temperature/duration, charge targets/current limits, pause/resume, discovery, MQTT, Wi-Fi provisioning and Android Auto are not implemented.
 - A native deferred setting is a start time in the gateway-reported timezone, not a guaranteed finish time. Its persistence/recurrence semantics must be verified in the future firmware before advertising that capability.
 - Device/network failures produce unconfirmed results; this is not a guarantee of exactly-once physical effects. Lost gateway result history is not a reason to send the operation again automatically.
+
+climate-setpoints.json is a1004-byte compact response from the actual LCD C codec,
+after native2AD/350 decoding and VehicleDataTick:20°C left,21°C right,5.5°C
+evaporator, cabin unknown. JVM tests decode this fixture without prettifying it
+beyond the1024-byte protocol cap.

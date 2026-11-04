@@ -42,9 +42,11 @@ class PilotAppTest {
         ui.onNodeWithTag("confirm-climate").performClick()
         result("succeeded")
         ui.waitUntil(10_000) { repository.state.value.vehicle?.climate?.state == "on" }
-        ui.onNodeWithText("Stop climate").assertExists()
-        ui.onNodeWithTag("charging-options").performScrollTo().performClick()
-        ui.onNodeWithText("Later").performClick()
+        ui.onNodeWithTag("home-climate").performClick()
+        ui.onNodeWithText("Stop preconditioning").assertExists()
+        ui.onNodeWithText("Close").performClick()
+        ui.onNodeWithTag("charging-status").performClick()
+        ui.onNodeWithTag("deferred-charging").performClick()
         screen("charging")
         ui.onNodeWithTag("apply-charge").performScrollTo().performClick()
         result("succeeded")
@@ -52,20 +54,22 @@ class PilotAppTest {
     }
     @Test fun b_asleepAndMissingValues() {
         ui.runOnUiThread { repository.saveSettings(Settings(scene = DemoScene.ASLEEP)) }; ready()
-        ui.onNodeWithTag("home-climate").assertIsNotEnabled()
-        ui.onNodeWithTag("charging-options").assertIsNotEnabled()
+        ui.onNodeWithTag("home-climate").assertIsEnabled().performClick()
+        ui.onNodeWithTag("confirm-climate").assertIsNotEnabled()
+        ui.onNodeWithText("Close").performClick()
+        ui.onNodeWithTag("charging-status").assertIsEnabled()
         screen("asleep")
         ui.runOnUiThread { repository.saveSettings(Settings(scene = DemoScene.LIMITED)) }; ready()
         ui.waitUntil { repository.state.value.vehicle?.reading("cabin_c")?.value == null }
-        ui.onAllNodesWithText("—").assertCountEquals(3)
+        ui.onAllNodesWithText("—").assertCountEquals(1)
     }
     @Test fun c_rejectedAndUnknownNeverBecomeSuccess() {
         ui.runOnUiThread { repository.saveSettings(Settings(scene = DemoScene.REJECT)) }; ready()
         ui.onNodeWithTag("home-climate").performClick(); ui.onNodeWithTag("confirm-climate").performClick(); result("rejected")
-        ui.onNodeWithText("Start climate").assertExists()
+        ui.onNodeWithTag("home-climate").assertExists()
         ui.runOnUiThread { repository.saveSettings(Settings(scene = DemoScene.UNCONFIRMED)) }; ready()
         ui.onNodeWithTag("home-climate").performClick(); ui.onNodeWithTag("confirm-climate").performClick(); result("unknown")
-        ui.onNodeWithText("Result unconfirmed").assertExists()
+        ui.onNodeWithText("Vehicle request not confirmed").assertExists()
         screen("unconfirmed")
     }
     @Test fun d_darkTheme() {
@@ -79,7 +83,7 @@ class PilotAppTest {
             InstrumentationRegistry.getInstrumentation().uiAutomation.grantRuntimePermission("cz.ecmpilot", "android.permission.ACCESS_LOCAL_NETWORK")
             ui.runOnUiThread { repository.setPermission(true) }
         }
-        ui.onNodeWithText("Settings").performClick()
+        ui.onNodeWithContentDescription("Settings").performClick()
         ui.onNodeWithTag("local-source").performScrollTo().performClick()
         ui.onNodeWithTag("gateway-host").performScrollTo().performTextReplacement(arguments.getString("udpHost")!!)
         ui.onNodeWithTag("gateway-port").performScrollTo().performTextReplacement(arguments.getString("udpPort") ?: "42840")
@@ -92,5 +96,24 @@ class PilotAppTest {
         result("succeeded")
         ui.waitUntil(10_000) { repository.state.value.vehicle?.climate?.state == "on" }
         screen("udp-live")
+    }
+
+    @Test fun f_doorsAndTripsAreReadOnlyNavigation() {
+        ui.runOnUiThread { repository.saveSettings(Settings(scene = DemoScene.DOORS)) }; ready()
+        ui.waitUntil(10_000) { repository.state.value.details != null }
+        ui.onNodeWithTag("vehicle-status").performClick()
+        ui.onNodeWithTag("locking-label").assertTextEquals("Unlocked")
+        ui.onAllNodesWithText("Open").assertCountEquals(3)
+        screen("doors-open")
+        ui.onNodeWithText("Close").performClick()
+        ui.onNodeWithTag("menu-trips").performScrollTo().performClick()
+        ui.onNodeWithText("Trip 1").assertExists()
+        ui.onNodeWithText("21.5 kWh/100 km").assertExists()
+        screen("trips")
+        ui.onNodeWithText("Close").performClick()
+        ui.onNodeWithTag("menu-details").performScrollTo().performClick()
+        ui.onNodeWithText("HV battery voltage").assertDoesNotExist()
+        ui.onNodeWithText("12 V battery voltage").assertExists()
+        org.junit.Assert.assertNull(repository.state.value.command)
     }
 }

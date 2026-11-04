@@ -1,0 +1,171 @@
+{
+  "captured_date": "2026-11-04",
+  "timezone": "Europe/Prague",
+  "device_model": "Samsung Galaxy A55 (SM-A556B)",
+  "android_version": "16",
+  "app_version": "0.2.0",
+  "app_apk_sha256": "9b30f9b2e07ce3fc55a7691f30659911a373d696c6e04553f34137c6e8dee704",
+  "capture": "Compose root captureToImage on the physical phone; original lossless PNG bytes, renamed only",
+  "live_actions": "Passive reads and screen navigation only; preconditioning started by the owner before capture",
+  "demo_actions": "In-process simulated gateway only, including delayed-charge confirmation and rejected refresh",
+  "original_connection_settings_restored": true,
+  "ui_checks": {
+    "live_gallery": "OK (1 test)",
+    "demo_gallery": "OK (1 test)"
+  },
+  "privacy": "System bars excluded; demo diagnostic tail contains demo connections only; no device serial saved",
+  "images": [
+    {
+      "file": "demo-charging.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 135365,
+      "sha256": "8ffb0307a3a4251810b0b74904e544572e870da7d7ac210ec9b90837638b8b0a"
+    },
+    {
+      "file": "demo-delayed-charging.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 135289,
+      "sha256": "13815b664b43492c2f95e490ed5150edda8958d5d7c872ef43fdd2ae8a525678"
+    },
+    {
+      "file": "demo-details.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 154215,
+      "sha256": "796b2c2324df15f0c3f97b5d3a760e96b5bfb0c12f7bf1275fbbd7712050152e"
+    },
+    {
+      "file": "demo-doors.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 397186,
+      "sha256": "e3fd84ccb1d69d1ae1d25c5d54fdc671ec073f3adfe75192849913e2dab6d2cd"
+    },
+    {
+      "file": "demo-gateway.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 178932,
+      "sha256": "8f7510b44bdfc0c780ba2b9880df3433b99d57c93134b8c18ae4d7c6d035a13d"
+    },
+    {
+      "file": "demo-home-dark.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2340,
+      "bytes": 149642,
+      "sha256": "9178390f2c9e8d8e37b940e2eb3946fc3401af46175dbdbd06dd1f376c65695c"
+    },
+    {
+      "file": "demo-home-light.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2340,
+      "bytes": 147173,
+      "sha256": "00bfe35b3a39d58d43d8a2468e6ab551526c6eebef6f1d869f1cd595855686f8"
+    },
+    {
+      "file": "live-charging.png",
+      "source": "live",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 128589,
+      "sha256": "148fd84a2f684688971fd024004ee4ce41aa58aafaeae51566e2e1b8eb5659a1"
+    },
+    {
+      "file": "live-doors.png",
+      "source": "live",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 397027,
+      "sha256": "44f28a1786975f97ef945f05af26e57b00746e86657b59321389c3c71a3e34e5"
+    },
+    {
+      "file": "live-home.png",
+      "source": "live",
+      "width": 1080,
+      "height": 2340,
+      "bytes": 144529,
+      "sha256": "0607fe4070c955b9903e397db17a3a7062e0c79317430dc0c1f741d277199d74"
+    },
+    {
+      "file": "live-preconditioning.png",
+      "source": "live",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 137933,
+      "sha256": "92c141632c259fc61e88a6b35183c98549397e092d11f8163aea4d722ca7a656"
+    },
+    {
+      "file": "live-trips.png",
+      "source": "live",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 114701,
+      "sha256": "4cfe7c88656f3c2e605a9c27f4e89deca20564d1135ab64d42af25d69bf80ed3"
+    },
+    {
+      "file": "demo-offline.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2340,
+      "bytes": 130224,
+      "sha256": "1670c4c27ebf1f6d5cbe7012ef217314fa14cb9f581ee89c31405fb5d0f15731"
+    },
+    {
+      "file": "demo-preconditioning-dark.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 135713,
+      "sha256": "04db86b832c9b6f0914420fc9ea8dde7cc24b4bde26a50b04945bbea347d552e"
+    },
+    {
+      "file": "demo-preconditioning.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 137658,
+      "sha256": "1864139b94bc663dafb5f2c9f549097a3ac5582ba96fa9e30e59a0e12391f76c"
+    },
+    {
+      "file": "demo-request-error.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 151226,
+      "sha256": "24d5271b064ee3962ec178ff9a2257521f1e4619eaa5b93729a1f256899bddd6"
+    },
+    {
+      "file": "demo-schedules.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 121276,
+      "sha256": "84edddee41776dc582bbb42e1c730053e56892b0bbb49a14368207f9d90706bd"
+    },
+    {
+      "file": "demo-settings.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 117925,
+      "sha256": "9452cd2e06b33217dc01d57e8161b06e542285ad068e07c4324e18bbdbed3a0f"
+    },
+    {
+      "file": "demo-trips.png",
+      "source": "demo",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 121511,
+      "sha256": "0b2a21f6e60563309c3e41d6ae8395afb615d4a582e2f63482a2cb005b00df2a"
+    }
+  ]
+}

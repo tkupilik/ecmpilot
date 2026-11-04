@@ -1,0 +1,489 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1189mm" height="841mm" viewBox="0 0 3600 2546" role="img">
+<title>Corsa-e CAN networks - consolidated engineering map</title>
+<desc>Editable vector redraw. Solid external wiring is sourced; VCU internal continuity is owner-confirmed; possible BSI and ESP internal connections are dashed and unverified.</desc>
+<rect x="0" y="0" width="3600" height="2546" rx="0" fill="#f2f6f8" stroke="none" stroke-width="1.5"/>
+<text x="42" y="65" font-family="Helvetica,Arial,sans-serif" font-size="44" font-weight="700" fill="#152c3c">eCMPilot | Corsa-e CAN networks</text>
+<text x="44" y="105" font-family="Helvetica,Arial,sans-serif" font-size="21" font-weight="400" fill="#506778">Consolidated vector schematic | English wire colours | P2JO / P2J0 wiring collection | revision 2 / 2026-10-28</text>
+<text x="2540" y="61" font-family="Helvetica,Arial,sans-serif" font-size="22" font-weight="700" fill="#a86d09">ENGINEERING REFERENCE</text>
+<text x="2540" y="91" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">Source-derived wiring; vehicle fitment not yet verified</text>
+<rect x="40" y="145" width="3520" height="455" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
+<text x="62" y="178" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">ARCHITECTURE / INTERNAL CONNECTIONS</text>
+<text x="62" y="203" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Details A-F below. Repeated unit IDs refer to the same ECU. Each coloured network line represents a CAN conductor pair.</text>
+<rect x="1230" y="230" width="570" height="300" rx="8" fill="#edf3f7" stroke="#152c3c" stroke-width="1.5"/>
+<text x="1250" y="260" font-family="Helvetica,Arial,sans-serif" font-size="24" font-weight="700" fill="#152c3c">BSI1 | Body systems interface</text>
+<text x="1250" y="286" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Driver-side lower dashboard / interior fuse assembly</text>
+<text x="1250" y="315" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="700" fill="#1573a4">HS CAN1</text>
+<text x="1250" y="414" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="700" fill="#bd640d">ENT INFO</text>
+<text x="1440" y="499" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="700" fill="#a86d09">Dashed internal paths = ?</text>
+<polyline points="1240,337 1740,337 1740,370 1240,370" fill="none" stroke="#a86d09" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 6"/>
+<text x="1430" y="327" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#a86d09">? unverified</text>
+<polyline points="1240,438 1740,438 1740,466" fill="none" stroke="#a86d09" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 6"/>
+<text x="1420" y="431" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#a86d09">? unverified</text>
+<text x="1360" y="472" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">Second ENT INFO port: Yellow 34/36</text>
+<rect x="80" y="255" width="400" height="120" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="96" y="284" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="400" fill="#152c3c">84C4 | Telematics / eCall</text>
+<text x="96" y="312" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="400" fill="#152c3c">18-way Black: 8/17 = HS CAN1</text>
+<text x="96" y="340" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="400" fill="#152c3c">18-way Black: 9/18 = ENT INFO</text>
+<polyline points="480,337 1230,337" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<text x="630" y="323" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#1573a4">A: 60-way Blue / 10,8</text>
+<polyline points="480,355 540,355 540,438 1230,438" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<text x="630" y="426" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#bd640d">B: 60-way Blue / 27,29</text>
+<rect x="650" y="450" width="440" height="110" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="665" y="474" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">C001 | Both OBD diagnostic pairs [Q]</text>
+<text x="665" y="497" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#152c3c">6/14: 9064 Grey / 9065 Brown</text>
+<text x="665" y="520" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#152c3c">3/8: 9028 Grey / 9029 Brown</text>
+<text x="665" y="544" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">BSI 60-way Black: 15/13 and 8/10, respectively</text>
+<polyline points="1090,497 1130,497 1130,370 1230,370" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="1090,520 1230,520" fill="none" stroke="#506778" stroke-width="3" stroke-linejoin="round"/>
+<text x="1250" y="522" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">Diag2 8/10: network assignment ?</text>
+<text x="80" y="583" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">BCM6 = roof SOS console, not 84C4. No CAN pair is drawn through its IC95A connection. [T]</text>
+<rect x="2150" y="255" width="400" height="165" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="2167" y="283" font-family="Helvetica,Arial,sans-serif" font-size="21" font-weight="700" fill="#152c3c">7800 | ESP / stability ECU</text>
+<text x="2167" y="309" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#152c3c">46-way Black</text>
+<text x="2167" y="334" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#152c3c">Main bus: 5/19 | VCU branch: 4/18</text>
+<polyline points="2150,337 2170,337 2170,357 2550,357" fill="none" stroke="#a86d09" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 6"/>
+<text x="2250" y="381" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#a86d09">? internal continuity</text>
+<polyline points="1800,337 2150,337" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<text x="1840" y="322" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#1573a4">A: main HS CAN1</text>
+<polyline points="2550,357 2840,357" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<text x="2570" y="339" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#1573a4">A: 9A35Z / 9A36Z</text>
+<rect x="2840" y="255" width="650" height="165" rx="8" fill="#ffffff" stroke="#188063" stroke-width="1.5"/>
+<text x="2857" y="283" font-family="Helvetica,Arial,sans-serif" font-size="21" font-weight="700" fill="#152c3c">1775 | Electric drivetrain supervisor / VCU</text>
+<text x="2857" y="310" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#152c3c">HS CAN1 + HS CAN2 interfaces</text>
+<text x="2857" y="335" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#152c3c">eCAN: 120-way Black 36/57 + 70-way Black 35/51</text>
+<text x="2930" y="389" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#188063">Internal eCAN tie: owner-confirmed [U01]</text>
+<text x="1900" y="464" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">D: HS CAN2   |   E: passenger-compartment CAN   |   F: ADAS</text>
+<text x="1900" y="496" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">C: VCU eCAN feeds motor / battery / OBC. F: local headlamp CAN behind 6606.</text>
+<text x="1900" y="528" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">Only the VCU eCAN internal tie is confirmed by owner evidence; BSI/ESP ties remain hypotheses.</text>
+<rect x="40" y="640" width="1130" height="1005" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
+<rect x="41" y="641" width="1128" height="7" rx="0" fill="#1573a4" stroke="none" stroke-width="1.5"/>
+<text x="62" y="677" font-family="Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#1573a4">A  HS CAN1 / telematics + OBD + vehicle</text>
+<text x="62" y="704" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Separate BSI ports and ESP ports are deliberately not shorted together.</text>
+<rect x="60" y="735" width="410" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="72" y="756" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Telematics port</text>
+<text x="72" y="774" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Blue (60V BE)</text>
+<text x="72" y="794" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">10: 9A35A | Green</text>
+<text x="72" y="811" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">8: 9A36A | Brown</text>
+<polyline points="470,779 650,779" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<rect x="650" y="735" width="500" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="662" y="756" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">84C4 | Telematics / eCall</text>
+<text x="662" y="774" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">18-way Black (18V NR)</text>
+<text x="662" y="794" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">8: 9A35A | Green</text>
+<text x="662" y="811" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">17: 9A36A | Brown</text>
+<rect x="60" y="835" width="410" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="72" y="856" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | OBD port</text>
+<text x="72" y="874" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Black (60V NR)</text>
+<text x="72" y="894" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">15: 9064 | Grey</text>
+<text x="72" y="911" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">13: 9065 | Brown</text>
+<polyline points="470,879 650,879" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<rect x="650" y="835" width="500" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="662" y="856" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">C001 | Diagnostic socket / OBD</text>
+<text x="662" y="874" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">16-way Black (16V NR)</text>
+<text x="662" y="894" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">6: 9064 | Grey</text>
+<text x="662" y="911" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">14: 9065 | Brown</text>
+<rect x="60" y="935" width="410" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="72" y="956" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Camera port - variant</text>
+<text x="72" y="974" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">35-way Black (35V NR)</text>
+<text x="72" y="994" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">26: 9A35 | Pink</text>
+<text x="72" y="1011" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">24: 9A36 | Orange</text>
+<polyline points="470,979 650,979" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<rect x="650" y="935" width="500" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="662" y="956" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7573 | Driver-assistance camera</text>
+<text x="662" y="974" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">12-way Blue (12V BE)</text>
+<text x="662" y="994" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">8: 9A35 | Pink</text>
+<text x="662" y="1011" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">9: 9A36 | Orange</text>
+<rect x="60" y="1040" width="340" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="72" y="1061" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Main vehicle port</text>
+<text x="72" y="1079" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Black (60V NR)</text>
+<text x="72" y="1099" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">5: 9A35C | Beige</text>
+<text x="72" y="1116" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">3: 9A36C | Grey</text>
+<polyline points="400,1084 450,1084" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="450,1084 450,1464" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<rect x="500" y="1040" width="650" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="512" y="1061" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">1603 | Drive selector</text>
+<text x="512" y="1079" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">6-way Blue (6V BE)</text>
+<text x="512" y="1099" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">1: 9A35L | Green</text>
+<text x="512" y="1116" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">4: 9A36L | Green</text>
+<polyline points="450,1084 500,1084" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="450" cy="1084" r="4" fill="#1573a4"/>
+<rect x="500" y="1135" width="650" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="512" y="1156" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">6606 | Headlamp-control ECU</text>
+<text x="512" y="1174" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">18-way Black (18V NR)</text>
+<text x="512" y="1194" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">7: 9A35G | Brown</text>
+<text x="512" y="1211" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">16: 9A36G | Green</text>
+<polyline points="450,1179 500,1179" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="450" cy="1179" r="4" fill="#1573a4"/>
+<rect x="500" y="1230" width="650" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="512" y="1251" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7126 | Steering ECU</text>
+<text x="512" y="1269" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">3-way Grey (3V GR)</text>
+<text x="512" y="1289" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 9A35F | RB [unresolved]</text>
+<text x="512" y="1306" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">3: 9A36F | Blue</text>
+<polyline points="450,1274 500,1274" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="450" cy="1274" r="4" fill="#1573a4"/>
+<rect x="500" y="1325" width="650" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="512" y="1346" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7500 | Parking ECU - variant</text>
+<text x="512" y="1364" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">18-way Black (18V NR)</text>
+<text x="512" y="1384" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">8: 9A35Y | White</text>
+<text x="512" y="1401" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">9: 9A36Y | Violet</text>
+<polyline points="450,1369 500,1369" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="450" cy="1369" r="4" fill="#1573a4"/>
+<rect x="500" y="1420" width="650" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="512" y="1441" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7800 | ESP - main bus port</text>
+<text x="512" y="1459" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">46-way Black (46V NR)</text>
+<text x="512" y="1479" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">5: 9A35H | Grey</text>
+<text x="512" y="1496" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">19: 9A36H | Grey</text>
+<polyline points="450,1464 500,1464" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="450" cy="1464" r="4" fill="#1573a4"/>
+<text x="62" y="1171" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Shared splice network:</text>
+<text x="62" y="1196" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">E935B / E936B</text>
+<text x="62" y="1221" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">E935A / E936A</text>
+<text x="62" y="1246" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">E935F / E936</text>
+<text x="62" y="1271" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778"></text>
+<text x="62" y="1296" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Branch suffixes are preserved.</text>
+<text x="62" y="1321" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Physical splice positions omitted.</text>
+<text x="62" y="1346" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778"></text>
+<text x="62" y="1371" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">ESP 4/18 is a different port:</text>
+<text x="62" y="1396" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">see direct VCU run below.</text>
+<text x="62" y="1421" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Internal ESP tie remains ?</text>
+<rect x="60" y="1530" width="410" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="72" y="1551" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">1775 | VCU - HS CAN1</text>
+<text x="72" y="1569" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">70-way Black (70V NR)</text>
+<text x="72" y="1589" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">53: 9A35Z | Pink/White</text>
+<text x="72" y="1606" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">37: 9A36Z | Green/White</text>
+<polyline points="470,1574 650,1574" fill="none" stroke="#1573a4" stroke-width="3" stroke-linejoin="round"/>
+<rect x="650" y="1530" width="500" height="88" rx="8" fill="#ffffff" stroke="#1573a4" stroke-width="1.5"/>
+<text x="662" y="1551" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7800 | ESP - VCU branch port</text>
+<text x="662" y="1569" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">46-way Black (46V NR)</text>
+<text x="662" y="1589" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">4: 9A35Z | Pink/White</text>
+<text x="662" y="1606" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">18: 9A36Z | Green/White</text>
+<text x="62" y="1634" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">Source A: D3CZV75G / D3CZV75R | p.1</text>
+<rect x="1205" y="640" width="1130" height="1005" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
+<rect x="1206" y="641" width="1128" height="7" rx="0" fill="#bd640d" stroke="none" stroke-width="1.5"/>
+<text x="1227" y="677" font-family="Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#bd640d">B  ENT INFO / infotainment + telematics</text>
+<text x="1227" y="704" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">E934 / E935 share the dashboard pair; the second BSI run is separate.</text>
+<rect x="1225" y="735" width="340" height="88" rx="8" fill="#ffffff" stroke="#bd640d" stroke-width="1.5"/>
+<text x="1237" y="756" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Dashboard branch</text>
+<text x="1237" y="774" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Blue (60V BE)</text>
+<text x="1237" y="794" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">27: 9034 | Pink</text>
+<text x="1237" y="811" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">29: 9035 | Violet</text>
+<polyline points="1565,779 1615,779" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="1615,779 1615,1159" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<rect x="1665" y="735" width="650" height="88" rx="8" fill="#ffffff" stroke="#bd640d" stroke-width="1.5"/>
+<text x="1677" y="756" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">84C4 | Telematics / eCall</text>
+<text x="1677" y="774" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">18-way Black (18V NR)</text>
+<text x="1677" y="794" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">9: 9034C | Pink</text>
+<text x="1677" y="811" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">18: 9035C | Violet</text>
+<polyline points="1615,779 1665,779" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="779" r="4" fill="#bd640d"/>
+<rect x="1665" y="830" width="650" height="88" rx="8" fill="#ffffff" stroke="#bd640d" stroke-width="1.5"/>
+<text x="1677" y="851" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">8480 | Radio / infotainment</text>
+<text x="1677" y="869" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">56-way Black (56V NR)</text>
+<text x="1677" y="889" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">10: 9034H | Pink</text>
+<text x="1677" y="906" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">21: 9035H | Violet</text>
+<polyline points="1615,874 1665,874" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="874" r="4" fill="#bd640d"/>
+<rect x="1665" y="925" width="650" height="88" rx="8" fill="#ffffff" stroke="#bd640d" stroke-width="1.5"/>
+<text x="1677" y="946" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">0004 | Instrument cluster</text>
+<text x="1677" y="964" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">18-way White (18V BA)</text>
+<text x="1677" y="984" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">9: 9034D | Pink</text>
+<text x="1677" y="1001" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">7: 9035D | Violet</text>
+<polyline points="1615,969 1665,969" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="969" r="4" fill="#bd640d"/>
+<rect x="1665" y="1020" width="650" height="88" rx="8" fill="#ffffff" stroke="#bd640d" stroke-width="1.5"/>
+<text x="1677" y="1041" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">84C6 | Multifunction panel</text>
+<text x="1677" y="1059" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">6-way Black (6V NR)</text>
+<text x="1677" y="1079" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">5: 9034R | Pink</text>
+<text x="1677" y="1096" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">4: 9035R | Violet</text>
+<polyline points="1615,1064 1665,1064" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="1064" r="4" fill="#bd640d"/>
+<rect x="1665" y="1115" width="650" height="88" rx="8" fill="#ffffff" stroke="#bd640d" stroke-width="1.5"/>
+<text x="1677" y="1136" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">8240 | Hands-free access - via IC91B</text>
+<text x="1677" y="1154" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">26-way Blue (26V BE)</text>
+<text x="1677" y="1174" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">21: 9034K | White</text>
+<text x="1677" y="1191" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">22: 9035K | Green</text>
+<polyline points="1615,1159 1665,1159" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="1159" r="4" fill="#bd640d"/>
+<text x="1227" y="875" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">E934 = 9034 conductors</text>
+<text x="1227" y="900" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">E935 = 9035 conductors</text>
+<text x="1227" y="925" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778"></text>
+<text x="1227" y="950" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">8240 path through IC91B:</text>
+<text x="1227" y="975" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">22-way Black / pins 14,15</text>
+<text x="1227" y="1000" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">9034A Pink -&gt; 9034K White</text>
+<text x="1227" y="1025" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">9035A Violet -&gt; 9035K Green</text>
+<text x="1227" y="1050" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778"></text>
+<text x="1227" y="1075" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">No external join to the</text>
+<text x="1227" y="1100" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">60-way Yellow BSI run is</text>
+<text x="1227" y="1125" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">shown on the source sheets.</text>
+<rect x="1225" y="1250" width="410" height="88" rx="8" fill="#ffffff" stroke="#bd640d" stroke-width="1.5"/>
+<text x="1237" y="1271" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Second ENT INFO run</text>
+<text x="1237" y="1289" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Yellow (60V JN)</text>
+<text x="1237" y="1309" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">34: 9034A | Blue</text>
+<text x="1237" y="1326" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">36: 9035A | Beige</text>
+<polyline points="1635,1294 1815,1294" fill="none" stroke="#bd640d" stroke-width="3" stroke-linejoin="round"/>
+<rect x="1815" y="1250" width="500" height="88" rx="8" fill="#ffffff" stroke="#bd640d" stroke-width="1.5"/>
+<text x="1827" y="1271" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7500 | Parking ECU - variant</text>
+<text x="1827" y="1289" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">26-way Yellow (26V JN)</text>
+<text x="1827" y="1309" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">26: 9034A | Blue</text>
+<text x="1827" y="1326" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">25: 9035A | Beige</text>
+<text x="1227" y="1380" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">TELEMATICS POWER / GROUND REFERENCE (not CAN)</text>
+<rect x="1225" y="1400" width="410" height="88" rx="8" fill="#ffffff" stroke="#506778" stroke-width="1.5"/>
+<text x="1237" y="1421" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | F14 / 5 A supply</text>
+<text x="1237" y="1439" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">16-way Grey (16V GR)</text>
+<text x="1237" y="1459" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">5: ZE55A | Beige</text>
+<polyline points="1635,1444 1815,1444" fill="none" stroke="#506778" stroke-width="2" stroke-linejoin="round"/>
+<text x="1651" y="1428" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">EZ55</text>
+<rect x="1815" y="1400" width="500" height="88" rx="8" fill="#ffffff" stroke="#506778" stroke-width="1.5"/>
+<text x="1827" y="1421" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">84C4 | Supply</text>
+<text x="1827" y="1439" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">18-way Black (18V NR)</text>
+<text x="1827" y="1459" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">14: ZE55C | Pink</text>
+<text x="1227" y="1520" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Supply: +BAT_CSP classification; continuous KL30 availability has not been measured.</text>
+<text x="1227" y="1544" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Ground: 84C4 / 18-way Black / pin 16, MD84C Green/Yellow -&gt; EM50B -&gt; body earth MC50B.</text>
+<text x="1227" y="1568" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">The grey reference line above links only supply pins via EZ55; ground is a separate circuit.</text>
+<text x="1227" y="1611" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">Source B: D3CZV7AG / D3CZV7AR | p.1</text>
+<text x="1227" y="1634" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">Source T: D3CZV9GG | p.1</text>
+<rect x="2370" y="640" width="1190" height="1005" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
+<rect x="2371" y="641" width="1188" height="7" rx="0" fill="#188063" stroke="none" stroke-width="1.5"/>
+<text x="2392" y="677" font-family="Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#188063">C  eCAN / VCU + traction system + OBC</text>
+<text x="2392" y="704" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">93P5 / 93P6 | Internal OBC-to-motor/battery branch continuity: owner-confirmed.</text>
+<rect x="2390" y="735" width="410" height="415" rx="8" fill="#eff8f3" stroke="#188063" stroke-width="1.5"/>
+<text x="2405" y="764" font-family="Helvetica,Arial,sans-serif" font-size="24" font-weight="700" fill="#188063">1775 | VCU</text>
+<text x="2405" y="791" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="400" fill="#152c3c">Electric drivetrain supervisor</text>
+<rect x="2405" y="815" width="380" height="88" rx="8" fill="#ffffff" stroke="#188063" stroke-width="1.5"/>
+<text x="2418" y="838" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#152c3c">120-way Black (120V NR)</text>
+<text x="2418" y="862" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#152c3c">36: 93P5 | Green</text>
+<text x="2418" y="886" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#152c3c">57: 93P6 | Pink</text>
+<rect x="2405" y="1030" width="380" height="88" rx="8" fill="#ffffff" stroke="#188063" stroke-width="1.5"/>
+<text x="2418" y="1053" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#152c3c">70-way Black (70V NR)</text>
+<text x="2418" y="1077" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#152c3c">35: 93P5B | Green</text>
+<text x="2418" y="1101" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#152c3c">51: 93P6B | Green</text>
+<polyline points="2585,903 2585,1030" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
+<rect x="2412" y="938" width="360" height="48" rx="8" fill="#eff8f3" stroke="none" stroke-width="1.5"/>
+<text x="2420" y="959" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#188063">Internal pair connection [U01]</text>
+<text x="2420" y="979" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">owner-confirmed; no measurement record</text>
+<polyline points="2785,859 2860,859" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="2860,784 2860,1100" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
+<rect x="2910" y="740" width="625" height="88" rx="8" fill="#ffffff" stroke="#188063" stroke-width="1.5"/>
+<text x="2922" y="761" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">70B4 | Park actuator</text>
+<text x="2922" y="779" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">4-way Black (4V NR)</text>
+<text x="2922" y="799" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 93P5A | Beige</text>
+<text x="2922" y="816" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">3: 93P6A | Red</text>
+<polyline points="2860,784 2910,784" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="2860" cy="784" r="4" fill="#188063"/>
+<rect x="2910" y="880" width="625" height="88" rx="8" fill="#ffffff" stroke="#188063" stroke-width="1.5"/>
+<text x="2922" y="901" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">1917 | Traction-motor controller</text>
+<text x="2922" y="919" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">10-way Black (10V NR)</text>
+<text x="2922" y="939" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 93P5C | Yellow</text>
+<text x="2922" y="956" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">7: 93P6C | Beige</text>
+<polyline points="2860,924 2910,924" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="2860" cy="924" r="4" fill="#188063"/>
+<rect x="2910" y="1020" width="625" height="88" rx="8" fill="#ffffff" stroke="#188063" stroke-width="1.5"/>
+<text x="2922" y="1041" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">1778 | Traction-battery interface</text>
+<text x="2922" y="1059" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">27-way Black (27V NR)</text>
+<text x="2922" y="1079" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 93P5B | White</text>
+<text x="2922" y="1096" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">1: 93P6B | Green</text>
+<polyline points="2860,1064 2910,1064" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="2860" cy="1064" r="4" fill="#188063"/>
+<text x="2905" y="1198" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="400" fill="#506778">Shared splices:</text>
+<text x="2905" y="1226" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="400" fill="#506778">E935J = 93P5 family</text>
+<text x="2905" y="1254" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="400" fill="#506778">E936J = 93P6 family</text>
+<polyline points="2585,1118 2585,1270" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
+<text x="2610" y="1222" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#188063">OBC branch</text>
+<rect x="2390" y="1270" width="410" height="88" rx="8" fill="#ffffff" stroke="#188063" stroke-width="1.5"/>
+<text x="2402" y="1291" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">1708 | Charger / DC-DC</text>
+<text x="2402" y="1309" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">32-way Black (32V NR)</text>
+<text x="2402" y="1329" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">E2: 93P5B | Green</text>
+<text x="2402" y="1346" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">E1: 93P6B | Green</text>
+<text x="2392" y="1400" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">The two externally drawn eCAN runs are joined inside 1775 according to the owner [U01].</text>
+<text x="2392" y="1428" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">The source sheet alone does not depict this internal continuity. No VCU cross-bus forwarding</text>
+<text x="2392" y="1456" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">or electrical join to HS CAN1 / HS CAN2 is implied.</text>
+<text x="2392" y="1484" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778"></text>
+<text x="2392" y="1512" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">93P5B / 93P6B at 1708 and 1778 are distinct external wire runs; identical labels</text>
+<text x="2392" y="1540" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">must not be used to bypass the VCU branch routing.</text>
+<text x="2392" y="1634" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">Source C: D3CZV7CG | p.1</text>
+<rect x="40" y="1680" width="1130" height="630" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
+<rect x="41" y="1681" width="1128" height="7" rx="0" fill="#7657a6" stroke="none" stroke-width="1.5"/>
+<text x="62" y="1717" font-family="Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#7657a6">D  HS CAN2 / 9A37 + 9A38</text>
+<text x="62" y="1744" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Baseline shown: D3CZV77G. Other equipment layouts are listed separately.</text>
+<rect x="60" y="1770" width="340" height="88" rx="8" fill="#ffffff" stroke="#7657a6" stroke-width="1.5"/>
+<text x="72" y="1791" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Main HS CAN2</text>
+<text x="72" y="1809" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Black (60V NR)</text>
+<text x="72" y="1829" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">46: 9A37 | Brown</text>
+<text x="72" y="1846" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">44: 9A38 | Beige</text>
+<polyline points="400,1814 450,1814" fill="none" stroke="#7657a6" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="450,1814 450,1998" fill="none" stroke="#7657a6" stroke-width="3" stroke-linejoin="round"/>
+<rect x="500" y="1770" width="650" height="88" rx="8" fill="#ffffff" stroke="#7657a6" stroke-width="1.5"/>
+<text x="512" y="1791" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">1775 | VCU - HS CAN2</text>
+<text x="512" y="1809" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">70-way Black (70V NR)</text>
+<text x="512" y="1829" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">48: 9A37E | Red</text>
+<text x="512" y="1846" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">32: 9A38E | Violet</text>
+<polyline points="450,1814 500,1814" fill="none" stroke="#7657a6" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="450" cy="1814" r="4" fill="#7657a6"/>
+<rect x="500" y="1862" width="650" height="88" rx="8" fill="#ffffff" stroke="#7657a6" stroke-width="1.5"/>
+<text x="512" y="1883" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7800 | ESP - HS CAN2</text>
+<text x="512" y="1901" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">46-way Black (46V NR)</text>
+<text x="512" y="1921" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">11: 9A37A | Blue</text>
+<text x="512" y="1938" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">25: 9A38A | White</text>
+<polyline points="450,1906 500,1906" fill="none" stroke="#7657a6" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="450" cy="1906" r="4" fill="#7657a6"/>
+<rect x="500" y="1954" width="650" height="88" rx="8" fill="#ffffff" stroke="#7657a6" stroke-width="1.5"/>
+<text x="512" y="1975" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">2524 | Pedestrian sound - via IC02A</text>
+<text x="512" y="1993" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">4-way Black (4V NR)</text>
+<text x="512" y="2013" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">3: 9A37 | White</text>
+<text x="512" y="2030" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 9A38 | Yellow</text>
+<polyline points="450,1998 500,1998" fill="none" stroke="#7657a6" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="450" cy="1998" r="4" fill="#7657a6"/>
+<text x="62" y="1894" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Splices E937 / E938</text>
+<text x="62" y="1917" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">IC02A: 10-way Black / 4,8</text>
+<text x="62" y="1940" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">9A37B Yellow -&gt; 9A37 White</text>
+<text x="62" y="1963" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">9A38B White -&gt; 9A38 Yellow</text>
+<rect x="60" y="2060" width="410" height="88" rx="8" fill="#ffffff" stroke="#7657a6" stroke-width="1.5"/>
+<text x="72" y="2081" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Camera run - baseline</text>
+<text x="72" y="2099" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">35-way Black (35V NR)</text>
+<text x="72" y="2119" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">8: 9A37 | Violet</text>
+<text x="72" y="2136" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">6: 9A38 | Green</text>
+<polyline points="470,2104 650,2104" fill="none" stroke="#7657a6" stroke-width="3" stroke-linejoin="round"/>
+<rect x="650" y="2060" width="500" height="88" rx="8" fill="#ffffff" stroke="#7657a6" stroke-width="1.5"/>
+<text x="662" y="2081" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7573 | Camera - HS CAN2</text>
+<text x="662" y="2099" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">12-way Blue (12V BE)</text>
+<text x="662" y="2119" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">4: 9A37 | Violet</text>
+<text x="662" y="2136" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">5: 9A38 | Green</text>
+<text x="62" y="2178" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Alternative D3CZV78G: radar 7571 on main bus via ICY4 / 5,2; radar 6-way Black / 5,4.</text>
+<text x="62" y="2201" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Radar-local 9A37 = Green; 9A38 = Red. Incoming 9A37C = Pink; 9A38C = Beige.</text>
+<text x="62" y="2224" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Alternative D3CZV76G: BSI 35-way Black 8,22 (9091 Pink) / 6,20 (9092 Blue) loop.</text>
+<text x="62" y="2247" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Camera 35-way Black / 6,8 assignments differ in ADAS layout F. Do not combine variants.</text>
+<text x="62" y="2297" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">Source D: D3CZV77G | p.1</text>
+<rect x="1205" y="1680" width="1130" height="630" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
+<rect x="1206" y="1681" width="1128" height="7" rx="0" fill="#526d82" stroke="none" stroke-width="1.5"/>
+<text x="1227" y="1717" font-family="Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#526d82">E  Passenger-compartment CAN / 9038 + 9039</text>
+<text x="1227" y="1744" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Two external BSI branches; no internal continuity is asserted.</text>
+<rect x="1225" y="1770" width="340" height="88" rx="8" fill="#ffffff" stroke="#526d82" stroke-width="1.5"/>
+<text x="1237" y="1791" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Blue-connector branch</text>
+<text x="1237" y="1809" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Blue (60V BE)</text>
+<text x="1237" y="1829" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">16: 9038F | White</text>
+<text x="1237" y="1846" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">18: 9039F | Grey</text>
+<polyline points="1565,1814 1615,1814" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="1615,1814 1615,1998" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<rect x="1665" y="1770" width="650" height="88" rx="8" fill="#ffffff" stroke="#526d82" stroke-width="1.5"/>
+<text x="1677" y="1791" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">CV00 | Steering-column controls</text>
+<text x="1677" y="1809" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">18-way Black (18V NR)</text>
+<text x="1677" y="1829" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">12: 9038G | White</text>
+<text x="1677" y="1846" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">13: 9039G | Grey</text>
+<polyline points="1615,1814 1665,1814" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="1814" r="4" fill="#526d82"/>
+<rect x="1665" y="1862" width="650" height="88" rx="8" fill="#ffffff" stroke="#526d82" stroke-width="1.5"/>
+<text x="1677" y="1883" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">8080 | Climate-control ECU</text>
+<text x="1677" y="1901" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">6-way Black (6V NR)</text>
+<text x="1677" y="1921" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">4: 9038D | White</text>
+<text x="1677" y="1938" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">5: 9039D | Grey</text>
+<polyline points="1615,1906 1665,1906" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="1906" r="4" fill="#526d82"/>
+<rect x="1665" y="1954" width="650" height="88" rx="8" fill="#ffffff" stroke="#526d82" stroke-width="1.5"/>
+<text x="1677" y="1975" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">AE00 | Steering lock</text>
+<text x="1677" y="1993" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">6-way White (6V BA)</text>
+<text x="1677" y="2013" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">4: 9038E | White</text>
+<text x="1677" y="2030" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">5: 9039E | Grey</text>
+<polyline points="1615,1998 1665,1998" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="1998" r="4" fill="#526d82"/>
+<text x="1227" y="1900" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Blue branch:</text>
+<text x="1227" y="1924" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">E938B / E939A</text>
+<text x="1227" y="1948" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778"></text>
+<text x="1227" y="1972" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Brown branch:</text>
+<text x="1227" y="1996" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">E938A / E939</text>
+<rect x="1225" y="2072" width="340" height="88" rx="8" fill="#ffffff" stroke="#526d82" stroke-width="1.5"/>
+<text x="1237" y="2093" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | Brown-connector branch</text>
+<text x="1237" y="2111" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Brown (60V MR)</text>
+<text x="1237" y="2131" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">23: 9038J | Beige</text>
+<text x="1237" y="2148" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">25: 9039J | Blue</text>
+<polyline points="1565,2116 1615,2116" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="1615,2116 1615,2211" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<rect x="1665" y="2072" width="650" height="88" rx="8" fill="#ffffff" stroke="#526d82" stroke-width="1.5"/>
+<text x="1677" y="2093" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">6570 | Airbag ECU - via IC91B / 19,20</text>
+<text x="1677" y="2111" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">30-way Black (30V NR)</text>
+<text x="1677" y="2131" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">30: 9038C | Blue</text>
+<text x="1677" y="2148" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">29: 9039C | Violet</text>
+<polyline points="1615,2116 1665,2116" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="2116" r="4" fill="#526d82"/>
+<rect x="1665" y="2167" width="650" height="88" rx="8" fill="#ffffff" stroke="#526d82" stroke-width="1.5"/>
+<text x="1677" y="2188" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">6036 | Driver door - via ICV4B / 17,18</text>
+<text x="1677" y="2206" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">20-way Yellow (20V JN)</text>
+<text x="1677" y="2226" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 9038 | Orange</text>
+<text x="1677" y="2243" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">9: 9039 | Blue</text>
+<polyline points="1615,2211 1665,2211" fill="none" stroke="#526d82" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="1615" cy="2211" r="4" fill="#526d82"/>
+<text x="1227" y="2200" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">IC91B: 22-way Black</text>
+<text x="1227" y="2218" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">9038K Beige -&gt; 9038C Blue</text>
+<text x="1227" y="2236" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">9039K Blue -&gt; 9039C Violet</text>
+<text x="1227" y="2254" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">ICV4B: 22-way Yellow</text>
+<text x="1227" y="2272" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">9038L Beige -&gt; 9038 Orange</text>
+<text x="1227" y="2297" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">Source E: D3CZV7DG / D3CZV7DR | p.1</text>
+<rect x="2370" y="1680" width="1190" height="630" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
+<rect x="2371" y="1681" width="1188" height="7" rx="0" fill="#a64f64" stroke="none" stroke-width="1.5"/>
+<text x="2392" y="1717" font-family="Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#a64f64">F  ADAS + local headlamp CAN</text>
+<text x="2392" y="1744" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Equipment alternatives. Camera pins overlap with layout D but wire families differ.</text>
+<rect x="2390" y="1770" width="410" height="88" rx="8" fill="#ffffff" stroke="#a64f64" stroke-width="1.5"/>
+<text x="2402" y="1791" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | ADAS radar port</text>
+<text x="2402" y="1809" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">60-way Black (60V NR)</text>
+<text x="2402" y="1829" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">28: 9A33B | BB [unresolved]</text>
+<text x="2402" y="1846" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">26: 9A34B | Beige/White</text>
+<polyline points="2800,1814 2980,1814" fill="none" stroke="#a64f64" stroke-width="3" stroke-linejoin="round"/>
+<rect x="2980" y="1770" width="560" height="88" rx="8" fill="#ffffff" stroke="#a64f64" stroke-width="1.5"/>
+<text x="2992" y="1791" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7571 | Radar - via ICY4 / 4,1</text>
+<text x="2992" y="1809" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">6-way Black (6V NR)</text>
+<text x="2992" y="1829" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 9A33 | Violet</text>
+<text x="2992" y="1846" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">1: 9A34 | Beige</text>
+<text x="2392" y="1883" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">ICY4 = 10-way Green. RB / BB colour codes are preserved as unresolved, not guessed.</text>
+<rect x="2390" y="1900" width="410" height="88" rx="8" fill="#ffffff" stroke="#a64f64" stroke-width="1.5"/>
+<text x="2402" y="1921" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">BSI1 | ADAS camera port</text>
+<text x="2402" y="1939" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">35-way Black (35V NR)</text>
+<text x="2402" y="1959" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">6: 9A33 | Violet</text>
+<text x="2402" y="1976" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">8: 9A34 | Brown</text>
+<polyline points="2800,1944 2980,1944" fill="none" stroke="#a64f64" stroke-width="3" stroke-linejoin="round"/>
+<rect x="2980" y="1900" width="560" height="88" rx="8" fill="#ffffff" stroke="#a64f64" stroke-width="1.5"/>
+<text x="2992" y="1921" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">7573 | Camera - ADAS layout</text>
+<text x="2992" y="1939" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">12-way Blue (12V BE)</text>
+<text x="2992" y="1959" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">5: 9A33 | Violet</text>
+<text x="2992" y="1976" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">4: 9A34 | Brown</text>
+<text x="2392" y="2008" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">Source F: D3CZV7BG | p.1</text>
+<polyline points="2392,2025 3538,2025" fill="none" stroke="#ccdae1" stroke-width="1" stroke-linejoin="round"/>
+<rect x="2390" y="2043" width="340" height="88" rx="8" fill="#ffffff" stroke="#7e7536" stroke-width="1.5"/>
+<text x="2402" y="2064" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">6606 | Local headlamp CAN</text>
+<text x="2402" y="2082" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">18-way Black (18V NR)</text>
+<text x="2402" y="2102" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">15: 9A43A | Grey</text>
+<text x="2402" y="2119" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">6: 9A44A | White</text>
+<polyline points="2730,2087 2780,2087" fill="none" stroke="#7e7536" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="2780,2087 2780,2187" fill="none" stroke="#7e7536" stroke-width="3" stroke-linejoin="round"/>
+<rect x="2830" y="2043" width="650" height="88" rx="8" fill="#ffffff" stroke="#7e7536" stroke-width="1.5"/>
+<text x="2842" y="2064" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">2610 | Left headlamp</text>
+<text x="2842" y="2082" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">10-way Black (10V NR)</text>
+<text x="2842" y="2102" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 9A43B | Red</text>
+<text x="2842" y="2119" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">7: 9A44B | Beige</text>
+<polyline points="2780,2087 2830,2087" fill="none" stroke="#7e7536" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="2780" cy="2087" r="4" fill="#7e7536"/>
+<rect x="2830" y="2143" width="650" height="88" rx="8" fill="#ffffff" stroke="#7e7536" stroke-width="1.5"/>
+<text x="2842" y="2164" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#152c3c">2615 | Right headlamp</text>
+<text x="2842" y="2182" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">10-way Black (10V NR)</text>
+<text x="2842" y="2202" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">2: 9A43C | Brown</text>
+<text x="2842" y="2219" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">7: 9A44C | Green</text>
+<polyline points="2780,2187 2830,2187" fill="none" stroke="#7e7536" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="2780" cy="2187" r="4" fill="#7e7536"/>
+<text x="2392" y="2173" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Splices E261L / E261H</text>
+<text x="2392" y="2196" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">6606 HS CAN1 port is in A.</text>
+<text x="2392" y="2219" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">Internal forwarding is unspecified.</text>
+<text x="2392" y="2297" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">Source L: D3CZV79G | p.1</text>
+<rect x="40" y="2340" width="3520" height="172" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
+<text x="62" y="2369" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#152c3c">HOW TO READ THIS SHEET</text>
+<text x="62" y="2397" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Solid network line: one CAN pair. Both conductors are listed at each endpoint. Dots: simplified shared splices.</text>
+<text x="62" y="2423" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Solid green inside VCU [U01]: internal eCAN tie reported by the owner. Dashed amber + ?: unverified internal tie.</text>
+<text x="62" y="2449" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Card rows = cavity : printed wire ID | English physical wire colour. Network stroke colours are only visual grouping.</text>
+<text x="62" y="2475" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">H/L polarity and bitrate are not assigned. Connector cavity viewing direction is not established.</text>
+<text x="1510" y="2369" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#152c3c">FR COLOUR CODES -&gt; ENGLISH</text>
+<text x="1510" y="2397" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">NR Black | BE Blue | BA White | GR Grey | VE Green</text>
+<text x="1510" y="2423" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">MR Brown | RS Pink | VI Violet | BG Beige | RG Red</text>
+<text x="1510" y="2449" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">OR Orange | JN Yellow | VJ Green/Yellow | ND Unspecified</text>
+<text x="1510" y="2475" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">RB / BB: unresolved. Slash colours retain both components.</text>
+<text x="2495" y="2369" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#152c3c">SCOPE / TRACEABILITY</text>
+<text x="2495" y="2397" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Source keys A-F / T / L / Q are resolved in the adjacent README and JSON.</text>
+<text x="2495" y="2423" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">OBD [Q]: D3CZV7FG. Power: T + BSI fuse allocation [P]. U01: owner, 2026-10-28.</text>
+<text x="2495" y="2449" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Not a full harness: LIN, diesel DEPOLLUTION and trailer options omitted.</text>
+<text x="2495" y="2475" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Variants are not a single verified vehicle configuration. No CAN commands implied.</text>
+</svg>

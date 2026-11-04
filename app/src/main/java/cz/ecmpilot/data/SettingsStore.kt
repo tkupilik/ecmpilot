@@ -30,13 +30,15 @@ class SettingsStore(context: Context) {
             addProperty("id", ref.id); addProperty("gw", ref.gatewayId); addProperty("boot", ref.boot)
             addProperty("label", ref.label); addProperty("host", ref.host); addProperty("port", ref.port)
             addProperty("phase", c.phase); addProperty("message", c.message); addProperty("revision", c.resultRevision)
+            ref.correlation?.let { addProperty("client_session", it.session); addProperty("correlation_id", it.id) }
         }.toString()
         check(prefs.edit().putString("command", json).commit()) { "Could not save command receipt" }
     }
     fun loadCommand(): CommandUi? = runCatching {
         val text = prefs.getString("command", null) ?: return null
         val o = JsonParser.parseString(text).asJsonObject
-        CommandUi(CommandRef(o["id"].asString, o["gw"].asString, o["boot"].asString, o["label"].asString, o["host"].asString, o["port"].asInt),
+        val correlation = o.get("correlation_id")?.let { Correlation(o["client_session"].asString, it.asLong) }
+        CommandUi(CommandRef(o["id"].asString, o["gw"].asString, o["boot"].asString, o["label"].asString, o["host"].asString, o["port"].asInt, correlation),
             o["phase"].asString, o["message"].asString, o["revision"].asLong)
     }.getOrNull()
     private inline fun <reified T : Enum<T>> enumValue(value: String?, fallback: T) = enumValues<T>().firstOrNull { it.name == value } ?: fallback

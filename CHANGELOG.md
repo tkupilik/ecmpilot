@@ -4,7 +4,94 @@ Notable changes to eCMPilot will be documented here.
 
 ## [Unreleased]
 
+- Replace the launcher battery icon with the selected ivory car/amber lightning
+  design on charcoal, with separate adaptive background and monochrome artwork.
+- Move Charge limit help to Gateway settings and offer 30–100% on its Charging
+  slider. Simplify Preconditioning by moving outside temperature beside Prepare
+  and removing front setpoints. Remove the technical consumption-history subtitle.
+- Apply owner-approved wording items 1 and 2 only: remove the doors/locks timing
+  explanation and keep only units below consumption history. Other proposed text
+  changes remain unapproved.
+- Add gateway Charge limit enable (dependent on automatic refresh) and a saved
+  target slider in Charging, default 80%. Show the gateway observer status and
+  explain the stored delayed-charging start time; no phone-side timer or direct
+  vehicle command is sent when editing settings.
+- Explain automatic refresh in everyday language and show its status beside the
+  gateway address at the top of the Gateway sheet.
+
+- Move automatic refresh settings from the phone Connection sheet into a new
+  Gateway row/sheet in the Home menu. Keep connection and appearance under the
+  Settings gear.
+
+- Correlate complete operations with a session-scoped uint32 counter, including
+  preflight, retries, receipt lookup and diagnostics. Match logical receipts
+  independently of their original message ID and persist pending correlation.
+- Tolerate isolated UDP loss and multi-second RTT: retry reads, use 5/6 s reply
+  budgets and a 15 s offline grace period, retain the socket/data on a transient
+  timeout and poll ambiguous original actions within their existing 35 s window.
+
+- Add gateway-owned automatic refresh settings in Connection: enable, standby
+  and charging periods (60/5 min defaults) and minimum 12 V SOC (50%). Apply uses
+  persistent revision-checked GW settings; polling and connection remain passive.
+
+### Changed
+
+- Show progress for every vehicle action in the Refresh button, return silently
+  to Refresh on success, and display failures/unconfirmed results only in an
+  error popup. Remove inline command cards. Use a 100 px shared sheet drag threshold
+  with the velocity shortcut disabled. Rename Driver SOC to SOC
+  in Vehicle details.
+- Stabilize all shared modal sheets after upward drags by separating status-bar
+  clearance from offset-dependent content insets and removing duplicate IME
+  padding. Collapse disabled preconditioning plans to compact headers while
+  retaining explicit Edit/Set up access.
+- Add four vehicle-native preconditioning plan editors and a master activation
+  switch, with passive readback, explicit Apply, capability gating and conflict
+  checks against edits made by another client.
+- Use the selected top-view hatchback artwork for Doors & locks. Neutralize the
+  dark palette, make the delayed switch transparent off/blue on, and use a
+  continuous SOC bar. Keep the charging time editor always visible.
+- Replace the dense Home cards with a compact SOC/range panel, preconditioning,
+  charging and door/lock status shortcuts, and Trips/Details navigation rows.
+- Add a top-view doors/boot screen, preserving unknown and stale states.
+  Add Trips & consumption for the two vehicle counters and six history slots.
+- Read capability-gated passive vehicle details separately from the 1 KiB status
+  envelope; remove unsupported INFO HV/cabin/pack-temperature placeholders.
+
+- Enable advertised experimental INFO preconditioning Start/Stop. Let the gateway
+  wake BSI with stale/asleep observations, keep the button disabled until the
+  report or30-second timeout, and display only the BSI-reported state. Preserve
+  the existing explicit-control opt-in; no fixed10-second lockout is used.
+
+- Show the actual BSI CAN PowerManagement phase and move last vehicle data age
+  from the battery card into the connection row. Remove the refresh warning
+  paragraph and dismiss successful confirmations automatically after 3 seconds.
+- Use Start/Stop preconditioning and Delayed charging in the English UI,
+  following terminology in Opel's English e-Remote Control FAQ.
+- Keep startup, settings reconnect and polling passive. Add explicit Refresh
+  vehicle with gateway command receipts.
+- Combine battery/charging into one card with grey stale data, SOC observation age,
+  delayed-mode switch/time and blue fresh SOC for delayed charging.
+- Support the experimental INFO CAN backend and independent schedule freshness,
+  without treating schedule mode as proof of current charging power/flow.
+
+### Fixed
+
+- Handle Android `Network.bindSocket` EPERM with an active non-bypassable VPN:
+  retry using a fresh socket with the system VPN/routing policy, preserving the
+  physical LAN requirement, local address checks and gateway identity validation.
+  Exclude VPN entries from physical Wi-Fi/Ethernet selection and log the selected
+  route in Recent diagnostics. Add opt-in read-only device verification.
+
 ### Added
+
+- Optional front-left/right selected climate temperatures and evaporator reading,
+  independent of measured cabin temperature and climate running state. Native
+  LCD C-codec fixture verifies the combined2AD/350 mapping in Kotlin.
+
+- Separate 12 V battery SOC and voltage on Home and Vehicle details, from optional
+  aged `aux_battery_soc_pct` / `aux_battery_voltage_v` readings. HV telemetry keeps
+  its own fields. Native LCD C-codec fixture and JVM tests verify the binding.
 
 - Android 0.2.0 support for the explicit ESP32 `varstore-test` UDP backend: TEST label, lab opt-in, advertised test-only operations and distinct confirmation messages.
 - C-generated gateway response fixtures decoded by JVM tests; normal unverified/unknown backends remain disabled. Refresh now reloads capabilities, including a changed test-mode setting.
