@@ -34,6 +34,26 @@ class VehicleActionFeedbackTest {
     private fun ready() = ui.waitUntil(15000) {
         repository.state.value.connected && repository.state.value.controlReady("refresh") && repository.state.value.programs?.complete==true
     }
+
+    @Test fun changingStartTimeWithDelayedChargingOffSavesTheTime() {
+        val original = repository.state.value.settings
+        try {
+            ui.runOnUiThread { repository.saveSettings(Settings(scene = DemoScene.CHARGING)) }
+            ready()
+            ui.onNodeWithTag("charging-status").performScrollTo().performClick()
+            ui.onNodeWithTag("deferred-charging").assertIsOff()
+            ui.onNodeWithTag("charge-start-time").performScrollTo().performTextReplacement("03:17")
+            ui.onNodeWithTag("apply-charge").performScrollTo().performClick()
+            ui.waitUntil(15000) { repository.state.value.command?.phase == "succeeded" }
+            ui.onNodeWithTag("charging-status").performScrollTo().performClick()
+            ui.onNodeWithTag("deferred-charging").assertIsOff()
+            ui.onNodeWithTag("charge-start-time").performScrollTo().assertTextContains("03:17")
+            ui.onNodeWithText("Close").performClick()
+        } finally {
+            ui.waitUntil(15000) { repository.state.value.command?.pending != true }
+            ui.runOnUiThread { repository.saveSettings(original) }
+        }
+    }
     private fun assertSilentSuccess(action: () -> Unit) {
         action()
         ui.onNodeWithTag("refresh-vehicle").performScrollTo()

@@ -51,6 +51,7 @@ Unknown response fields can be ignored. Unknown operations or arguments in a wri
 | `command.get` | `{"command_id":"…"}` | Current/cached lifecycle for a command owned by this client. May include a fresh snapshot if it fits. |
 | `climate.set` | `{"enabled":true}` or false | Request a native preconditioning state. True/false support is separately advertised. No generic toggle. |
 | `charge.mode.set` | `{"mode":"immediate"}` | Request a mode; success does not mean charging current exists. |
+| `charge.mode.set` | `{"mode":"immediate","start_local":"03:17","timezone":"Europe/Prague"}` | Save the stored start time while leaving delayed charging off. The time is optional only in immediate mode; omission preserves it. Confirmation must include the requested time. |
 | `charge.mode.set` | `{"mode":"deferred","start_local":"23:00","timezone":"Europe/Prague"}` | Native, persistent start schedule, only when verified. Gateway rejects timezone/clock ambiguity or unsupported scheduling. |
 
 These write operations are candidate API names, not verified CAN commands. Arguments for unsupported temperature, SOC target, timer duration, raw CAN injection, arbitrary UDS requests or ECU services do not exist in the initial contract. Future features get explicit versioned capabilities/operations.

@@ -48,6 +48,17 @@ class GatewayTests(unittest.TestCase):
         changed = copy.deepcopy(req); changed["args"]["enabled"] = False
         self.assertEqual("id_conflict", self.gateway.handle(changed)["command"]["error"])
 
+    def test_time_change_with_delay_off_is_saved_and_part_of_idempotency(self):
+        req = self.request("charge.mode.set", {"mode":"immediate", "start_local":"03:17", "timezone":"Europe/Prague"})
+        self.assertEqual("accepted", self.gateway.handle(req)["command"]["phase"])
+        changed = copy.deepcopy(req); changed["args"]["start_local"] = "03:18"
+        self.assertEqual("id_conflict", self.gateway.handle(changed)["command"]["error"])
+        self.time = 1.2
+        self.assertEqual("succeeded", self.gateway.handle(req)["command"]["phase"])
+        state = self.gateway.handle(self.request("state.get", {}))["state"]["charge"]
+        self.assertEqual("immediate", state["mode"])
+        self.assertEqual("03:17", state["start_local"])
+
     def test_expired_never_seen_request_does_not_execute(self):
         req = self.request(); self.time = 6
         self.assertEqual("expired", self.gateway.handle(req)["command"]["error"])

@@ -40,7 +40,7 @@ internal fun AutoRefreshContent(s: PilotState, onSave: (AutoRefreshSettings) -> 
         Text("Connect to a gateway with automatic refresh support.", style = MaterialTheme.typography.bodySmall)
         return
     }
-    val editable = s.connected && status != null && !s.autoRefreshSaving && s.command?.pending != true &&
+    val editable = s.connected && status != null && !s.autoRefreshSaving && !s.lowPowerSaving && s.command?.pending != true &&
         (s.settings.source != Source.UDP || s.permissionGranted && s.info?.security == "lab-plain")
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text("Enable automatic refresh", Modifier.weight(1f))
@@ -93,7 +93,7 @@ internal fun ChargeLimitContent(s: PilotState, onSave: (AutoRefreshSettings) -> 
     Text("Charge limit · ${target.roundToInt()}%", fontWeight = FontWeight.SemiBold, modifier = Modifier.testTag("charge-limit-target"))
     Slider(value = target, onValueChange = { target = it }, valueRange = 30f..100f, steps = 69,
         onValueChangeFinished = { if (target.roundToInt() != settings.chargeLimitSocPct) onSave(settings.copy(chargeLimitSocPct = target.roundToInt())) },
-        enabled = s.connected && !s.autoRefreshSaving && s.command?.pending != true,
+        enabled = s.connected && !s.autoRefreshSaving && !s.lowPowerSaving && s.command?.pending != true,
         modifier = Modifier.fillMaxWidth().testTag("charge-limit-slider"))
     if (s.autoRefreshSaving) LinearProgressIndicator(Modifier.fillMaxWidth())
     Text(status.chargeLimitDescription, style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("charge-limit-status"))

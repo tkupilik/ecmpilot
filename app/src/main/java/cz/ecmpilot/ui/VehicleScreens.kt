@@ -94,7 +94,7 @@ internal fun VehicleOverview(s: PilotState, onClimate: () -> Unit, onCharging: (
                 charge?.state == "waiting" -> "Waiting"; charge?.state == "fault" -> "Fault"; else -> "Unavailable" },
             Glyph.BOLT, when { charging -> chargingGreen; delayed -> delayedBlue; else -> MaterialTheme.colorScheme.onSurfaceVariant },
             false, onCharging, Modifier.weight(1f).testTag("charging-status"), !chargeFresh && !scheduleFresh)
-        StatusTile("Doors & locks", body?.lockLabel ?: "Unavailable", if (body?.locked == false && body.lockingState != null) Glyph.UNLOCK else Glyph.LOCK,
+        StatusTile("Doors & locks", body?.takeIf { it.lockingState in 1..6 }?.lockLabel ?: "Unavailable", if (body?.locked == false && body.lockingState != null) Glyph.UNLOCK else Glyph.LOCK,
             if (bodyFresh && body?.locked == true) chargingGreen else MaterialTheme.colorScheme.onSurfaceVariant,
             false, onBody, Modifier.weight(1f).testTag("vehicle-status"), !bodyFresh)
     }

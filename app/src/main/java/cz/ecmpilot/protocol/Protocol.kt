@@ -9,6 +9,7 @@ import java.io.StringReader
 import java.nio.ByteBuffer
 import java.nio.charset.CodingErrorAction
 import java.util.UUID
+import java.time.ZoneId
 
 class ProtocolException(message: String) : IOException(message)
 fun newId(): String = UUID.randomUUID().toString().replace("-", "")
@@ -27,6 +28,7 @@ data class Status(
     val programs: ClimatePrograms? = null,
     val autoRefresh: AutoRefreshStatus? = null,
     val correlationId: Long? = null,
+    val lowPower: LowPowerStatus? = null,
 )
 
 /** Tree-based Gson parsing avoids reflection and keeps the Android and JVM test codecs identical. */
@@ -36,6 +38,17 @@ object Protocol {
     fun nextCorrelation() = correlations.next()
     private val idPattern = Regex("[a-f0-9]{32}")
     private val integer = Regex("0|[1-9][0-9]*")
+    fun chargeModeArgs(command: DesiredCommand.ChargeMode, timezone: String?): JsonObject = JsonObject().apply {
+        require(command.mode in setOf("immediate", "deferred")) { "Invalid charging mode" }
+        addProperty("mode", command.mode)
+        if (command.startLocal != null || command.mode == "deferred") {
+            require(Regex("(?:[01][0-9]|2[0-3]):[0-5][0-9]").matches(command.startLocal ?: "")) { "Enter a valid start time" }
+            val zone = requireNotNull(timezone) { "Gateway did not report its timezone" }
+            ZoneId.of(zone)
+            addProperty("start_local", command.startLocal)
+            addProperty("timezone", zone)
+        }
+    }
     fun request(client: String, op: String, gw: String? = null, boot: String? = null, args: JsonObject = JsonObject(), deadline: Long? = null, domainRev: Long? = null, correlation: Correlation? = nextCorrelation()): Request {
         val id = newId()
         val json = JsonObject().apply {
@@ -142,6 +155,13 @@ object Protocol {
                     a.string("state"), a.long("remaining_ms"), a.long("request_count"),
                     a.optionalString("charge_limit_state") ?: "disabled", a.optionalLong("charge_limit_last_result") ?: 0)
             }
+            val lowPower = root.obj("low_power")?.let { p ->
+                val settings=LowPowerSettings(p.long("rev"),requireNotNull(p.bool("enabled")),p.long("idle_hours").also { require(it in 1..720) }.toInt())
+                require(settings.valid()) { "Invalid low-power settings" }
+                LowPowerStatus(settings,requireNotNull(p.bool("capable")),requireNotNull(p.bool("config_valid")),p.string("state"),
+                    p.optionalLong("remaining_s")?.also { require(it in 0..2592000) },receivedMs,
+                    p.number("last_error",-2147483648.0..2147483647.0)?.toLong() ?: 0)
+            }
             val command = root.obj("command")?.let { c ->
                 val phase = c.string("phase").also { require(it in setOf("accepted", "executing", "succeeded", "rejected", "failed", "unknown")) }
                 val correlation = c.optionalLong("correlation_id")?.let { Correlation(c.string("client_session"), it) }
@@ -149,7 +169,7 @@ object Protocol {
                 CommandResult(c.string("id").also { require(idPattern.matches(it)) }, c.long("revision"), phase, c.errorCode("error"), c.optionalString("reason"), correlation)
             }
             val correlationId = root.optionalLong("correlation_id")?.also { require(it in 1..0xffff_ffffL) }
-            return Status(gw, boot, reply, seq, now, info, state, command, root.errorCode("error"), receivedMs, roundTripMs, details, programs, autoRefresh, correlationId)
+            return Status(gw, boot, reply, seq, now, info, state, command, root.errorCode("error"), receivedMs, roundTripMs, details, programs, autoRefresh, correlationId, lowPower)
         } catch (error: Exception) {
             if (error is ProtocolException) throw error
             throw ProtocolException("Invalid gateway response: ${error.message?.take(140) ?: "JSON error"}")
@@ -197,14 +217,16 @@ class StatusTracker {
     var details: VehicleDetails? = null; private set
     var programs: ClimatePrograms? = null; private set
     var autoRefresh: AutoRefreshStatus? = null; private set
+    var lowPower: LowPowerStatus? = null; private set
     fun accept(status: Status): Boolean {
-        if (boot != status.boot) { boot = status.boot; seq = -1; snapshot = null; details = null; programs = null; autoRefresh = null }
+        if (boot != status.boot) { boot = status.boot; seq = -1; snapshot = null; details = null; programs = null; autoRefresh = null; lowPower = null }
         if (status.seq <= seq) return false
         seq = status.seq
         status.state?.let { snapshot = it }
         status.details?.let { details = it }
         status.programs?.let { programs = it }
         status.autoRefresh?.let { autoRefresh = it }
+        status.lowPower?.let { lowPower = it }
         return true
     }
 }

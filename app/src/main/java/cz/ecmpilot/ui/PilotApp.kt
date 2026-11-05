@@ -84,7 +84,7 @@ fun PilotApp(repository: PilotRepository, onRequestPermission: () -> Unit) {
                 onPrograms = { sheet = null; repository.submit(it) })
             Sheet.CHARGING -> ChargingSheet(state, onClose = { sheet = null }, onApply = { sheet = null; repository.submit(it) }, onAutoRefresh = repository::saveAutoRefresh, onReload = repository::reconnect)
             Sheet.CONNECTION -> ConnectionSheet(state, onClose = { sheet = null }, onSave = { repository.saveSettings(it) }, onRefresh = repository::reconnect, onPermission = onRequestPermission)
-            Sheet.GATEWAY -> GatewaySheet(state, onClose = { sheet = null }, onAutoRefresh = repository::saveAutoRefresh, onReload = repository::reconnect)
+            Sheet.GATEWAY -> GatewaySheet(state, onClose = { sheet = null }, onAutoRefresh = repository::saveAutoRefresh, onLowPower = repository::saveLowPower, onReload = repository::reconnect)
             Sheet.DETAILS -> DetailsSheet(state, repository::diagnosticText, onClose = { sheet = null })
             Sheet.BODY -> SheetFrame("Doors & locks", onClose = { sheet = null }) { BodyContent(state) }
             Sheet.TRIPS -> SheetFrame("Trips & consumption", onClose = { sheet = null }) { TripsContent(state) }
@@ -267,23 +267,25 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
                 colors = scheduleSwitchColors())
             Text("Delayed charging", modifier = Modifier.padding(start = 12.dp))
         }
-        OutlinedTextField(value = time, onValueChange = { time = it.take(5) }, label = { Text("Start time (HH:mm)") }, singleLine = true, isError = !timeValid, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii), modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = time, onValueChange = { time = it.take(5) }, label = { Text("Start time (HH:mm)") }, singleLine = true, isError = !timeValid, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii), modifier = Modifier.fillMaxWidth().testTag("charge-start-time"))
         SecondaryText("Vehicle local time · ${s.info?.timezone ?: "Timezone unavailable"}")
         SecondaryText(if (s.info?.testMode == true) "Test only: this checks a varstore start-time value. It does not save or run a vehicle schedule."
-            else "Vehicle stores the start time. The gateway waits for BSI readback; immediate mode still needs vehicle validation.")
-        Button(onClick = { onApply(DesiredCommand.ChargeMode(mode, if (mode == "deferred") time else null)) },
-            enabled = s.controlReady("charge") && s.info?.charge(mode) == true && (mode != "deferred" || timeValid && s.info.timezone != null),
+            else "The start time is saved even when delayed charging is off.")
+        Button(onClick = { onApply(DesiredCommand.ChargeMode(mode, time)) },
+            enabled = s.controlReady("charge") && s.info?.charge(mode) == true && timeValid && s.info.timezone != null,
             modifier = Modifier.testTag("apply-charge").fillMaxWidth().padding(top = 12.dp).heightIn(min = 48.dp)) { Text("Apply") }
     }
 }
 
-@Composable private fun GatewaySheet(s: PilotState, onClose: () -> Unit, onAutoRefresh: (AutoRefreshSettings) -> Unit, onReload: () -> Unit) {
+@Composable private fun GatewaySheet(s: PilotState, onClose: () -> Unit, onAutoRefresh: (AutoRefreshSettings) -> Unit, onLowPower: (LowPowerSettings) -> Unit, onReload: () -> Unit) {
     SheetFrame("Gateway", onClose) {
         val gateway = if (s.settings.source == Source.DEMO) "Demo gateway" else s.settings.host
         val refreshStatus = s.autoRefresh?.description ?: "Reading gateway settings…"
         SecondaryText("$gateway, ${refreshStatus.replaceFirstChar { it.lowercase() }.trimEnd('.')}",
             Modifier.testTag("auto-refresh-status"))
         AutoRefreshContent(s, onAutoRefresh, onReload)
+        HorizontalDivider(Modifier.padding(top = 10.dp))
+        LowPowerContent(s, onLowPower, onReload)
     }
 }
 

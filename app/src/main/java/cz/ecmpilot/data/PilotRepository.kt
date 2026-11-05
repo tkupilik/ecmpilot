@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.io.IOException
 import java.net.SocketTimeoutException
-import java.time.ZoneId
 
 class PilotRepository(private val context: Context) {
     private val clock = { SystemClock.elapsedRealtime() }
@@ -26,6 +25,9 @@ class PilotRepository(private val context: Context) {
     private data class AutoSave(val settings: AutoRefreshSettings, val gw: String, val boot: String,
         val host: String, val port: Int, val source: Source)
     private val autoSaves = Channel<AutoSave>(1)
+    private data class LowSave(val settings: LowPowerSettings, val gw: String, val boot: String,
+        val host: String, val port: Int, val source: Source)
+    private val lowSaves=Channel<LowSave>(1)
     private data class VehicleRequest(val desired: DesiredCommand, val correlation: Correlation)
     private val vehicleRequests = Channel<VehicleRequest>(1)
     @Volatile private var visible = false
@@ -40,6 +42,7 @@ class PilotRepository(private val context: Context) {
         visible = value; pause?.cancel()
         if (value) start() else {
             while (vehicleRequests.tryReceive().isSuccess) Unit
+            if(lowSaves.tryReceive().isSuccess)mutable.update {it.copy(lowPowerSaving=false,lowPowerError="Save cancelled before sending.")}
             if (autoSaves.tryReceive().isSuccess) mutable.update { it.copy(autoRefreshSaving = false, autoRefreshError = "Save cancelled before sending.") }
             if (state.value.command?.phase == "preparing") mutable.update { it.copy(command = null) }
             pause = scope.launch { delay(5000); stop() }
@@ -55,23 +58,33 @@ class PilotRepository(private val context: Context) {
         require(s.vehicleName.isNotBlank() && s.vehicleName.length <= 40) { "Vehicle name must contain 1–40 characters" }
         require(state.value.command?.pending != true) { "Wait for the pending request before changing connection settings" }
         require(!state.value.autoRefreshSaving) { "Wait for automatic refresh settings to finish saving" }
+        require(!state.value.lowPowerSaving) { "Wait for low-power settings to finish saving" }
         stop()
         store.save(s)
-        mutable.update { it.copy(settings = s, connected = false, connecting = true, gatewayId = null, boot = null, info = null, vehicle = null, details = null, programs = null, autoRefresh = null, autoRefreshSavedRevision = null, autoRefreshError = null, error = null,
+        mutable.update { it.copy(settings = s, connected = false, connecting = true, gatewayId = null, boot = null, info = null, vehicle = null, details = null, programs = null, autoRefresh = null, lowPower = null, lowPowerSavedRevision = null, lowPowerError = null, autoRefreshSavedRevision = null, autoRefreshError = null, error = null,
             command = if (s.source == Source.UDP) store.loadCommand() else null) }
         if (visible) start()
     }
     // Reconnect/passive reads must never issue vehicle.refresh (including settings save).
-    fun reconnect() { refreshRequested = true; mutable.update { it.copy(autoRefreshError = null) } }
+    fun reconnect() { refreshRequested = true; mutable.update { it.copy(autoRefreshError = null, lowPowerError = null) } }
     fun refresh() { submit(DesiredCommand.VehicleRefresh) }
     fun saveAutoRefresh(settings: AutoRefreshSettings) {
         val s = state.value
         if (!visible || !s.connected || s.autoRefresh == null || "auto_refresh" !in (s.info?.fields ?: emptySet()) ||
-            s.autoRefreshSaving || s.command?.pending == true || !settings.valid() ||
+            s.autoRefreshSaving || s.lowPowerSaving || s.command?.pending == true || !settings.valid() ||
             s.settings.source == Source.UDP && (!s.permissionGranted || s.info?.security != "lab-plain")) return
         val request = AutoSave(settings, s.gatewayId ?: return, s.boot ?: return, s.settings.host, s.settings.port, s.settings.source)
         mutable.update { it.copy(autoRefreshSaving = true, autoRefreshError = null, autoRefreshSavedRevision = null) }
         if (!autoSaves.trySend(request).isSuccess) mutable.update { it.copy(autoRefreshSaving = false, autoRefreshError = "Another settings save is pending.") }
+    }
+    fun saveLowPower(settings: LowPowerSettings) {
+        val s=state.value
+        if(!visible || !s.connected || s.lowPower==null || "low_power" !in (s.info?.fields ?: emptySet()) ||
+            s.lowPowerSaving || s.autoRefreshSaving || s.command?.pending==true || !settings.valid() ||
+            s.settings.source==Source.UDP && (!s.permissionGranted || s.info?.security!="lab-plain")) return
+        val request=LowSave(settings,s.gatewayId ?: return,s.boot ?: return,s.settings.host,s.settings.port,s.settings.source)
+        mutable.update { it.copy(lowPowerSaving=true,lowPowerError=null,lowPowerSavedRevision=null) }
+        if(!lowSaves.trySend(request).isSuccess) mutable.update {it.copy(lowPowerSaving=false,lowPowerError="Another settings save is pending.")}
     }
     fun submit(command: DesiredCommand) {
         if (!visible || !state.value.controlReady(command.domain)) return
@@ -95,8 +108,10 @@ class PilotRepository(private val context: Context) {
     private fun stop() {
         worker?.cancel(); ticker?.cancel(); connection?.close(); connection = null; worker = null; ticker = null
         while (autoSaves.tryReceive().isSuccess) Unit
+        while (lowSaves.tryReceive().isSuccess) Unit
         while (vehicleRequests.tryReceive().isSuccess) Unit
-        mutable.update { it.copy(connected = false, connecting = false, autoRefreshSaving = false,
+        mutable.update { it.copy(connected = false, connecting = false, autoRefreshSaving = false, lowPowerSaving = false,
+            lowPowerError = if (it.lowPowerSaving) "Save interrupted. Reload gateway settings to check the result." else it.lowPowerError,
             autoRefreshError = if (it.autoRefreshSaving) "Save interrupted. Reload gateway settings to check the result." else it.autoRefreshError) }
     }
     private fun restart() { stop(); if (visible) start() }
@@ -127,6 +142,7 @@ class PilotRepository(private val context: Context) {
                 var lastDetailsMs = Long.MIN_VALUE / 2
                 var lastProgramsMs = Long.MIN_VALUE / 2
                 var lastAutoRefreshMs = Long.MIN_VALUE / 2
+                var lastLowPowerMs = Long.MIN_VALUE / 2
                 suspend fun exchange(request: Request, retry: Boolean = false): Status {
                     val response = gateway.exchange(request, retry)
                     currentCoroutineContext().ensureActive()
@@ -135,7 +151,7 @@ class PilotRepository(private val context: Context) {
                     if (previousBoot != null && previousBoot != response.boot) {
                         val old = state.value.command
                         if (old?.pending == true) publishCommand(old.copy(phase = "unknown", message = "Gateway restarted. Previous result unconfirmed."))
-                        mutable.update { it.copy(info = null, vehicle = null, details = null, programs = null, autoRefresh = null, autoRefreshSavedRevision = null) }
+                        mutable.update { it.copy(info = null, vehicle = null, details = null, programs = null, autoRefresh = null, lowPower = null, lowPowerSavedRevision = null, lowPowerError = null, autoRefreshSavedRevision = null) }
                     }
                     identity = response.gw; boot = response.boot
                     tracker.accept(response)
@@ -143,7 +159,7 @@ class PilotRepository(private val context: Context) {
                     failures = 0
                     mutable.update { it.copy(connected = true, connecting = false, gatewayId = response.gw, boot = response.boot,
                         info = response.info ?: if (previousBoot != null && previousBoot != response.boot) null else it.info,
-                        vehicle = tracker.snapshot, details = tracker.details, programs = tracker.programs, autoRefresh = tracker.autoRefresh, error = null, nowMs = clock()) }
+                        vehicle = tracker.snapshot, details = tracker.details, programs = tracker.programs, autoRefresh = tracker.autoRefresh, lowPower = tracker.lowPower, error = null, nowMs = clock()) }
                     val current = state.value.command
                     response.command?.takeIf { current?.ref != null && current.ref.boot == response.boot && current.ref.gatewayId == response.gw &&
                         (if (current.ref.correlation != null) it.correlation == current.ref.correlation else it.id == current.ref.id && it.correlation == null) &&
@@ -198,6 +214,19 @@ class PilotRepository(private val context: Context) {
                             mutable.update { it.copy(autoRefreshSaving = false, autoRefreshError = error.message ?: "Save unconfirmed. Reload settings to check the result.") }
                         }
                     }
+                    lowSaves.tryReceive().getOrNull()?.let { save ->
+                        try {
+                            require(visible && save.gw==identity && save.boot==boot && save.host==settings.host &&
+                                save.port==settings.port && save.source==settings.source) { "Gateway session changed. Reload settings before saving." }
+                            val response=exchange(Protocol.request(store.clientId,"low_power.set",save.gw,save.boot,save.settings.args()),retry=true)
+                            require(response.boot==save.boot) { "Gateway restarted while saving. Reload settings to check the result." }
+                            if(response.error!=null)throw IOException(lowPowerError(response.error))
+                            val saved=requireNotNull(response.lowPower) { "Gateway did not return low-power settings." }
+                            mutable.update {it.copy(lowPowerSaving=false,lowPowerError=null,lowPowerSavedRevision=saved.settings.revision)}
+                            lastLowPowerMs=clock()
+                        } catch(cancel:CancellationException){throw cancel}
+                        catch(error:Exception){mutable.update {it.copy(lowPowerSaving=false,lowPowerError=error.message ?: "Save unconfirmed. Reload settings to check the result.")}}
+                    }
                     val vehicleRequest = vehicleRequests.tryReceive().getOrNull()
                     if (vehicleRequest != null) {
                         val desired = vehicleRequest.desired
@@ -224,13 +253,7 @@ class PilotRepository(private val context: Context) {
                                 }
                                 is DesiredCommand.ChargeMode -> {
                                     require(caps.charge(desired.mode)) { "Charging mode is not verified by this gateway" }
-                                    args.addProperty("mode", desired.mode)
-                                    if (desired.mode == "deferred") {
-                                        require(Regex("(?:[01][0-9]|2[0-3]):[0-5][0-9]").matches(desired.startLocal ?: "")) { "Enter a valid start time" }
-                                        val zone = caps.timezone ?: throw IOException("Gateway did not report its timezone")
-                                        ZoneId.of(zone)
-                                        args.addProperty("start_local", desired.startLocal); args.addProperty("timezone", zone)
-                                    }
+                                    Protocol.chargeModeArgs(desired, caps.timezone).entrySet().forEach { (key, value) -> args.add(key, value) }
                                     "charge.mode.set"
                                 }
                             }
@@ -311,9 +334,15 @@ class PilotRepository(private val context: Context) {
                         if (automatic != null && (automatic.error != null || automatic.autoRefresh == null)) log("Automatic refresh settings unavailable; retaining cached settings")
                         lastAutoRefreshMs = clock()
                     }
+                    if(extrasOk && "low_power" in (state.value.info?.fields ?: emptySet()) && state.value.command?.pending!=true &&
+                        (refreshCommand || clock()-lastLowPowerMs>=5000)) {
+                        val low=read(Protocol.request(store.clientId,"low_power.get",identity,boot))
+                        if(low!=null && (low.error!=null || low.lowPower==null))log("Low-power settings unavailable; retaining cached settings")
+                        lastLowPowerMs=clock()
+                    }
                     val wait = if (state.value.command?.pending == true) 500L else 1000L
                     var waited = 0L
-                    while (waited < wait && !refreshRequested && state.value.command?.phase != "preparing" && !state.value.autoRefreshSaving) { delay(100); waited += 100 }
+                    while (waited < wait && !refreshRequested && state.value.command?.phase != "preparing" && !state.value.autoRefreshSaving && !state.value.lowPowerSaving) { delay(100); waited += 100 }
                 }
             } catch (cancel: CancellationException) { throw cancel }
             catch (error: Exception) {
@@ -331,6 +360,7 @@ class PilotRepository(private val context: Context) {
                 }
                 if (autoSaves.tryReceive().isSuccess) mutable.update { it.copy(autoRefreshSaving = false,
                     autoRefreshError = "Connection interrupted before sending settings. Try again after reconnecting.") }
+                if(lowSaves.tryReceive().isSuccess)mutable.update {it.copy(lowPowerSaving=false,lowPowerError="Connection interrupted before sending settings.")}
                 mutable.update { it.copy(connected = false, connecting = false, error = message) }
             } finally { local?.close(); if (connection === local) connection = null }
             val wait = if (failures < 3) 1000L else (1000L shl (failures - 2).coerceAtMost(3))

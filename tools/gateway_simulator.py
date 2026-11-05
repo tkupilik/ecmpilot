@@ -150,8 +150,10 @@ class Gateway:
             else:
                 domain = "charge"
                 if args.get("mode") == "immediate":
-                    if set(args) != {"mode"}:
+                    if not set(args) <= {"mode", "start_local", "timezone"}:
                         return reject("unsupported_argument")
+                    if set(args) != {"mode"} and (set(args) != {"mode", "start_local", "timezone"} or not TIME.fullmatch(str(args.get("start_local"))) or args.get("timezone") != "Europe/Prague"):
+                        return reject("invalid_argument")
                 elif args.get("mode") == "deferred":
                     if set(args) != {"mode", "start_local", "timezone"} or not TIME.fullmatch(str(args.get("start_local"))) or args.get("timezone") != "Europe/Prague":
                         return reject("invalid_argument")

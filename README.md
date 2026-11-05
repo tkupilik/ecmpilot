@@ -101,6 +101,7 @@ No release signing keys or store publishing are configured in this repository. K
 | [Screen/data guide](docs/home-screens.md) | Vehicle screens, data availability and freshness |
 | [Vehicle refresh](docs/vehicle-refresh.md) | Passive connection versus explicit vehicle action |
 | [Automatic refresh](docs/auto-refresh.md) | Gateway timer configuration and Charge limit |
+| [Low power](docs/low-power.md) | Gateway inactivity sleep settings and countdown |
 | [Protocol](docs/protocol/udp-v0.md) | UDP requests, observations, capabilities and command receipts |
 | [Correlation/retries](docs/udp-correlation.md) | Stable operation IDs, packet loss and late replies |
 | [Testing](docs/testing.md) | Unit/UI checks, demo scenes and Python UDP simulator |

@@ -125,10 +125,14 @@ data class PilotState(
     val autoRefreshSaving: Boolean = false,
     val autoRefreshError: String? = null,
     val autoRefreshSavedRevision: Long? = null,
+    val lowPower: LowPowerStatus? = null,
+    val lowPowerSaving: Boolean = false,
+    val lowPowerError: String? = null,
+    val lowPowerSavedRevision: Long? = null,
 ) {
     val readOnly get() = settings.source == Source.UDP && !settings.allowLabControls
     fun controlReady(domain: String): Boolean {
-        if (!connected || settings.source == Source.UDP && !permissionGranted || command?.pending == true || autoRefreshSaving) return false
+        if (!connected || settings.source == Source.UDP && !permissionGranted || command?.pending == true || autoRefreshSaving || lowPowerSaving) return false
         if (settings.source == Source.UDP && info?.security != "lab-plain") return false
         if (domain == "refresh") return info?.refresh() == true
         if (readOnly) return false
