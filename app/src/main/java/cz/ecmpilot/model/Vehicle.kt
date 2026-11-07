@@ -44,6 +44,7 @@ data class Charge(
     val connected: Boolean? = null, val powerKw: Double? = null, val remainingMin: Double? = null,
     val startLocal: String? = null, val stamp: Stamp,
     val modeStamp: Stamp = stamp, val scheduleAvailable: Boolean? = null,
+    val remainingStamp: Stamp = stamp,
 )
 data class VehicleState(
     val readings: Map<String, Reading> = emptyMap(),
@@ -103,6 +104,7 @@ data class CommandResult(
     val id: String, val revision: Long, val phase: String, val error: String? = null,
     val reason: String? = null,
     val correlation: Correlation? = null,
+    val preconditioningFeedback: Int? = null,
 ) {
     val terminal get() = phase in setOf("succeeded", "rejected", "failed", "unknown")
 }
@@ -170,10 +172,25 @@ sealed interface DesiredCommand {
     }
 }
 
+private fun preconditioningError(feedback: Int?): String = when (feedback) {
+    4 -> "Close all doors and lock the vehicle, then try again. (Code 4)"
+    5 -> "Battery charge is too low for preconditioning. (Code 5)"
+    6 -> "Vehicle reports insufficient fuel for preconditioning. (Code 6)"
+    7 -> "Too many preconditioning sessions without using the vehicle. (Code 7)"
+    null -> "Vehicle refused preconditioning. Check that all doors are closed and the vehicle is locked."
+    else -> "Vehicle refused preconditioning (code $feedback)."
+}
+
 fun messageFor(result: CommandResult): String = when (result.phase) {
     "accepted", "executing" -> "Waiting for vehicle confirmation…"
     "succeeded" -> "Confirmed by vehicle status."
-    "unknown" -> "Result unconfirmed. Refresh to check the original request."
+    "unknown" -> when (result.reason ?: result.error) {
+        "bsi_wake_timeout" -> "Vehicle did not wake up in time. Try again later."
+        "can_tx_timeout", "can_tx_failed" -> "Gateway could not send the request to the vehicle."
+        "vehicle_reply_timeout", "operation_timeout" -> "Vehicle did not confirm the action in time. Refresh to check its state."
+        "preconditioning_programs_timeout" -> "Vehicle did not provide its stored preconditioning schedules. Try again."
+        else -> "Result unconfirmed. Refresh to check the original request."
+    }
     else -> when (result.reason ?: result.error) {
         "cable_disconnected" -> "Charging cable not connected."
         "vehicle_moving", "not_parked" -> "Vehicle is not parked."
@@ -182,7 +199,12 @@ fun messageFor(result: CommandResult): String = when (result.phase) {
         "conflict" -> "Another request changed the setting. Refresh before trying again."
         "vehicle_control_failed" -> "Vehicle request could not be sent. Check gateway CAN diagnostics."
         "preconditioning_unavailable" -> "Vehicle reports preconditioning unavailable."
-        "preconditioning_rejected" -> "Vehicle did not accept preconditioning. Check the gateway feedback signal."
+        "preconditioning_rejected" -> preconditioningError(result.preconditioningFeedback)
+        "bsi_wake_timeout" -> "Vehicle did not wake up in time. Try again later."
+        "can_tx_timeout", "can_tx_failed" -> "Gateway could not send the request to the vehicle."
+        "vehicle_reply_timeout", "operation_timeout" -> "Vehicle did not confirm the action in time. Refresh to check its state."
+        "vehicle_control_unavailable" -> "Vehicle controls are currently unavailable on the gateway."
+        "invalid_wake_config" -> "Gateway wake-up settings need to be checked."
         "preconditioning_programs_timeout" -> "Vehicle did not provide its stored preconditioning programs."
         "preconditioning_programs_conflict" -> "Vehicle schedules changed elsewhere. Reopen the editor before saving."
         "expired" -> "The request expired before it could be accepted."

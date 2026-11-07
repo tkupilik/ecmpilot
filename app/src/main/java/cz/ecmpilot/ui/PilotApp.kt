@@ -176,8 +176,8 @@ private fun Home(s: PilotState, modifier: Modifier, onSettings: () -> Unit, onDe
             val validCharge = s.connected && charge?.stamp?.freshForDisplay(s.nowMs) == true
             Text((if (!validCharge && charge != null) "Last known: " else "") + chargeLabel(s) + (charge?.powerKw?.takeIf { charge.state == "charging" }?.let { " · ${number(it, 1)} kW" } ?: ""), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(3.dp))
-            val eta = charge?.remainingMin?.takeIf { charge.state == "charging" && validCharge }
-            if (eta != null) SecondaryText("About ${eta.toInt() / 60} h ${eta.toInt() % 60} min remaining")
+            ValueRow("Time remaining", charge?.remainingTimeText() ?: "—",
+                !s.connected || charge?.remainingStamp?.freshForDisplay(s.nowMs) != true)
             val schedule = charge?.startLocal
             if (schedule != null) ValueRow("Delayed charging", schedule, !s.connected || charge.modeStamp.freshForDisplay(s.nowMs) != true)
         }

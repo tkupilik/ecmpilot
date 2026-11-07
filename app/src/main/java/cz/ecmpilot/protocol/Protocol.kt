@@ -105,7 +105,8 @@ object Protocol {
                     Charge(q.optionalString("state")?.takeIf { it in setOf("charging", "waiting", "complete", "disconnected", "fault") } ?: "unknown",
                         q.optionalString("mode")?.takeIf { it in setOf("immediate", "deferred") } ?: "unknown", q.optionalLong("rev"), q.bool("connected"),
                         q.number("power_kw", 0.0..1000.0), q.number("remaining_min", 0.0..100_000.0), q.optionalString("start_local"), stamp(q),
-                        q.optionalLong("mode_age_ms")?.let { Stamp(it, receivedMs, roundTripMs) } ?: stamp(q), q.bool("schedule_available")),
+                        q.optionalLong("mode_age_ms")?.let { Stamp(it, receivedMs, roundTripMs) } ?: stamp(q), q.bool("schedule_available"),
+                        q.optionalLong("remaining_age_ms")?.let { Stamp(it, receivedMs, roundTripMs) } ?: stamp(q)),
                     s.obj("bsi")?.let { BsiStatus(it.optionalLong("power_management")?.takeIf { phase -> phase in 0L..4L }?.toInt(), stamp(it)) })
             }
             val details = root.obj("details")?.let { d ->
@@ -166,7 +167,8 @@ object Protocol {
                 val phase = c.string("phase").also { require(it in setOf("accepted", "executing", "succeeded", "rejected", "failed", "unknown")) }
                 val correlation = c.optionalLong("correlation_id")?.let { Correlation(c.string("client_session"), it) }
                 require(correlation != null || c.value("client_session") == null)
-                CommandResult(c.string("id").also { require(idPattern.matches(it)) }, c.long("revision"), phase, c.errorCode("error"), c.optionalString("reason"), correlation)
+                val preconditioningFeedback = c.optionalLong("preconditioning_feedback")?.also { require(it in 0..15) }?.toInt()
+                CommandResult(c.string("id").also { require(idPattern.matches(it)) }, c.long("revision"), phase, c.errorCode("error"), c.optionalString("reason"), correlation, preconditioningFeedback)
             }
             val correlationId = root.optionalLong("correlation_id")?.also { require(it in 1..0xffff_ffffL) }
             return Status(gw, boot, reply, seq, now, info, state, command, root.errorCode("error"), receivedMs, roundTripMs, details, programs, autoRefresh, correlationId, lowPower)

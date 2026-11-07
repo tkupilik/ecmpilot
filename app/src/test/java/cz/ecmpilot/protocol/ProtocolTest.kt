@@ -45,6 +45,15 @@ class ProtocolTest {
         assertFalse(reading.fresh(1000))
         assertEquals(Long.MAX_VALUE, Stamp(Long.MAX_VALUE, 0, 50).age(1000))
     }
+    @Test fun chargingEstimateHasItsOwnAgeWithLegacyFallback() {
+        val packet = base().apply { add("state", JsonParser.parseString("""{"charge":{"state":"charging","remaining_min":135,"remaining_age_ms":600000,"age_ms":0}}""")) }
+        val charge = parse(packet).state!!.charge
+        assertEquals(135.0, charge.remainingMin!!, .001)
+        assertEquals(600050L, charge.remainingStamp.age(1000))
+        assertEquals(50L, charge.stamp.age(1000))
+        packet.getAsJsonObject("state").getAsJsonObject("charge").remove("remaining_age_ms")
+        assertEquals(50L, parse(packet).state!!.charge.remainingStamp.age(1000))
+    }
     @Test fun snapshotSequenceAndBootAreHandledSeparately() {
         val tracker = StatusTracker()
         fun snapshot(seq: Int, value: Int, bootId: String = boot) = parse(base(seq).apply {

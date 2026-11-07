@@ -83,13 +83,16 @@ internal fun VehicleOverview(s: PilotState, onClimate: () -> Unit, onCharging: (
     val scheduleFresh = s.connected && charge?.modeStamp?.freshForDisplay(s.nowMs) == true
     val charging = chargeFresh && charge?.state == "charging"
     val delayed = scheduleFresh && charge?.mode == "deferred" && !(chargeFresh && charge.connected == false)
+    val remaining = charge?.remainingTimeText()?.takeIf {
+        charging && charge.remainingStamp.freshForDisplay(s.nowMs)
+    }
     val body = s.details?.body
     val bodyFresh = s.connected && body?.lockStamp?.freshForDisplay(s.nowMs) == true
     Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         StatusTile("Preconditioning", when (v?.climate?.state) { "on" -> "Running"; "off" -> "Off"; else -> "Unavailable" },
             Glyph.FAN, if (running) chargingGreen else MaterialTheme.colorScheme.onSurfaceVariant,
             running, onClimate, Modifier.weight(1f).testTag("home-climate"), !climateFresh)
-        StatusTile("Charging", when { charging -> "Charging"; delayed -> "Delayed"; charge?.state == "charging" -> "Charging";
+        StatusTile("Charging", when { charging -> remaining ?: "Charging"; delayed -> "Delayed"; charge?.state == "charging" -> "Charging";
                 charge?.connected == false -> "Unplugged"; charge?.state == "complete" -> "Complete";
                 charge?.state == "waiting" -> "Waiting"; charge?.state == "fault" -> "Fault"; else -> "Unavailable" },
             Glyph.BOLT, when { charging -> chargingGreen; delayed -> delayedBlue; else -> MaterialTheme.colorScheme.onSurfaceVariant },

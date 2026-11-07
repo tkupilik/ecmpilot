@@ -213,6 +213,15 @@ Stable machine-readable errors initially include `unsupported_version`, `wrong_g
 
 For a structurally parseable request, rejection is a `status` with `command.phase: "rejected"`, the same request ID as command ID and `revision: 1`. Malformed/oversized datagrams without a trustworthy request ID are dropped; transport timeout then remains distinguishable from a decoded vehicle rejection. Read-only query errors can use a top-level `error` object instead of pretending a vehicle command ran.
 
+For `preconditioning_rejected`, `status.command` may include
+`preconditioning_feedback`, an integer0..15 retained with the command result.
+Code4 means doors open or vehicle unlocked (owner-verified unlocked refusal);
+source-defined codes5/6/7 mean low battery SOC, low fuel, and too many unused
+preconditioning sessions. These three causes have not been individually verified
+on the Corsa-e. The app translates known codes and includes the numeric code;
+unknown/missing feedback keeps a generic refusal. Live status changes and later
+commands must not rewrite the retained failure. Absence of this field is valid.
+
 ## Security scope, deliberately separate from reliability
 
 Current work is UI/protocol design. An unauthenticated `lab-plain` UDP profile is sufficient for a simulator and isolated bench prototype. It offers no protection against another LAN device forging requests or state. IP address, MAC address, SSID, client ID, a CRC and the request deadline are not authorization.
