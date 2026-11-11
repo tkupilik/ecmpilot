@@ -1,28 +1,16 @@
 # eCMPilot screenshots
 
-Captured on a **physical Samsung Galaxy A55** on **2026-11-04**, using the installed **eCMPilot 0.2.0** Android build. Images are lossless captures of the rendered app, without the phone's notification/status bar. They are not UI mockups.
-
-## Live vehicle
-
-Connected to the installed `ecmpilot-gw` on the owner's Corsa-e. The owner started preconditioning before capture. Home reports **91% SOC**, **262 km estimated range**, **9.0 °C outside**, **87.5% 12 V SOC**, BSI Normal and preconditioning Running. These are vehicle-reported observations at capture time.
-
-The screenshot run only navigated and made passive reads. It did not press Refresh, Start/Stop, Apply, change the charge limit or save gateway/vehicle settings. Independent enabled gateway automation is separate from this capture run.
-
-<table>
-<tr>
-<td align="center"><img src="live-home.png" width="250" alt="Live home with 91 percent SOC and active preconditioning"><br>Home · preconditioning running</td>
-<td align="center"><img src="live-preconditioning.png" width="250" alt="Live preconditioning with reported running status"><br>Preconditioning · reported active</td>
-<td align="center"><img src="live-charging.png" width="250" alt="Live charging screen showing unplugged and stored start time"><br>Charging · unplugged, stored start 03:00</td>
-</tr>
-<tr>
-<td align="center"><img src="live-doors.png" width="250" alt="Live doors and locks showing closed panels and locked status"><br>Doors &amp; locks · reported closed/locked</td>
-<td align="center"><img src="live-trips.png" width="250" alt="Live vehicle trip counters and consumption slots"><br>Trips · reported counters/history</td>
-</tr>
-</table>
-
-The live trip screen is a record of the decoded values, not independent validation of each consumption field. The charging page's stored schedule/limit is also separate from whether energy is currently flowing. Do not interpret a screenshot as a guarantee of a vehicle action's physical effect.
+The **current demo gallery was captured on 2026-11-11**, on a physical Samsung
+Galaxy A55 running eCMPilot 0.2.0. The earlier live session is dated separately
+below. Images are original lossless captures of the rendered app, without the
+phone's notification/status bar. They are not UI mockups; the capture manifest
+records the source, build hash and date for each session.
 
 ## Demo: functions and navigation
+
+**Captured 2026-11-11.** Home now shows the vehicle's date/time and charging time
+remaining. The native delayed-mode switch and time editor save automatically;
+the Charge limit switch and disabled/enabled slider sit above Schedules.
 
 These screenshots use the app's **in-process demo gateway**. No demo action opens a network socket or controls the vehicle. Values illustrate the UI; they are not extra measurements from the live session above. The capture restores the phone's original connection/appearance settings afterwards.
 
@@ -47,6 +35,33 @@ These screenshots use the app's **in-process demo gateway**. No demo action open
 </tr>
 </table>
 
+## Demo: charging automation and gateway settings
+
+The schedule examples pause charging at **07:00–09:00** and **17:00–20:00** on
+all seven days. These are saved demo settings, not a tariff recommendation.
+Scheduling and physical charging are separate; see [charging schedules](../charging-schedules.md).
+The plan editor uses Apply; the native delayed-mode/time controls above it do not.
+
+<table>
+<tr>
+<td align="center"><img src="demo-charging-limit.png" width="250" alt="Enabled charge limit switch and 80 percent target slider"><br>Charge limit enabled</td>
+<td align="center"><img src="demo-charging-limit-off.png" width="250" alt="Disabled charge limit with its grey slider still visible"><br>Charge limit off, slider retained</td>
+<td align="center"><img src="demo-charging-schedules.png" width="250" alt="Two saved weekly high-tariff pause periods"><br>Charging Schedules: two daily periods</td>
+</tr>
+<tr>
+<td align="center"><img src="demo-charging-schedules-lower.png" width="250" alt="Bottom of charging schedule editor with save and reload controls"><br>Schedules: saved periods and Apply/Reload</td>
+<td align="center"><img src="demo-gateway-low-power.png" width="250" alt="Automatic deep sleep configuration and remaining time"><br>Gateway: inactivity sleep countdown</td>
+<td align="center"><img src="demo-gateway-charge-limit.png" width="250" alt="Charge limit below automatic deep sleep in the Gateway dialog"><br>Gateway: Charge limit after sleep</td>
+</tr>
+<tr>
+<td align="center"><img src="demo-connection-discovery.png" width="250" alt="Local gateway connection with automatic discovery and manual fallback address"><br>Automatic gateway discovery</td>
+</tr>
+</table>
+
+The discovery image opens the Local gateway form but does not save it or connect;
+the run remains on the in-process demo transport. Gateway settings and interval
+writes affect only that demo instance. Original phone settings are restored.
+
 ## Demo: dark mode and failure states
 
 <table>
@@ -59,6 +74,31 @@ These screenshots use the app's **in-process demo gateway**. No demo action open
 <td align="center"><img src="demo-request-error.png" width="250" alt="Demo rejected vehicle request with error explanation"><br>Rejected request · descriptive error</td>
 </tr>
 </table>
+
+## Earlier live vehicle: 2026-11-04
+
+These retained images show the **2026-11-04 interface**, before the current
+vehicle-clock and charging-schedule changes. Connected to the installed
+`ecmpilot-gw` on the owner's Corsa-e; the owner started preconditioning before
+capture. Home reports **91% SOC**, **262 km estimated range**, **9.0 °C outside**,
+**87.5% 12 V SOC**, BSI Normal and preconditioning Running. These are
+vehicle-reported observations at capture time, not a new vehicle test.
+
+The screenshot run only navigated and made passive reads. It did not press Refresh, Start/Stop, Apply, change the charge limit or save gateway/vehicle settings. Independent enabled gateway automation is separate from this capture run.
+
+<table>
+<tr>
+<td align="center"><img src="live-home.png" width="250" alt="Live home with 91 percent SOC and active preconditioning"><br>Home · preconditioning running</td>
+<td align="center"><img src="live-preconditioning.png" width="250" alt="Live preconditioning with reported running status"><br>Preconditioning · reported active</td>
+<td align="center"><img src="live-charging.png" width="250" alt="Live charging screen showing unplugged and stored start time"><br>Charging · unplugged, stored start 03:00</td>
+</tr>
+<tr>
+<td align="center"><img src="live-doors.png" width="250" alt="Live doors and locks showing closed panels and locked status"><br>Doors &amp; locks · reported closed/locked</td>
+<td align="center"><img src="live-trips.png" width="250" alt="Live vehicle trip counters and consumption slots"><br>Trips · reported counters/history</td>
+</tr>
+</table>
+
+The live trip screen is a record of the decoded values, not independent validation of each consumption field. The charging page's stored schedule/limit is also separate from whether energy is currently flowing. Do not interpret a screenshot as a guarantee of a vehicle action's physical effect.
 
 ## Reproduce captures
 

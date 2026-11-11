@@ -12,12 +12,12 @@ The companion firmware is **`ecmpilot-gw`**, built for the **Waveshare ESP32-S3-
 
 ## A look at the app
 
-The live gallery below was captured on a physical Android phone connected to the installed gateway. Additional screens use clearly labelled in-process demo data.
+The current interface below was captured on a physical Android phone on **2026-11-11**, using the in-process demo gateway. The full gallery also retains an earlier, clearly dated live-vehicle session.
 
 <table>
 <tr>
-<td align="center"><img src="docs/screenshots/live-home.png" width="250" alt="Live vehicle home screen"><br>Live vehicle status</td>
-<td align="center"><img src="docs/screenshots/live-preconditioning.png" width="250" alt="Live preconditioning screen"><br>Preconditioning</td>
+<td align="center"><img src="docs/screenshots/demo-home-light.png" width="250" alt="Demo home with vehicle date and time"><br>Vehicle status &amp; vehicle clock · demo</td>
+<td align="center"><img src="docs/screenshots/demo-charging-schedules.png" width="250" alt="Demo high-tariff charging pause schedule"><br>Charging schedules · demo</td>
 <td align="center"><img src="docs/screenshots/demo-doors.png" width="250" alt="Demo doors and locks screen with open panels"><br>Doors &amp; locks · demo</td>
 </tr>
 </table>
@@ -26,13 +26,14 @@ See the **[full screenshot gallery](docs/screenshots/README.md)** for charging, 
 
 ## What it does
 
-- **Home:** traction-battery SOC, estimated range, outside temperature, 12 V battery SOC, BSI state and the age of the vehicle data.
-- **Charging:** reported charging state, immediate/delayed charging and its stored start time. Optional **Charge limit** exposes a 30–100% target when enabled on the gateway.
+- **Home:** traction-battery SOC, estimated range, outside temperature, 12 V battery SOC, BSI state, observation age and the vehicle's own date/time.
+- **Charging:** reported state and remaining time, immediate/delayed charging and its stored start time. Mode changes send immediately; valid time edits save after a short pause, without Apply. **Charge limit** has its own switch and a 30–100% slider, grey when disabled.
+- **Charging → Schedules:** up to eight weekly high-tariff periods during which the gateway pauses charging, then resumes after its own pause. Uses the car's clock, without phone timezone or daylight-saving conversion. [How schedules work](docs/charging-schedules.md).
 - **Preconditioning:** explicit Start/Stop, the reported state and four vehicle weekly program slots with time/day editors.
 - **Doors & locks:** an overhead vehicle view with individual door/boot indications and reported locking state. This screen is for observation; it does not lock or unlock the car.
 - **Trips & consumption:** Trip 1/2, electric consumption and six vehicle history slots. History slot duration/order is still under investigation.
 - **Vehicle details:** available measurements and connection diagnostics.
-- **Gateway settings:** automatic vehicle refresh intervals for standby/charging, a minimum 12 V SOC and Charge limit enablement. These settings run on the gateway even when the phone app is closed.
+- **Gateway settings:** automatic vehicle refresh intervals and a minimum 12 V SOC, followed by automatic deep sleep and Charge limit. These features run on the gateway even when the phone app is closed.
 
 The gateway advertises its available fields and operations; unsupported functions stay unavailable. Reported preconditioning status is vehicle feedback, not independent measurement of heat or airflow. Some body/trip mappings and program writes still need further vehicle validation.
 
@@ -63,7 +64,7 @@ Charge limit uses delayed charging to pause at the target after an updated SOC i
 
 1. Install and configure the `ecmpilot-gw` firmware, including its vehicle wiring and Wi-Fi.
 2. Put the phone and gateway on the same reachable local network.
-3. In the app's settings, select **Local gateway** and enter the gateway hostname or IP. Defaults: **`ecmpilot-gw.lan`**, UDP **`42840`**. The `.lan` name depends on your router's local DNS; use the actual IP if it is not resolved.
+3. In the app's settings, select **Local gateway**. **Find gateway automatically** is on by default: mDNS finds the saved gateway even if its IP changes, including on the gateway's own AP. The hostname/IP field is a fallback; defaults are **`ecmpilot-gw.lan`**, UDP **`42840`**. Disable automatic discovery for manual-only operation. The `.lan` fallback depends on your router's DNS; direct AP IP is **`192.168.4.1`**.
 4. Grant local-network permission if requested, then **Save & connect**. The app remembers the gateway identity; use **Forget saved gateway** when replacing the device.
 5. Monitoring is passive. Supported control operations additionally use the gateway's capability checks and the relevant experimental-control opt-in.
 
@@ -101,6 +102,7 @@ No release signing keys or store publishing are configured in this repository. K
 | [Screen/data guide](docs/home-screens.md) | Vehicle screens, data availability and freshness |
 | [Vehicle refresh](docs/vehicle-refresh.md) | Passive connection versus explicit vehicle action |
 | [Automatic refresh](docs/auto-refresh.md) | Gateway timer configuration and Charge limit |
+| [Charging schedules](docs/charging-schedules.md) | High-tariff pause periods and the vehicle clock |
 | [Low power](docs/low-power.md) | Gateway inactivity sleep settings and countdown |
 | [Protocol](docs/protocol/udp-v0.md) | UDP requests, observations, capabilities and command receipts |
 | [Correlation/retries](docs/udp-correlation.md) | Stable operation IDs, packet loss and late replies |

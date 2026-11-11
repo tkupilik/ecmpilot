@@ -17,9 +17,9 @@ The [IETF UDP guidance](https://www.rfc-editor.org/rfc/rfc8085.html#section-3.3)
 
 ## Network binding
 
-- Gateway joins an already configured Wi-Fi network. App connects using a manually configured host/IP and port first; a DHCP reservation is a useful deployment choice.
+- Gateway joins a configured Wi-Fi network or offers its optional setup AP. The app defaults to bounded mDNS/DNS-SD lookup of `_ecmpilot._udp.local.` on its physical local network, selecting the saved gateway ID. TXT `id` must match an actual `info.get` reply; TXT `proto=0` identifies this protocol. Multiple unsaved gateway IDs require manual selection. The configured host/IP and port remain fallback, with an option to disable discovery. No central router DNS is required for discovery.
 - Proposed configurable UDP port **42840**, a project-local choice, not an IANA assignment. Client uses an ephemeral UDP port; gateway replies to the actual request source address/port.
-- Unicast control only. No broadcast commands, internet relay, NAT traversal or port-forwarding design. mDNS/Android NSD can later find the gateway; discovery is not proof of identity or permission to control it.
+- Unicast control only. Multicast is used only for mDNS discovery; discovery and read-only verification do not wake the vehicle. No broadcast vehicle commands, internet relay, NAT traversal or port-forwarding design. Discovery and ID consistency checks are not cryptographic authentication or permission to control the vehicle.
 - One UTF-8 JSON object per application datagram. Maximum **1,024 application bytes** in either direction, measured after compact JSON encoding. Never split a JSON object across datagrams. Keep UDP checksums enabled. The cap is a conservative local-profile choice; validate it against the actual network path, especially if DTLS is added.
 - Larger information is fetched as named profiles/pages, still using `request`/`status`, rather than growing every state message or relying on IP fragmentation.
 - App polling: 1 Hz while a visible screen needs data; up to 2 Hz while awaiting a command, then back to 1 Hz. No regular background keepalive. Back off on errors; after three unanswered polls, use 2/4/8 s intervals, capped at 8 s until reconnect or user refresh. These are application state reads, not CAN wake requests.
@@ -91,6 +91,28 @@ two readings over its existing optional HV voltage/current and battery-temperatu
 fields if a worst-case reply requires size reduction.
 
 An unknown transport security profile leaves controls disabled rather than being treated as `lab-plain`.
+
+## Off-peak charging
+
+`charge_schedule` is an optional capability. `charge.schedule.get` passively
+returns gateway-owned high-tariff periods and its vehicle clock.
+`charge.schedule.set` requires the current gateway/boot and arguments
+`{"rev":1,"enabled":true,"blocked_intervals":[{"enabled":true,"days":127,"from":"07:00","to":"09:00"}]}`.
+There are at most eight intervals, Monday bit6 through Sunday bit0; equal times
+and an empty day mask are invalid. Identical desired retries are idempotent;
+other stale revisions return `settings_conflict`. These are configuration
+replies, not vehicle command receipts. The optional response member
+`charge_schedule` contains the configuration plus `state`, `active`,
+`next_local`, `last_result`, and `clock` (`local`, `second`, `age_ms`). A null
+`clock.local` means no usable time. Treat vehicle date/time as floating GMT:
+no phone timezone or DST conversion. The gateway owns execution and persistence;
+the phone only edits settings and displays the advancing vehicle clock.
+
+Pause entry requires a known connected cable. Exit undoes an admitted/confirmed
+own pause regardless of cable or SOC, using immediate mode. Both operations
+preserve the native delayed start time. Disabling an active plan also undoes its
+own pause. Overlapping periods are one continuous pause; there is no ongoing
+mode enforcement against the car's native delayed-start behavior.
 
 ## Expiry without clock synchronization
 

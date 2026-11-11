@@ -23,7 +23,8 @@ class GitHubScreenshotsTest {
         } else {
             ui.waitUntil(15000) {
                 repository.state.value.connected && repository.state.value.details != null &&
-                    repository.state.value.programs?.complete == true && repository.state.value.autoRefresh != null
+                    repository.state.value.programs?.complete == true && repository.state.value.autoRefresh != null &&
+                    repository.state.value.lowPower != null && repository.state.value.chargeSchedule != null
             }
         }
     }
@@ -57,10 +58,26 @@ class GitHubScreenshotsTest {
             ui.onNodeWithTag("charge-limit-slider").assertExists()
             screen("charging")
             ui.onNodeWithTag("deferred-charging").performClick()
-            ui.onNodeWithTag("apply-charge").performScrollTo().performClick()
             ui.waitUntil(15000) { repository.state.value.command?.phase == "succeeded" }
-            ui.onNodeWithTag("charging-status").performClick()
             screen("delayed-charging")
+            ui.onNodeWithTag("charge-limit-status").performScrollTo()
+            screen("charging-limit")
+            ui.onNodeWithTag("charge-limit-enabled").performScrollTo().performClick()
+            ui.waitUntil(15000) { repository.state.value.autoRefresh?.settings?.chargeLimitEnabled == false && !repository.state.value.autoRefreshSaving }
+            screen("charging-limit-off")
+            ui.onNodeWithTag("charge-limit-enabled").performClick()
+            ui.waitUntil(15000) { repository.state.value.autoRefresh?.settings?.chargeLimitEnabled == true && !repository.state.value.autoRefreshSaving }
+            ui.onNodeWithTag("charge-schedule-enabled").performScrollTo().performClick()
+            ui.onNodeWithTag("charge-schedule-add").performScrollTo().performClick()
+            ui.onNodeWithTag("charge-period-2-from").performScrollTo().performTextReplacement("17:00")
+            ui.onNodeWithTag("charge-period-2-to").performScrollTo().performTextReplacement("20:00")
+            androidx.test.espresso.Espresso.closeSoftKeyboard()
+            ui.onNodeWithTag("charge-schedule-apply").performScrollTo().performClick()
+            ui.waitUntil(15000) { repository.state.value.chargeSchedule?.settings?.intervals?.size == 2 && !repository.state.value.chargeScheduleSaving }
+            ui.onNodeWithTag("charge-schedule-enabled").performScrollTo()
+            screen("charging-schedules")
+            ui.onNodeWithTag("charge-schedule-apply").performScrollTo()
+            screen("charging-schedules-lower")
             close()
             ui.onNodeWithTag("home-climate").performClick()
             ui.onNodeWithTag("preconditioning-outside").assertExists()
@@ -72,6 +89,10 @@ class GitHubScreenshotsTest {
             ui.onNodeWithTag("menu-gateway").performScrollTo().performClick()
             ui.onNodeWithTag("auto-refresh-enabled").performScrollTo().assertIsOn()
             screen("gateway")
+            ui.onNodeWithTag("low-power-apply").performScrollTo()
+            screen("gateway-low-power")
+            ui.onNodeWithTag("charge-limit-help").performScrollTo()
+            screen("gateway-charge-limit")
             close()
             ui.onNodeWithTag("menu-trips").performScrollTo().performClick()
             ui.onNodeWithText("Trip 1").assertExists()
@@ -83,6 +104,9 @@ class GitHubScreenshotsTest {
             close()
             ui.onNodeWithTag("settings").performScrollTo().performClick()
             screen("settings")
+            ui.onNodeWithTag("local-source").performScrollTo().performClick()
+            ui.onNodeWithTag("gateway-auto-discovery").performScrollTo()
+            screen("connection-discovery")
             close()
             scene(DemoScene.DOORS)
             ui.onNodeWithTag("vehicle-status").performClick()
@@ -104,7 +128,7 @@ class GitHubScreenshotsTest {
             scene(DemoScene.OFFLINE, ThemeMode.DARK)
             screen("offline")
         } finally {
-            ui.waitUntil(35000) { repository.state.value.command?.pending != true && !repository.state.value.autoRefreshSaving }
+            ui.waitUntil(35000) { repository.state.value.command?.pending != true && !repository.state.value.autoRefreshSaving && !repository.state.value.chargeScheduleSaving }
             ui.runOnUiThread {
                 repository.saveSettings(original)
                 ui.activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

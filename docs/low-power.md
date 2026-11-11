@@ -1,6 +1,6 @@
 # Gateway low power
 
-Open **Gateway** and scroll below **Charge limit** to enable automatic sleep and choose how long the
+Open **Gateway** and scroll below **Automatic vehicle refresh** to enable automatic sleep and choose how long the
 vehicle must stay inactive. Default: enabled, **48 hours**; range 1–720 hours.
 The setting belongs to the gateway and works without a connected phone.
 

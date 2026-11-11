@@ -1,5 +1,6 @@
 package cz.ecmpilot.protocol
 
+import cz.ecmpilot.model.ChargeScheduleSettings
 import cz.ecmpilot.model.LowPowerSettings
 
 import com.google.gson.JsonArray
@@ -26,6 +27,7 @@ class DemoConnection(private val scene: DemoScene, private val clock: () -> Long
     private data class Pending(val request: Request, val accepted: Long, val domain: String, val rev: Long, var outcome: String? = null)
     private val commands = mutableMapOf<String, Pending>()
     private var sleepSettings=LowPowerSettings()
+    private var chargeSchedule=ChargeScheduleSettings()
     override suspend fun exchange(request: Request, retry: Boolean): Status {
         delay(70)
         if (scene == DemoScene.OFFLINE) throw IOException("Demo gateway offline")
@@ -41,6 +43,17 @@ class DemoConnection(private val scene: DemoScene, private val clock: () -> Long
             "state.get" -> json.add("state", state())
             "vehicle.details.get" -> json.add("details", details())
             "climate.programs.get" -> json.add("programs", programs())
+            "charge.schedule.get" -> json.add("charge_schedule",schedule())
+            "charge.schedule.set" -> {
+                val desired=runCatching {ChargeScheduleSettings.parse(request.json.getAsJsonObject("args"))}.getOrNull()
+                when {
+                    request.json.get("boot")?.asString!=boot -> json.addProperty("error","wrong_boot")
+                    desired==null -> json.addProperty("error","invalid_argument")
+                    desired.copy(revision=chargeSchedule.revision)==chargeSchedule -> json.add("charge_schedule",schedule())
+                    desired.revision!=chargeSchedule.revision -> json.addProperty("error","settings_conflict")
+                    else -> {chargeSchedule=desired.copy(revision=if(chargeSchedule.revision==Int.MAX_VALUE.toLong())1 else chargeSchedule.revision+1);json.add("charge_schedule",schedule())}
+                }
+            }
             "low_power.get" -> json.add("low_power", lowPower())
             "low_power.set" -> {
                 val args=request.json.getAsJsonObject("args")
@@ -137,7 +150,7 @@ class DemoConnection(private val scene: DemoScene, private val clock: () -> Long
     }
     private fun info() = JsonObject().apply {
         addProperty("firmware", "in-process demo 0.1"); addProperty("security", "demo"); addProperty("timezone", "Europe/Prague")
-        add("fields", JsonArray().apply { listOf("soc_pct", "range_km", "cabin_c", "outside_c", "battery_min_c", "battery_max_c", "odometer_km", "vehicle_details", "climate_programs", "auto_refresh", "charge_limit", "low_power").forEach(::add) })
+        add("fields", JsonArray().apply { listOf("soc_pct", "range_km", "cabin_c", "outside_c", "battery_min_c", "battery_max_c", "odometer_km", "vehicle_details", "climate_programs", "auto_refresh", "charge_limit", "low_power", "charge_schedule").forEach(::add) })
         add("operations", JsonObject().apply {
             if (scene != DemoScene.READ_ONLY) {
                 add("vehicle.refresh", JsonObject().apply { addProperty("verified", true); addProperty("confirmation", true) })
@@ -186,6 +199,15 @@ class DemoConnection(private val scene: DemoScene, private val clock: () -> Long
         add("slots", JsonArray().apply { programSlots.forEach { raw ->
             add(JsonObject().apply { addProperty("raw", raw); addProperty("age_ms", if (scene == DemoScene.ASLEEP && !refreshed) 120000 else 100) })
         } })
+    }
+    private fun schedule()=chargeSchedule.args().apply {
+        addProperty("state",if(chargeSchedule.enabled)"idle" else "disabled");addProperty("active",false)
+        add("next_local",JsonNull.INSTANCE);addProperty("last_result",0)
+        add("clock",JsonObject().apply {
+            val value=java.time.LocalDateTime.of(2026,11,11,6,30).plusSeconds((clock()-started)/1000)
+            addProperty("local",value.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")))
+            addProperty("second",value.second);addProperty("age_ms",100)
+        })
     }
     private fun lowPower()=JsonObject().apply {
         addProperty("rev",sleepSettings.revision);addProperty("enabled",sleepSettings.enabled);addProperty("idle_hours",sleepSettings.idleHours)

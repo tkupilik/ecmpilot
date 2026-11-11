@@ -12,6 +12,14 @@ See [automatic refresh](auto-refresh.md) for the gateway-owned timer settings an
 demo-only editor checks. The shared sheet dismissal threshold is now 100 physical
 pixels, with velocity-based dismissal disabled; gesture test distances use pixels.
 
+`OffPeakChargingTest` covers schedule configuration, production-reply parsing,
+maximum packet size and vehicle-clock rollover without phone timezone/DST rules.
+`ChargeScheduleUiTest` exercises the editor and Home clock on the physical phone
+in demo mode. `VehicleActionFeedbackTest` covers automatic delayed-mode/time saves,
+invalid time suppression, progress and failures; `AutoRefreshUiTest` covers the
+shared limiter switches and disabled slider. `GitHubScreenshotsTest` reproduces
+the [dated screenshot gallery](screenshots/README.md), including the new controls.
+
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\dev.ps1 check
 python -m unittest discover -s tools -p 'test_*.py' -v

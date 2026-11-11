@@ -1,7 +1,9 @@
 # Gateway automatic refresh settings
 
-The **Charge limit** switch requires automatic refresh. Enable it here and Apply;
-the **Charging** sheet then offers a target slider (default 80%, selectable range 30–100%).
+The **Charge limit** switch requires saved, enabled automatic refresh settings.
+It is available at the end of **Gateway**, below automatic deep sleep, and in **Charging**.
+Switch changes save immediately. The **Charging** sheet keeps its target slider visible
+(default 80%, selectable range 30-100%), disabled when the limiter is off.
 The feature explanation appears only beside its enable switch in Gateway settings.
 Releasing the slider saves the gateway configuration, not a direct vehicle action.
 Turning off refresh also disables the limiter. The gateway uses fresh CAN data

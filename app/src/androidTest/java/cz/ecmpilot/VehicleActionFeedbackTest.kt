@@ -7,6 +7,7 @@ import cz.ecmpilot.model.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.Before
+import org.junit.Assert.*
 
 /** Demo transport only; no CAN commands or UDP requests to the vehicle. */
 class VehicleActionFeedbackTest {
@@ -24,7 +25,8 @@ class VehicleActionFeedbackTest {
     private fun charge() {
         ui.onNodeWithTag("charging-status").performScrollTo().performClick()
         ui.onNodeWithTag("deferred-charging").performScrollTo().performClick()
-        ui.onNodeWithTag("apply-charge").performScrollTo().performClick()
+        if (repository.state.value.settings.scene != DemoScene.REJECT)
+            ui.onNodeWithText("Close").performScrollTo().performClick()
     }
     private fun programs() {
         ui.onNodeWithTag("home-climate").performScrollTo().performClick()
@@ -41,14 +43,32 @@ class VehicleActionFeedbackTest {
             ui.runOnUiThread { repository.saveSettings(Settings(scene = DemoScene.CHARGING)) }
             ready()
             ui.onNodeWithTag("charging-status").performScrollTo().performClick()
+            ui.onNodeWithTag("apply-charge").assertDoesNotExist()
             ui.onNodeWithTag("deferred-charging").assertIsOff()
+            assertNull(repository.state.value.command)
+            for (invalid in listOf("03:", "27:00")) {
+                ui.onNodeWithTag("charge-start-time").performScrollTo().performTextReplacement(invalid)
+                ui.mainClock.advanceTimeBy(1200)
+                ui.waitForIdle()
+                assertNull(repository.state.value.command)
+            }
             ui.onNodeWithTag("charge-start-time").performScrollTo().performTextReplacement("03:17")
-            ui.onNodeWithTag("apply-charge").performScrollTo().performClick()
             ui.waitUntil(15000) { repository.state.value.command?.phase == "succeeded" }
-            ui.onNodeWithTag("charging-status").performScrollTo().performClick()
             ui.onNodeWithTag("deferred-charging").assertIsOff()
-            ui.onNodeWithTag("charge-start-time").performScrollTo().assertTextContains("03:17")
-            ui.onNodeWithText("Close").performClick()
+            ui.onNodeWithTag("charge-start-time").performScrollTo().assertTextContains("03:17", substring = true)
+            assertEquals("03:17", repository.state.value.vehicle?.charge?.startLocal)
+            ui.onNodeWithTag("charge-mode-progress").assertDoesNotExist()
+            // A passive update must not submit the same command again.
+            val rev = repository.state.value.vehicle!!.charge.rev
+            ui.mainClock.advanceTimeBy(1200)
+            ui.waitForIdle()
+            assertEquals(rev, repository.state.value.vehicle!!.charge.rev)
+            ui.onNodeWithTag("deferred-charging").performScrollTo().performClick()
+            ui.waitUntil(15000) { repository.state.value.command?.phase == "succeeded" && repository.state.value.vehicle?.charge?.mode == "deferred" }
+            ui.onNodeWithTag("deferred-charging").assertIsOn()
+            assertEquals("03:17", repository.state.value.vehicle?.charge?.startLocal)
+            ui.onNodeWithTag("apply-charge").assertDoesNotExist()
+            ui.onNodeWithText("Close").performScrollTo().performClick()
         } finally {
             ui.waitUntil(15000) { repository.state.value.command?.pending != true }
             ui.runOnUiThread { repository.saveSettings(original) }
@@ -88,8 +108,10 @@ class VehicleActionFeedbackTest {
                 ui.onNodeWithText(repository.state.value.command!!.message).assertExists()
                 ui.onNodeWithTag("vehicle-action-progress").assertDoesNotExist()
                 ui.onNodeWithTag("command-result").assertDoesNotExist()
-                ui.onNodeWithText("Close").performClick()
+                ui.onNodeWithTag("vehicle-action-error-close").performClick()
                 ui.onNodeWithTag("vehicle-action-error").assertDoesNotExist()
+                if (ui.onAllNodesWithTag("dialog-sheet").fetchSemanticsNodes().isNotEmpty())
+                    ui.onNodeWithText("Close").performScrollTo().performClick()
             }
         } finally {
             ui.waitUntil(15000) { repository.state.value.command?.pending!=true }

@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,7 +41,7 @@ internal fun AutoRefreshContent(s: PilotState, onSave: (AutoRefreshSettings) -> 
         Text("Connect to a gateway with automatic refresh support.", style = MaterialTheme.typography.bodySmall)
         return
     }
-    val editable = s.connected && status != null && !s.autoRefreshSaving && !s.lowPowerSaving && s.command?.pending != true &&
+    val editable = s.connected && status != null && !s.autoRefreshSaving && !s.lowPowerSaving && !s.chargeScheduleSaving && s.command?.pending != true &&
         (s.settings.source != Source.UDP || s.permissionGranted && s.info?.security == "lab-plain")
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text("Enable automatic refresh", Modifier.weight(1f))
@@ -57,16 +58,6 @@ internal fun AutoRefreshContent(s: PilotState, onSave: (AutoRefreshSettings) -> 
         label = { Text("Minimum 12 V battery level (%)") }, keyboardOptions = keyboard, singleLine = true, enabled = editable,
         modifier = Modifier.fillMaxWidth().testTag("auto-refresh-soc"))
     Text("Keep battery and charging information up to date, even when the app is closed. Choose how often to update when the car is not charging and while it is charging. Updates pause if the 12 V battery falls below your chosen level. If its level is unknown, updates are still allowed.", style = MaterialTheme.typography.bodySmall)
-    if ("charge_limit" in (s.info?.fields ?: emptySet())) {
-        HorizontalDivider(Modifier.padding(top = 10.dp))
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Charge limit", Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
-            Switch(chargeLimit, { chargeLimit = it; dirty = true }, enabled = editable && enabled && status?.capable == true,
-                modifier = Modifier.testTag("charge-limit-enabled"))
-        }
-        Text("Requires automatic refresh. Choose a target of 30–100% in Charging. Each time updated vehicle data arrives, the gateway checks the battery level and uses delayed charging to pause at your target. The car can resume charging at its scheduled start time.",
-            style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("charge-limit-help"))
-    }
     (error ?: s.autoRefreshError)?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.testTag("auto-refresh-error")) }
     if (!dirty && s.autoRefreshSavedRevision != null && s.autoRefreshError == null)
         Text("Saved on gateway.", style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("auto-refresh-saved"))
@@ -84,17 +75,33 @@ internal fun AutoRefreshContent(s: PilotState, onSave: (AutoRefreshSettings) -> 
 }
 
 @Composable
-internal fun ChargeLimitContent(s: PilotState, onSave: (AutoRefreshSettings) -> Unit, onReload: () -> Unit) {
+internal fun ChargeLimitContent(s: PilotState, onSave: (AutoRefreshSettings) -> Unit, onReload: () -> Unit, showTarget: Boolean = true) {
+    if ("charge_limit" !in (s.info?.fields ?: emptySet())) return
     val status = s.autoRefresh ?: return
     val settings = status.settings
-    if (!settings.enabled || !settings.chargeLimitEnabled) return
     var target by remember(s.gatewayId, s.boot, settings.chargeLimitSocPct) { mutableFloatStateOf(settings.chargeLimitSocPct.toFloat()) }
+    val editable = s.connected && !s.autoRefreshSaving && !s.lowPowerSaving && !s.chargeScheduleSaving && s.command?.pending != true &&
+        (s.settings.source != Source.UDP || s.permissionGranted && s.info?.security == "lab-plain")
     HorizontalDivider(Modifier.padding(top = 10.dp))
-    Text("Charge limit · ${target.roundToInt()}%", fontWeight = FontWeight.SemiBold, modifier = Modifier.testTag("charge-limit-target"))
-    Slider(value = target, onValueChange = { target = it }, valueRange = 30f..100f, steps = 69,
-        onValueChangeFinished = { if (target.roundToInt() != settings.chargeLimitSocPct) onSave(settings.copy(chargeLimitSocPct = target.roundToInt())) },
-        enabled = s.connected && !s.autoRefreshSaving && !s.lowPowerSaving && s.command?.pending != true,
-        modifier = Modifier.fillMaxWidth().testTag("charge-limit-slider"))
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text("Charge limit", Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
+        Switch(settings.chargeLimitEnabled, { onSave(settings.copy(chargeLimitEnabled = it)) },
+            enabled = editable && (settings.chargeLimitEnabled || settings.enabled && status.capable),
+            colors = scheduleSwitchColors(), modifier = Modifier.testTag("charge-limit-enabled"))
+    }
+    if (showTarget) {
+        val limitEnabled = settings.enabled && settings.chargeLimitEnabled
+        Text("${target.roundToInt()}%", fontWeight = FontWeight.Medium,
+            modifier = Modifier.alpha(if (limitEnabled) 1f else .38f).testTag("charge-limit-target"))
+        Slider(value = target, onValueChange = { target = it }, valueRange = 30f..100f, steps = 69,
+            onValueChangeFinished = { if (target.roundToInt() != settings.chargeLimitSocPct) onSave(settings.copy(chargeLimitSocPct = target.roundToInt())) },
+            enabled = limitEnabled && editable && status.capable,
+            modifier = Modifier.fillMaxWidth().testTag("charge-limit-slider"))
+    } else {
+        Text("Requires automatic refresh. Choose a target of 30-100% in Charging. Each time updated vehicle data arrives, the gateway checks the battery level and uses delayed charging to pause at your target. The car can resume charging at its scheduled start time.",
+            style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("charge-limit-help"))
+    }
+    if (!settings.enabled) Text("Enable automatic refresh in Gateway to use the charge limit.", style = MaterialTheme.typography.bodySmall)
     if (s.autoRefreshSaving) LinearProgressIndicator(Modifier.fillMaxWidth())
     Text(status.chargeLimitDescription, style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("charge-limit-status"))
     s.autoRefreshError?.let {

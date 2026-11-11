@@ -1,8 +1,9 @@
 # Home, vehicle status and consumption
 
 Home keeps the current header: settings icon, gateway/BSI status, then a separate
-line for the age of the SOC observation, followed by the vehicle name and explicit
-Refresh action. Both status lines always occupy one line with ellipsis instead
+line for the age of the SOC observation and another for the vehicle date/time,
+followed by the vehicle name and explicit Refresh action. Each status line
+always occupies one line with ellipsis instead
 of wrapping, so changes in age or BSI text cannot shift the content below them.
 The compact vehicle panel contains SOC, a small battery bar, estimated range
 and outside temperature, with `12V SOC …%` at the bottom right. The auxiliary SOC
@@ -23,7 +24,14 @@ Three shortcuts open screens; clicking a status never sends a vehicle command:
 
 The row menu contains **Trips & consumption** and **Vehicle details**. Charging
 and Preconditioning open through their status shortcuts above it. Charging holds SOC/charge information, the delayed-charging
-switch, always-visible time editor and Apply. The switch track is transparent
+switch and always-visible time editor. Switching sends immediately; a valid edited time
+sends after 800 ms without further typing. There is no Apply button for these controls.
+The sheet stays open and shows progress while waiting for confirmation.
+Below the native charging controls are **Charge limit** (switch and always-visible
+30–100% slider) and **Schedules** (weekly high-tariff pause periods with explicit
+Apply/Reload). See [charging schedules](charging-schedules.md). Gateway settings
+are ordered as automatic refresh, automatic deep sleep, then Charge limit.
+The switch track is transparent
 when off and blue when on. SOC uses a continuous track without a progress-widget
 gap or end marker. Dark surfaces use a neutral charcoal palette shared with the
 Connection/setup sheet; green is reserved for status accents.
@@ -41,7 +49,7 @@ for BSI readback; editing does not start immediate preconditioning. Slots are
 vehicle observations, not phone alarms. Missing/older gateway support is shown
 without pretending a local draft is installed in the car. The captured plan
 matches 07:30 Monday/Wednesday/Thursday, disabled. See the GW
-[program contract](../../ecmpilot-gw/docs/preconditioning-programs.md).
+[program contract](https://github.com/tkupilik/ecmpilot-gw/blob/master/docs/preconditioning-programs.md).
 
 Both dialogs use the shared Close action without a duplicate
 Cancel button; pending requests still follow the existing confirmation or
@@ -99,7 +107,7 @@ capability is never sent the new operation and the new screens show unavailable
 values. Door and trip demo data run entirely inside the existing in-process
 demo gateway; the additional **Doors open** scene opens three panels.
 
-See the GW [decoder and wire details](../../ecmpilot-gw/docs/vehicle-details.md).
+See the GW [decoder and wire details](https://github.com/tkupilik/ecmpilot-gw/blob/master/docs/vehicle-details.md).
 
 ## Display freshness
 
@@ -119,10 +127,10 @@ Expanded anchor from feeding back into each other during upward drags. IME
 padding is provided once by ModalBottomSheet. Inner scrolling and swipe-down
 dismissal remain available.
 
-Swipe dismissal requires56dp travel. The fast-fling shortcut is disabled at the
+Swipe dismissal requires 100 physical pixels of travel. The fast-fling shortcut is disabled at the
 owner's request: speed alone cannot dismiss a sheet below that distance.
 Longer downward pulls, Close, Back and outside taps retain normal dismissal.
-The same saved SheetState policy applies to all six
+The same saved SheetState policy applies to all shared
 dialogs and preserves the earlier stable height/inset handling.
 
 ## Vehicle action feedback

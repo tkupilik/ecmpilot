@@ -1,127 +1,173 @@
 {
-  "captured_date": "2026-11-04",
+  "schema_version": 2,
+  "updated_date": "2026-11-11",
   "timezone": "Europe/Prague",
   "device_model": "Samsung Galaxy A55 (SM-A556B)",
   "android_version": "16",
   "app_version": "0.2.0",
-  "app_apk_sha256": "9b30f9b2e07ce3fc55a7691f30659911a373d696c6e04553f34137c6e8dee704",
   "capture": "Compose root captureToImage on the physical phone; original lossless PNG bytes, renamed only",
-  "live_actions": "Passive reads and screen navigation only; preconditioning started by the owner before capture",
-  "demo_actions": "In-process simulated gateway only, including delayed-charge confirmation and rejected refresh",
   "original_connection_settings_restored": true,
-  "ui_checks": {
-    "live_gallery": "OK (1 test)",
-    "demo_gallery": "OK (1 test)"
-  },
   "privacy": "System bars excluded; demo diagnostic tail contains demo connections only; no device serial saved",
+  "sessions": [
+    {
+      "id": "demo-2026-11-11",
+      "captured_date": "2026-11-11",
+      "source": "demo",
+      "app_apk_sha256": "df10140a687e98d4911226a54999577afa804b3b0bf33135e3a481020633c7bb",
+      "test_apk_sha256": "be5321a76f12b3e6c1f9df55f01462a100e8b49c6f6a55daeb85207bb6db34af",
+      "ui_check": "GitHubScreenshotsTest#captureDocumentationGallery: OK (1 test)",
+      "actions": "In-process demo only: delayed-mode change, limiter enable/disable and two saved high-tariff periods. Local gateway form opened without saving or connecting. No vehicle-control traffic."
+    },
+    {
+      "id": "live-2026-11-04",
+      "captured_date": "2026-11-04",
+      "source": "live",
+      "app_apk_sha256": "9b30f9b2e07ce3fc55a7691f30659911a373d696c6e04553f34137c6e8dee704",
+      "ui_check": "OK (1 test)",
+      "actions": "Passive reads and screen navigation only; preconditioning started by the owner before capture",
+      "note": "Retained earlier interface; not recaptured or presented as current UI."
+    }
+  ],
   "images": [
+    {
+      "file": "demo-charging-limit-off.png",
+      "source": "demo",
+      "session_id": "demo-2026-11-11",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 124514,
+      "sha256": "eec6082551d477443a618df77141c540bf3e55680ac7c619edfa74868e535be4"
+    },
+    {
+      "file": "demo-charging-limit.png",
+      "source": "demo",
+      "session_id": "demo-2026-11-11",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 128189,
+      "sha256": "c281231cbc930234edfe6de1af560e9d02bbcd85e7e3a1955151e218e3cb43ba"
+    },
+    {
+      "file": "demo-charging-schedules-lower.png",
+      "source": "demo",
+      "session_id": "demo-2026-11-11",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 118651,
+      "sha256": "20d362e0cac27b18e7019836d0cf97f2a1b3367d3b573f278f73ce5a7a1a493e"
+    },
+    {
+      "file": "demo-charging-schedules.png",
+      "source": "demo",
+      "session_id": "demo-2026-11-11",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 119127,
+      "sha256": "d0662c3324e78b9990a954321759e816016edd25a6283c4034d2177ba69e27cc"
+    },
     {
       "file": "demo-charging.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
-      "bytes": 135365,
-      "sha256": "8ffb0307a3a4251810b0b74904e544572e870da7d7ac210ec9b90837638b8b0a"
+      "bytes": 126079,
+      "sha256": "392794cdf04e5245b449e17af702c74304c08fe049fd3cef9416c5c307fa5a97"
+    },
+    {
+      "file": "demo-connection-discovery.png",
+      "source": "demo",
+      "session_id": "demo-2026-11-11",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 150947,
+      "sha256": "b95756ee2c4142f9e4c31a91f21402b5c43bb18a719312afbf3e71d30cf4d29f"
     },
     {
       "file": "demo-delayed-charging.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
-      "bytes": 135289,
-      "sha256": "13815b664b43492c2f95e490ed5150edda8958d5d7c872ef43fdd2ae8a525678"
+      "bytes": 119671,
+      "sha256": "260705b74686062304faf663d464b3aa50a053509db741bf32d94550ea5bf77f"
     },
     {
       "file": "demo-details.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
-      "bytes": 154215,
-      "sha256": "796b2c2324df15f0c3f97b5d3a760e96b5bfb0c12f7bf1275fbbd7712050152e"
+      "bytes": 156709,
+      "sha256": "34234ec241bcde02a40bda72d1163f2b36b0d268a1c5bb92a66dca99b8f12714"
     },
     {
       "file": "demo-doors.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
-      "bytes": 397186,
-      "sha256": "e3fd84ccb1d69d1ae1d25c5d54fdc671ec073f3adfe75192849913e2dab6d2cd"
+      "bytes": 397367,
+      "sha256": "e2fd14bdcd70c14f39a6862a475fe78ff65a13cfdcc39a6a98a9ab89c5bf536f"
+    },
+    {
+      "file": "demo-gateway-charge-limit.png",
+      "source": "demo",
+      "session_id": "demo-2026-11-11",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 202158,
+      "sha256": "bdcb626251e1b27717d733a7746a6a81ee73e76ce124f8ab0817580de2273d18"
+    },
+    {
+      "file": "demo-gateway-low-power.png",
+      "source": "demo",
+      "session_id": "demo-2026-11-11",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 189248,
+      "sha256": "b8d945b5dd531c8d50d1003e4c40d6a6c0cbe70a7450b628ef2648a83fc7d125"
     },
     {
       "file": "demo-gateway.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
-      "bytes": 178932,
-      "sha256": "8f7510b44bdfc0c780ba2b9880df3433b99d57c93134b8c18ae4d7c6d035a13d"
+      "bytes": 163304,
+      "sha256": "1a893dc07d0f3280ce219a06623077383a7dcfc72b4813271713577fcc067faf"
     },
     {
       "file": "demo-home-dark.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2340,
-      "bytes": 149642,
-      "sha256": "9178390f2c9e8d8e37b940e2eb3946fc3401af46175dbdbd06dd1f376c65695c"
+      "bytes": 156728,
+      "sha256": "6a0c1140d36cf84da91fa61649b98a738e96b4f92cfe802d91e6c66016527106"
     },
     {
       "file": "demo-home-light.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2340,
-      "bytes": 147173,
-      "sha256": "00bfe35b3a39d58d43d8a2468e6ab551526c6eebef6f1d869f1cd595855686f8"
-    },
-    {
-      "file": "live-charging.png",
-      "source": "live",
-      "width": 1080,
-      "height": 2116,
-      "bytes": 128589,
-      "sha256": "148fd84a2f684688971fd024004ee4ce41aa58aafaeae51566e2e1b8eb5659a1"
-    },
-    {
-      "file": "live-doors.png",
-      "source": "live",
-      "width": 1080,
-      "height": 2116,
-      "bytes": 397027,
-      "sha256": "44f28a1786975f97ef945f05af26e57b00746e86657b59321389c3c71a3e34e5"
-    },
-    {
-      "file": "live-home.png",
-      "source": "live",
-      "width": 1080,
-      "height": 2340,
-      "bytes": 144529,
-      "sha256": "0607fe4070c955b9903e397db17a3a7062e0c79317430dc0c1f741d277199d74"
-    },
-    {
-      "file": "live-preconditioning.png",
-      "source": "live",
-      "width": 1080,
-      "height": 2116,
-      "bytes": 137933,
-      "sha256": "92c141632c259fc61e88a6b35183c98549397e092d11f8163aea4d722ca7a656"
-    },
-    {
-      "file": "live-trips.png",
-      "source": "live",
-      "width": 1080,
-      "height": 2116,
-      "bytes": 114701,
-      "sha256": "4cfe7c88656f3c2e605a9c27f4e89deca20564d1135ab64d42af25d69bf80ed3"
+      "bytes": 153457,
+      "sha256": "169a697cf764de353e6d97e7013b68b8b63ae60b896947e14412264c63f56151"
     },
     {
       "file": "demo-offline.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2340,
-      "bytes": 130224,
-      "sha256": "1670c4c27ebf1f6d5cbe7012ef217314fa14cb9f581ee89c31405fb5d0f15731"
+      "bytes": 133636,
+      "sha256": "57fe820bbc24a36b2cc6851d1f2602abbd969d40076546ec3fbf2971d6be1210"
     },
     {
       "file": "demo-preconditioning-dark.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
       "bytes": 135713,
@@ -130,6 +176,7 @@
     {
       "file": "demo-preconditioning.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
       "bytes": 137658,
@@ -138,22 +185,25 @@
     {
       "file": "demo-request-error.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
-      "bytes": 151226,
-      "sha256": "24d5271b064ee3962ec178ff9a2257521f1e4619eaa5b93729a1f256899bddd6"
+      "bytes": 148819,
+      "sha256": "de5a1cc45e7d7f3d0f4905c44267b2dd000771e393866b41279f3cc0ae053da6"
     },
     {
       "file": "demo-schedules.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
-      "bytes": 121276,
-      "sha256": "84edddee41776dc582bbb42e1c730053e56892b0bbb49a14368207f9d90706bd"
+      "bytes": 121263,
+      "sha256": "47ef4f342f28103b87d6d31fca7ebd658c27ef57b23fd6eb6ebb9e8317cbb193"
     },
     {
       "file": "demo-settings.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
       "bytes": 117925,
@@ -162,10 +212,56 @@
     {
       "file": "demo-trips.png",
       "source": "demo",
+      "session_id": "demo-2026-11-11",
       "width": 1080,
       "height": 2116,
       "bytes": 121511,
       "sha256": "0b2a21f6e60563309c3e41d6ae8395afb615d4a582e2f63482a2cb005b00df2a"
+    },
+    {
+      "file": "live-charging.png",
+      "source": "live",
+      "session_id": "live-2026-11-04",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 128589,
+      "sha256": "148fd84a2f684688971fd024004ee4ce41aa58aafaeae51566e2e1b8eb5659a1"
+    },
+    {
+      "file": "live-doors.png",
+      "source": "live",
+      "session_id": "live-2026-11-04",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 397027,
+      "sha256": "44f28a1786975f97ef945f05af26e57b00746e86657b59321389c3c71a3e34e5"
+    },
+    {
+      "file": "live-home.png",
+      "source": "live",
+      "session_id": "live-2026-11-04",
+      "width": 1080,
+      "height": 2340,
+      "bytes": 144529,
+      "sha256": "0607fe4070c955b9903e397db17a3a7062e0c79317430dc0c1f741d277199d74"
+    },
+    {
+      "file": "live-preconditioning.png",
+      "source": "live",
+      "session_id": "live-2026-11-04",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 137933,
+      "sha256": "92c141632c259fc61e88a6b35183c98549397e092d11f8163aea4d722ca7a656"
+    },
+    {
+      "file": "live-trips.png",
+      "source": "live",
+      "session_id": "live-2026-11-04",
+      "width": 1080,
+      "height": 2116,
+      "bytes": 114701,
+      "sha256": "4cfe7c88656f3c2e605a9c27f4e89deca20564d1135ab64d42af25d69bf80ed3"
     }
   ]
 }

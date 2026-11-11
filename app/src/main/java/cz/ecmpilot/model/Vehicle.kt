@@ -17,6 +17,7 @@ data class Settings(
     val allowLabControls: Boolean = false,
     val theme: ThemeMode = ThemeMode.SYSTEM,
     val scene: DemoScene = DemoScene.CHARGING,
+    val autoDiscovery: Boolean = true,
 )
 
 /** Ages always describe the vehicle observation; transport receipts cannot refresh old data. */
@@ -112,12 +113,14 @@ data class CommandRef(val id: String, val gatewayId: String, val boot: String, v
 data class CommandUi(val ref: CommandRef?, val phase: String, val message: String, val resultRevision: Long = -1) {
     val pending get() = phase in setOf("preparing", "sending", "accepted", "executing")
     val hasError get() = phase in setOf("rejected", "failed", "unknown")
+    val needsRecovery get() = ref != null && (pending || phase == "unknown")
 }
 data class PilotState(
     val settings: Settings,
     val nowMs: Long = 0, val permissionGranted: Boolean = true,
     val connected: Boolean = false, val connecting: Boolean = true,
     val gatewayId: String? = null, val boot: String? = null,
+    val gatewayAddress: String? = null,
     val info: GatewayInfo? = null, val vehicle: VehicleState? = null,
     val command: CommandUi? = null, val error: String? = null,
     val diagnostics: List<String> = emptyList(),
@@ -128,13 +131,17 @@ data class PilotState(
     val autoRefreshError: String? = null,
     val autoRefreshSavedRevision: Long? = null,
     val lowPower: LowPowerStatus? = null,
+    val chargeSchedule: ChargeScheduleStatus? = null,
+    val chargeScheduleSaving: Boolean = false,
+    val chargeScheduleError: String? = null,
+    val chargeScheduleSavedRevision: Long? = null,
     val lowPowerSaving: Boolean = false,
     val lowPowerError: String? = null,
     val lowPowerSavedRevision: Long? = null,
 ) {
     val readOnly get() = settings.source == Source.UDP && !settings.allowLabControls
     fun controlReady(domain: String): Boolean {
-        if (!connected || settings.source == Source.UDP && !permissionGranted || command?.pending == true || autoRefreshSaving || lowPowerSaving) return false
+        if (!connected || settings.source == Source.UDP && !permissionGranted || command?.pending == true || autoRefreshSaving || lowPowerSaving || chargeScheduleSaving) return false
         if (settings.source == Source.UDP && info?.security != "lab-plain") return false
         if (domain == "refresh") return info?.refresh() == true
         if (readOnly) return false

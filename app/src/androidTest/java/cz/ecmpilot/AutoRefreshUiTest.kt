@@ -31,11 +31,12 @@ class AutoRefreshUiTest {
             ui.onNodeWithTag("auto-refresh-charging").performScrollTo().performTextReplacement("2")
             ui.onNodeWithTag("auto-refresh-soc").performScrollTo().performTextReplacement("55")
             ui.onNodeWithTag("auto-refresh-enabled").performScrollTo().performClick()
-            ui.onNodeWithTag("charge-limit-enabled").performScrollTo().assertIsEnabled().performClick()
-            ui.onNodeWithTag("charge-limit-help").assertExists()
             ui.onNodeWithTag("auto-refresh-apply").performScrollTo().performClick()
             ui.waitUntil(15000) { repository.state.value.autoRefreshSavedRevision == 2L && !repository.state.value.autoRefreshSaving }
-            assertEquals(AutoRefreshSettings(2, true, 15, 2, 55, true, 80), repository.state.value.autoRefresh!!.settings)
+            ui.onNodeWithTag("charge-limit-enabled").performScrollTo().assertIsEnabled().performClick()
+            ui.waitUntil(15000) { repository.state.value.autoRefreshSavedRevision == 3L && !repository.state.value.autoRefreshSaving }
+            ui.onNodeWithTag("charge-limit-help").assertExists()
+            assertEquals(AutoRefreshSettings(3, true, 15, 2, 55, true, 80), repository.state.value.autoRefresh!!.settings)
             assertNull(repository.state.value.command)
             assertEquals(false, repository.state.value.vehicle!!.awake)
             ui.onNodeWithTag("vehicle-action-error").assertDoesNotExist()
@@ -53,13 +54,25 @@ class AutoRefreshUiTest {
             ui.onNodeWithTag("charge-limit-slider").performScrollTo().performSemanticsAction(SemanticsActions.SetProgress) { it(85f) }
             ui.waitUntil(15000) { repository.state.value.autoRefresh?.settings?.chargeLimitSocPct == 85 && !repository.state.value.autoRefreshSaving }
             assertTrue(repository.state.value.autoRefresh!!.settings.chargeLimitEnabled)
+            ui.onNodeWithTag("charge-limit-enabled").performScrollTo().assertIsOn().performClick()
+            ui.waitUntil(15000) { repository.state.value.autoRefresh?.settings?.chargeLimitEnabled == false && !repository.state.value.autoRefreshSaving }
+            ui.onNodeWithTag("charge-limit-slider").assertIsNotEnabled()
+            ui.onNodeWithTag("charge-limit-enabled").assertIsOff().performClick()
+            ui.waitUntil(15000) { repository.state.value.autoRefresh?.settings?.chargeLimitEnabled == true && !repository.state.value.autoRefreshSaving }
+            val saved = repository.state.value.autoRefresh!!.settings
+            assertEquals(AutoRefreshSettings(saved.revision, true, 15, 2, 55, true, 85), saved)
+            ui.onNodeWithTag("charge-limit-slider").assertIsEnabled()
             assertNull(repository.state.value.command)
             ui.onNodeWithText("Close").performScrollTo().performClick()
             ui.onNodeWithTag("menu-gateway").performScrollTo().performClick()
             ui.onNodeWithTag("auto-refresh-enabled").performScrollTo().performClick()
-            ui.onNodeWithTag("charge-limit-enabled").performScrollTo().assertIsOff().assertIsNotEnabled()
             ui.onNodeWithTag("auto-refresh-apply").performScrollTo().performClick()
             ui.waitUntil(15000) { repository.state.value.autoRefresh?.settings?.enabled == false && !repository.state.value.autoRefreshSaving }
+            ui.onNodeWithTag("charge-limit-enabled").performScrollTo().assertIsOff().assertIsNotEnabled()
+            ui.onNodeWithText("Close").performScrollTo().performClick()
+            ui.onNodeWithTag("charging-status").performScrollTo().performClick()
+            ui.onNodeWithTag("charge-limit-enabled").performScrollTo().assertIsOff().assertIsNotEnabled()
+            ui.onNodeWithTag("charge-limit-slider").assertIsNotEnabled()
             ui.onNodeWithText("Close").performScrollTo().performClick()
             ui.onNodeWithTag("home-climate").performScrollTo().performClick()
             ui.onNodeWithTag("preconditioning-outside").assertExists()

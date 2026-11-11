@@ -48,7 +48,7 @@ class PilotAppTest {
         ui.onNodeWithTag("charging-status").performClick()
         ui.onNodeWithTag("deferred-charging").performClick()
         screen("charging")
-        ui.onNodeWithTag("apply-charge").performScrollTo().performClick()
+        ui.onNodeWithTag("apply-charge").assertDoesNotExist()
         result("succeeded")
         ui.waitUntil(10_000) { repository.state.value.vehicle?.charge?.mode == "deferred" }
     }

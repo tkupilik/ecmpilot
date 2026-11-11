@@ -82,7 +82,7 @@ fun PilotApp(repository: PilotRepository, onRequestPermission: () -> Unit) {
             Sheet.CLIMATE -> ClimateSheet(state, onClose = { sheet = null },
                 onStart = { sheet = null; repository.submit(DesiredCommand.ClimateSet(state.vehicle?.climate?.state != "on")) },
                 onPrograms = { sheet = null; repository.submit(it) })
-            Sheet.CHARGING -> ChargingSheet(state, onClose = { sheet = null }, onApply = { sheet = null; repository.submit(it) }, onAutoRefresh = repository::saveAutoRefresh, onReload = repository::reconnect)
+            Sheet.CHARGING -> ChargingSheet(state, onClose = { sheet = null }, onApply = repository::submit, onAutoRefresh = repository::saveAutoRefresh, onSchedule = repository::saveChargeSchedule, onReload = repository::reconnect)
             Sheet.CONNECTION -> ConnectionSheet(state, onClose = { sheet = null }, onSave = { repository.saveSettings(it) }, onRefresh = repository::reconnect, onPermission = onRequestPermission)
             Sheet.GATEWAY -> GatewaySheet(state, onClose = { sheet = null }, onAutoRefresh = repository::saveAutoRefresh, onLowPower = repository::saveLowPower, onReload = repository::reconnect)
             Sheet.DETAILS -> DetailsSheet(state, repository::diagnosticText, onClose = { sheet = null })
@@ -95,7 +95,7 @@ fun PilotApp(repository: PilotRepository, onRequestPermission: () -> Unit) {
                 modifier = Modifier.testTag("vehicle-action-error"),
                 title = { Text(if (command.phase == "unknown") "Vehicle request not confirmed" else "${command.ref?.label ?: "Vehicle request"} failed") },
                 text = { Text(command.message) },
-                confirmButton = { TextButton(onClick = repository::dismissResult) { Text("Close") } })
+                confirmButton = { TextButton(onClick = repository::dismissResult, modifier = Modifier.testTag("vehicle-action-error-close")) { Text("Close") } })
         }
     }
 }
@@ -131,6 +131,10 @@ private fun Home(s: PilotState, modifier: Modifier, onSettings: () -> Unit, onDe
                 Text(ageText(socAge), fontSize = 12.sp, lineHeight = 18.sp,
                     minLines = 1, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth().testTag("vehicle-data-age"),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Vehicle time · ${s.chargeSchedule?.clock?.display(s.nowMs, withDate = true) ?: "—"}", fontSize = 12.sp, lineHeight = 18.sp,
+                    minLines = 1, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth().alpha(if (s.connected) 1f else .5f).testTag("vehicle-time"),
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Row(Modifier.fillMaxWidth().padding(top = 4.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -252,40 +256,61 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
         PreconditioningProgramsEditor(s, onPrograms)
     }
 }
-@Composable private fun ChargingSheet(s: PilotState, onClose: () -> Unit, onApply: (DesiredCommand.ChargeMode) -> Unit, onAutoRefresh: (AutoRefreshSettings) -> Unit, onReload: () -> Unit) {
-    var mode by rememberSaveable { mutableStateOf(s.vehicle?.charge?.mode?.takeIf { it == "deferred" } ?: "immediate") }
-    var time by rememberSaveable { mutableStateOf(s.vehicle?.charge?.startLocal ?: "23:00") }
+@Composable private fun ChargingSheet(s: PilotState, onClose: () -> Unit, onApply: (DesiredCommand.ChargeMode) -> Unit, onAutoRefresh: (AutoRefreshSettings) -> Unit, onSchedule: (ChargeScheduleSettings) -> Unit, onReload: () -> Unit) {
+    val charge = s.vehicle?.charge
+    val mode = charge?.mode?.takeIf { it == "deferred" } ?: "immediate"
+    var time by rememberSaveable(s.gatewayId, s.boot) { mutableStateOf(charge?.startLocal ?: "23:00") }
+    var timeEdited by rememberSaveable(s.gatewayId, s.boot) { mutableStateOf(false) }
     val timeValid = Regex("(?:[01][0-9]|2[0-3]):[0-5][0-9]").matches(time)
+    val editable = s.controlReady("charge") && s.info?.charge(mode) == true && s.info.timezone != null
+    val onChange by rememberUpdatedState(onApply)
+    LaunchedEffect(charge?.startLocal, s.command?.pending, timeEdited) {
+        if (!timeEdited && s.command?.pending != true) time = charge?.startLocal ?: "23:00"
+    }
+    LaunchedEffect(time, timeEdited, editable, mode, charge?.startLocal) {
+        if (timeEdited && timeValid && editable) {
+            delay(800)
+            timeEdited = false
+            if (time != charge?.startLocal) onChange(DesiredCommand.ChargeMode(mode, time))
+        }
+    }
     SheetFrame("Charging", onClose) {
         BatteryCard(s)
-        ChargeLimitContent(s, onAutoRefresh, onReload)
-        Text("Charging mode", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Switch(checked = mode == "deferred", onCheckedChange = { mode = if (it) "deferred" else "immediate" },
-                enabled = s.controlReady("charge") && s.info?.charge(if (mode == "deferred") "immediate" else "deferred") == true,
+            Text("Charging mode", Modifier.weight(1f), fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            if (s.command?.pending == true) CircularProgressIndicator(strokeWidth = 2.dp,
+                modifier = Modifier.size(18.dp).testTag("charge-mode-progress").semantics { contentDescription = "Vehicle request in progress" })
+        }
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Switch(checked = mode == "deferred", onCheckedChange = {
+                timeEdited = false
+                onApply(DesiredCommand.ChargeMode(if (it) "deferred" else "immediate", if (timeValid) time else charge?.startLocal))
+            },
+                enabled = editable && s.info?.charge(if (mode == "deferred") "immediate" else "deferred") == true,
                 modifier = Modifier.testTag("deferred-charging"),
                 colors = scheduleSwitchColors())
             Text("Delayed charging", modifier = Modifier.padding(start = 12.dp))
         }
-        OutlinedTextField(value = time, onValueChange = { time = it.take(5) }, label = { Text("Start time (HH:mm)") }, singleLine = true, isError = !timeValid, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii), modifier = Modifier.fillMaxWidth().testTag("charge-start-time"))
-        SecondaryText("Vehicle local time · ${s.info?.timezone ?: "Timezone unavailable"}")
+        OutlinedTextField(value = time, onValueChange = { time = it.take(5); timeEdited = true }, enabled = editable,
+            label = { Text("Start time (HH:mm)") }, singleLine = true, isError = !timeValid, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii), modifier = Modifier.fillMaxWidth().testTag("charge-start-time"))
+        SecondaryText("Vehicle local time")
         SecondaryText(if (s.info?.testMode == true) "Test only: this checks a varstore start-time value. It does not save or run a vehicle schedule."
             else "The start time is saved even when delayed charging is off.")
-        Button(onClick = { onApply(DesiredCommand.ChargeMode(mode, time)) },
-            enabled = s.controlReady("charge") && s.info?.charge(mode) == true && timeValid && s.info.timezone != null,
-            modifier = Modifier.testTag("apply-charge").fillMaxWidth().padding(top = 12.dp).heightIn(min = 48.dp)) { Text("Apply") }
+        ChargeLimitContent(s, onAutoRefresh, onReload)
+        ChargeScheduleContent(s,onSchedule,onReload)
     }
 }
 
 @Composable private fun GatewaySheet(s: PilotState, onClose: () -> Unit, onAutoRefresh: (AutoRefreshSettings) -> Unit, onLowPower: (LowPowerSettings) -> Unit, onReload: () -> Unit) {
     SheetFrame("Gateway", onClose) {
-        val gateway = if (s.settings.source == Source.DEMO) "Demo gateway" else s.settings.host
+        val gateway = if (s.settings.source == Source.DEMO) "Demo gateway" else s.gatewayAddress ?: s.settings.host
         val refreshStatus = s.autoRefresh?.description ?: "Reading gateway settings…"
         SecondaryText("$gateway, ${refreshStatus.replaceFirstChar { it.lowercase() }.trimEnd('.')}",
             Modifier.testTag("auto-refresh-status"))
         AutoRefreshContent(s, onAutoRefresh, onReload)
         HorizontalDivider(Modifier.padding(top = 10.dp))
         LowPowerContent(s, onLowPower, onReload)
+        ChargeLimitContent(s, onAutoRefresh, onReload, showTarget = false)
     }
 }
 
@@ -295,6 +320,7 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
     var port by rememberSaveable { mutableStateOf(s.settings.port.toString()) }
     var name by rememberSaveable { mutableStateOf(s.settings.vehicleName) }
     var lab by rememberSaveable { mutableStateOf(s.settings.allowLabControls) }
+    var autoDiscovery by rememberSaveable { mutableStateOf(s.settings.autoDiscovery) }
     var theme by rememberSaveable { mutableStateOf(s.settings.theme) }
     var scene by rememberSaveable { mutableStateOf(s.settings.scene) }
     var forget by rememberSaveable { mutableStateOf(false) }
@@ -307,7 +333,14 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
         }
         OutlinedTextField(name, { name = it.take(40) }, label = { Text("Vehicle name") }, singleLine = true, modifier = Modifier.fillMaxWidth())
         if (source == Source.UDP) {
-            OutlinedTextField(host, { host = it.trim() }, label = { Text("Gateway hostname or IP") }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri), modifier = Modifier.testTag("gateway-host").fillMaxWidth())
+            Row(Modifier.fillMaxWidth().padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Find gateway automatically")
+                    SecondaryText("Find your gateway on this network, including its own Wi-Fi. The address below is used if it cannot be found.")
+                }
+                Switch(autoDiscovery, { autoDiscovery = it }, modifier = Modifier.testTag("gateway-auto-discovery"))
+            }
+            OutlinedTextField(host, { host = it.trim() }, label = { Text(if (autoDiscovery) "Fallback hostname or IP" else "Gateway hostname or IP") }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri), modifier = Modifier.testTag("gateway-host").fillMaxWidth())
             OutlinedTextField(port, { port = it.filter(Char::isDigit).take(5) }, label = { Text("Local UDP port") }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.testTag("gateway-port").fillMaxWidth())
             if (!s.permissionGranted) Button(onClick = onPermission, modifier = Modifier.fillMaxWidth()) { Text("Allow local network access") }
             SecondaryText("Phone and gateway must share a local Wi-Fi or Ethernet network.")
@@ -331,9 +364,9 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
             Button(onClick = {
                 runCatching {
                     val parsedPort = port.toIntOrNull() ?: error("Enter a valid UDP port")
-                    onSave(Settings(source, host.trim(), parsedPort, name.trim(), if (forget) "" else s.settings.gatewayId, lab, theme, scene))
+                    onSave(Settings(source, host.trim(), parsedPort, name.trim(), if (forget) "" else s.settings.gatewayId, lab, theme, scene, autoDiscovery))
                 }.onSuccess { onRefresh(); onClose() }.onFailure { message = it.message ?: "Could not save settings" }
-            }, enabled = s.command?.pending != true && !s.autoRefreshSaving, modifier = Modifier.testTag("save-connection").weight(2f).heightIn(min = 48.dp)) { Text("Save & connect") }
+            }, enabled = s.command?.pending != true && !s.autoRefreshSaving && !s.lowPowerSaving && !s.chargeScheduleSaving, modifier = Modifier.testTag("save-connection").weight(2f).heightIn(min = 48.dp)) { Text("Save & connect") }
         }
     }
 }

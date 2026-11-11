@@ -4,6 +4,20 @@ Notable changes to eCMPilot will be documented here.
 
 ## [Unreleased]
 
+- Add gateway-owned **Charging → Schedules**: eight weekly high-tariff pause
+  periods, explicit Apply/Reload, overnight intervals and persistent pause undo.
+- Show vehicle date/time on Home, synchronized from BSI via GW with no timezone
+  or DST conversion. The GW keeps counting while BSI sleeps.
+- Save native delayed-charging switches immediately and valid time edits after
+  an 800 ms pause; remove their Apply button and keep the dialog open with progress.
+- Put Charge limit directly above Schedules, with an immediate enable switch
+  and an always-visible disabled slider when off. Move its Gateway section below
+  automatic deep sleep.
+- Add local mDNS gateway discovery and discard completed persisted receipts so
+  old errors do not reopen after app restart; pending recovery remains supported.
+- Refresh the physical-phone demo gallery for these controls and retain the
+  dated live-vehicle gallery separately.
+
 - Replace the launcher battery icon with the selected ivory car/amber lightning
   design on charcoal, with separate adaptive background and monochrome artwork.
 - Move Charge limit help to Gateway settings and offer 30–100% on its Charging

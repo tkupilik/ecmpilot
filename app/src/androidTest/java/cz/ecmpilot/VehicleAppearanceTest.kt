@@ -33,6 +33,7 @@ class VehicleAppearanceTest {
             ui.onNodeWithText("Start time (HH:mm)").assertExists()
             screen("appearance-charging-off-dark")
             ui.onNodeWithTag("deferred-charging").performClick()
+            ui.waitUntil(15000) { repository.state.value.command?.phase == "succeeded" }
             ui.onNodeWithText("Start time (HH:mm)").assertExists()
             screen("appearance-charging-on-dark")
             ui.onNodeWithText("Close").performClick()

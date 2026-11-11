@@ -29,6 +29,7 @@ data class Status(
     val autoRefresh: AutoRefreshStatus? = null,
     val correlationId: Long? = null,
     val lowPower: LowPowerStatus? = null,
+    val chargeSchedule: ChargeScheduleStatus? = null,
 )
 
 /** Tree-based Gson parsing avoids reflection and keeps the Android and JVM test codecs identical. */
@@ -163,6 +164,16 @@ object Protocol {
                     p.optionalLong("remaining_s")?.also { require(it in 0..2592000) },receivedMs,
                     p.number("last_error",-2147483648.0..2147483647.0)?.toLong() ?: 0)
             }
+            val chargeSchedule = root.obj("charge_schedule")?.let { p ->
+                val settings = ChargeScheduleSettings.parse(p)
+                val clock = requireNotNull(p.obj("clock"))
+                val local = clock.optionalString("local")
+                val next = p.optionalString("next_local")?.also { java.time.LocalDateTime.parse(it) }
+                ChargeScheduleStatus(settings,p.string("state"),requireNotNull(p.bool("active")),next,
+                    (p.optionalLong("last_result") ?: 0).also { require(it in 0..Int.MAX_VALUE.toLong()) }.toInt(),
+                    VehicleClock(local,(clock.optionalLong("second") ?: 0).also { require(it in 0..59) }.toInt(),
+                        clock.optionalLong("age_ms"),receivedMs))
+            }
             val command = root.obj("command")?.let { c ->
                 val phase = c.string("phase").also { require(it in setOf("accepted", "executing", "succeeded", "rejected", "failed", "unknown")) }
                 val correlation = c.optionalLong("correlation_id")?.let { Correlation(c.string("client_session"), it) }
@@ -171,7 +182,7 @@ object Protocol {
                 CommandResult(c.string("id").also { require(idPattern.matches(it)) }, c.long("revision"), phase, c.errorCode("error"), c.optionalString("reason"), correlation, preconditioningFeedback)
             }
             val correlationId = root.optionalLong("correlation_id")?.also { require(it in 1..0xffff_ffffL) }
-            return Status(gw, boot, reply, seq, now, info, state, command, root.errorCode("error"), receivedMs, roundTripMs, details, programs, autoRefresh, correlationId, lowPower)
+            return Status(gw, boot, reply, seq, now, info, state, command, root.errorCode("error"), receivedMs, roundTripMs, details, programs, autoRefresh, correlationId, lowPower, chargeSchedule)
         } catch (error: Exception) {
             if (error is ProtocolException) throw error
             throw ProtocolException("Invalid gateway response: ${error.message?.take(140) ?: "JSON error"}")
@@ -220,8 +231,9 @@ class StatusTracker {
     var programs: ClimatePrograms? = null; private set
     var autoRefresh: AutoRefreshStatus? = null; private set
     var lowPower: LowPowerStatus? = null; private set
+    var chargeSchedule: ChargeScheduleStatus? = null; private set
     fun accept(status: Status): Boolean {
-        if (boot != status.boot) { boot = status.boot; seq = -1; snapshot = null; details = null; programs = null; autoRefresh = null; lowPower = null }
+        if (boot != status.boot) { boot = status.boot; seq = -1; snapshot = null; details = null; programs = null; autoRefresh = null; lowPower = null; chargeSchedule = null }
         if (status.seq <= seq) return false
         seq = status.seq
         status.state?.let { snapshot = it }
@@ -229,6 +241,7 @@ class StatusTracker {
         status.programs?.let { programs = it }
         status.autoRefresh?.let { autoRefresh = it }
         status.lowPower?.let { lowPower = it }
+        status.chargeSchedule?.let { chargeSchedule = it }
         return true
     }
 }

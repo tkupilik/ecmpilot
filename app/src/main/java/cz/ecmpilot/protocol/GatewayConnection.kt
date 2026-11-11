@@ -8,6 +8,7 @@ import java.net.DatagramSocket
 import java.net.SocketTimeoutException
 
 interface GatewayConnection : Closeable {
+    val addressLabel: String? get() = null
     suspend fun exchange(request: Request, retry: Boolean = false): Status
 }
 
@@ -20,6 +21,7 @@ object UdpPolicy {
 
 /** The socket is connected to one endpoint, so the OS filters unrelated source addresses/ports. */
 class UdpConnection(private val socket: DatagramSocket, private val clock: () -> Long) : GatewayConnection {
+    override val addressLabel: String? get() = socket.inetAddress?.hostAddress
     override suspend fun exchange(request: Request, retry: Boolean): Status {
         val bytes = request.bytes()
         val start = clock()
