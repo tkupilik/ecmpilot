@@ -128,7 +128,7 @@ padding is provided once by ModalBottomSheet. Inner scrolling and swipe-down
 dismissal remain available.
 
 Swipe dismissal requires 100 physical pixels of travel. The fast-fling shortcut is disabled at the
-owner's request: speed alone cannot dismiss a sheet below that distance.
+configured policy: speed alone cannot dismiss a sheet below that distance.
 Longer downward pulls, Close, Back and outside taps retain normal dismissal.
 The same saved SheetState policy applies to all shared
 dialogs and preserves the earlier stable height/inset handling.

@@ -4,6 +4,40 @@ Notable changes to eCMPilot will be documented here.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-11
+
+First signed Google Play distribution build, with an AAB upload artifact and a
+separate release APK. Package `cz.ecmpilot`, version code 3.
+
+### Added
+
+- Local gateway discovery over mDNS, with manual hostname/IP fallback.
+- Weekly charging pause schedules with up to eight high-tariff periods,
+  overnight intervals and gateway-managed resume after its own pause.
+- Vehicle date and time on Home, synchronized from BSI through the gateway.
+- Charge limit controls in Charging, alongside gateway automatic refresh and
+  inactivity sleep configuration.
+- Updated physical-phone demo gallery and English installation/feature guides.
+
+### Changed
+
+- Native delayed-charging switches save immediately; valid time edits save
+  after a short pause without an Apply button. Progress remains in the dialog.
+- Charge limit sits above Schedules, with a persistent grey slider when off;
+  its Gateway section follows automatic deep sleep.
+- Home presents battery/range, preconditioning, charging and doors/locks, with
+  separate Trips, Vehicle details and Gateway screens.
+
+### Fixed
+
+- Completed command errors no longer reopen after restarting the app.
+- Correlated UDP retries preserve action identity and avoid duplicate vehicle
+  commands during packet loss or delayed replies.
+- Stable modal-sheet scrolling and a 100 px dismissal threshold without the
+  short-fling dismissal shortcut.
+
+## Development history before 0.3.0
+
 - Add gateway-owned **Charging → Schedules**: eight weekly high-tariff pause
   periods, explicit Apply/Reload, overnight intervals and persistent pause undo.
 - Show vehicle date/time on Home, synchronized from BSI via GW with no timezone
@@ -23,7 +57,7 @@ Notable changes to eCMPilot will be documented here.
 - Move Charge limit help to Gateway settings and offer 30–100% on its Charging
   slider. Simplify Preconditioning by moving outside temperature beside Prepare
   and removing front setpoints. Remove the technical consumption-history subtitle.
-- Apply owner-approved wording items 1 and 2 only: remove the doors/locks timing
+- Apply reviewed wording items 1 and 2 only: remove the doors/locks timing
   explanation and keep only units below consumption history. Other proposed text
   changes remain unapproved.
 - Add gateway Charge limit enable (dependent on automatic refresh) and a saved

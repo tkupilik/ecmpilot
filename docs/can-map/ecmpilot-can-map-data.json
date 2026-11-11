@@ -1,5 +1,5 @@
 {
-  "revision": "2026-10-28 / 2",
+  "revision": "2026-11-11 / 3",
   "vehicle": "Opel Corsa-e P2JO / P2J0",
   "scope": "Consolidated CAN topology, not a complete vehicle harness or VIN-verified installation pinout",
   "sources": {
@@ -111,8 +111,8 @@
       ]
     }
   },
-  "owner_evidence": {
-    "U01": "Owner states VCU 1775 internally connects OBC eCAN branch and motor/battery eCAN branch. No measurement record supplied."
+  "installation_evidence": {
+    "U01": "Internal continuity between the OBC and motor/battery eCAN branches in VCU 1775 was reported in the installation notes. No measurement record was supplied."
   },
   "unresolved_colour_codes": [
     "RB",

@@ -29,7 +29,7 @@ Use these IDs to find the units in the service diagrams. The two initial capture
 
 **Roof-console distinction:** `BCM6` is the overhead console / SOS panel, not the `84C4` telematics ECU. Its illustrated connection to 84C4 does not carry either CAN pair. [S01, S02]
 
-**Consolidated vector drawing:** [Editable SVG](docs/can-map/ecmpilot-can-map.svg), [single-sheet PDF](docs/can-map/ecmpilot-can-map.pdf), and [drawing conventions/source register](docs/can-map/README.md). Both formats include English conductor colours, separate equipment alternatives, possible internal BSI/ESP ties, and the owner-confirmed internal VCU eCAN connection (U01, 2026-10-28).
+**Consolidated vector drawing:** [Editable SVG](docs/can-map/ecmpilot-can-map.svg), [single-sheet PDF](docs/can-map/ecmpilot-can-map.pdf), and [drawing conventions/source register](docs/can-map/README.md). Both formats include English conductor colours, separate equipment alternatives, possible internal BSI/ESP ties, and the reported internal VCU eCAN connection (U01, 2026-10-28).
 
 Network names above identify the service-manual sections, not a guarantee that all listed ports share uninterrupted copper or that every equipment alternative is fitted. Connector pins, wire codes and the unresolved BSI routing are documented below.
 
@@ -42,11 +42,11 @@ This is a consolidated engineering note for the ESP32 gateway. It records the ci
 - The independent telematics/eCall ECU is **84C4**. Its illustrated wiring has **two CAN pairs**, a supply, a ground, microphone and radio audio connections, a crash-related connection, connections to the overhead console, and a separate four-wire USB-symbol link to the radio.
 - The drawings show **20 connected conductors across two connectors**: 16 populated positions of `18V NR` and four populated positions of `5V VE`. The remaining three positions are not drawn as connected; that does not prove they are unused on every vehicle.
 - For capturing commands caused by Stellantis remote actions, the first candidate is **the BSI end of both telematics CAN pairs**, on the same `BSI1 / 60V BE` connector. This avoids assuming that OBD exposes the original telematics traffic.
-- The roof SOS panel and the telematics ECU must be distinguished. The owner reports eCall in the headliner. The supplied general ECU location illustration places `84C4` near the dashboard, while the circuit explicitly connects it to overhead console `BCM6` and microphone `84F8`. Identify the actual ECU before ranking physical access.
+- The roof SOS panel and the telematics ECU must be distinguished. The installation record reports eCall in the headliner. The supplied general ECU location illustration places `84C4` near the dashboard, while the circuit explicitly connects it to overhead console `BCM6` and microphone `84F8`. Identify the actual ECU before ranking physical access.
 - The eCall supply is fed through **BSI F14, 5 A, classified `+BAT_CSP`**. Its availability after vehicle sleep or power-management intervention has not been measured. It must not yet be treated as guaranteed always-on KL30.
 - Public PSA CAN research already contains relevant remote-control definitions, but no tested Corsa-e cloud-independent command sequence has been established in this investigation.
 
-Evidence notation: **[S]** visually checked in the supplied source; **[U]** owner-provided information; **[I]** engineering inference or proposal; **[M]** requires measurement on the vehicle. Source IDs are resolved at the end of this document.
+Evidence notation: **[S]** visually checked in the supplied source; **[U]** installation reports; **[I]** engineering inference or proposal; **[M]** requires measurement on the vehicle. Source IDs are resolved at the end of this document.
 
 ## Reading the diagram notation
 
@@ -111,7 +111,7 @@ C001/OBD pins 6 and 14 are explicitly included in the **HS CAN 1 multiplexed net
 | Main HS CAN1 branch to vehicle ECUs | `9A35C / 9A36C` | `60V NR / 5,3` |
 | 84C4 telematics, pins 8 / 17 | `9A35A / 9A36A` | `60V BE / 10,8` |
 
-No drawn external splice joins `9064/9065` to `9A35/9A36`; all three pairs enter BSI separately. The BSI functional block does not resolve whether these ports are electrically common internally, actively bridged, switched or filtered. Separate connector pins alone do not prove separate CAN controllers, galvanic isolation, or diagnostic filtering. Consequently **neither direct electrical identity nor a conclusively isolated OBD bus is established by these sheets**. The earlier categorical owner assumption that OBD was isolated must not be used as evidence. [S05, S11]
+No drawn external splice joins `9064/9065` to `9A35/9A36`; all three pairs enter BSI separately. The BSI functional block does not resolve whether these ports are electrically common internally, actively bridged, switched or filtered. Separate connector pins alone do not prove separate CAN controllers, galvanic isolation, or diagnostic filtering. Consequently **neither direct electrical identity nor a conclusively isolated OBD bus is established by these sheets**. The earlier assumption that OBD was isolated must not be used as evidence. [S05, S11]
 
 For the gateway, unfiltered passive reception on OBD 6/14 with the vehicle awake can establish which periodic/telematics-related frames are available there. Matching traffic would show practical visibility, not by itself a shared electrical segment; absent traffic likewise needs qualification by vehicle state and interface/filter configuration. [I, M]
 
@@ -212,7 +212,7 @@ Ranked for this project's need to observe remote commands; installation effort r
 | 3 | **8480 radio, 56V NR** | ENT INFO `10 / 21`; `BE29D` supply at `11`; ground `22` | Potentially convenient for infotainment-bus capture and packaging. Does not expose the separate `9A35A / 9A36A` eCall pair. Supply is also `+BAT_CSP` via F29, 20 A. [S01, S04, S12] |
 | 4 | **0004 instrument cluster, 18V BA** | ENT INFO `9 / 7`; supply `1`; ground `8` | Another access point to the same shared ENT INFO network; no extra telematics CAN coverage. Physical effort to be checked. [S01, S04] |
 | 5 | **BSI1, 60V NR** | Main HS CAN 1 `5 / 3`; HS CAN 2 `46 / 44`; diagnostic pairs on other cavities | Useful second-stage observation of BSI forwarding and vehicle response. Not an electrical substitute for the separate telematics run. [S05, S06, S11] |
-| Diagnostic observation point | **C001 diagnostic socket / OBD** | Diagnostic wiring and a documented battery feed | OBD 6/14 is included on the HS CAN1 sheets, but uses distinct BSI pins/wire numbers. The earlier owner-provided isolation assumption is under review; electrical separation/bridging inside BSI and visibility of original TCU traffic remain unproven. Passive capture here is useful. [S05, S11; M] |
+| Diagnostic observation point | **C001 diagnostic socket / OBD** | Diagnostic wiring and a documented battery feed | OBD 6/14 is included on the HS CAN1 sheets, but uses distinct BSI pins/wire numbers. The earlier recorded isolation assumption is under review; electrical separation/bridging inside BSI and visibility of original TCU traffic remain unproven. Passive capture here is useful. [S05, S11; M] |
 
 For the first capture setup, prefer **parallel, high-impedance observation with the OEM eCall ECU connected**, not an ESP32 inserted as a mandatory forwarding bridge. Preserve the original bus termination and keep added stubs short. An inline directional bridge would be a separate, later design decision. [I; E03]
 
@@ -273,7 +273,7 @@ The dedicated LIN interconnection section is a separate network type. Wire names
 
 ### eCAN, powertrain CAN and the diagnostic naming
 
-**Owner-confirmed internal eCAN connection, U01 (2026-10-28):** the owner states that VCU/supervisor `1775` internally connects the OBC eCAN branch to the motor/battery eCAN branch. The consolidated vector drawing shows that connection as solid inside the VCU, explicitly attributed to owner evidence rather than the OEM sheet. No measurement record was supplied. This does not imply a join to the separate HS CAN1 or HS CAN2 interfaces. The BSI and ESP internal connections remain unverified.
+**Reported internal eCAN connection, U01 (2026-10-28):** the installation report states that VCU/supervisor `1775` internally connects the OBC eCAN branch to the motor/battery eCAN branch. The consolidated vector drawing shows that connection as solid inside the VCU, explicitly attributed to installation report rather than the OEM sheet. No measurement record was supplied. This does not imply a join to the separate HS CAN1 or HS CAN2 interfaces. The BSI and ESP internal connections remain unverified.
 
 The consolidated drawing review confirmed these branch distinctions: the HS CAN1 VCU run terminates at ESP `7800 / 46V NR / 4,18`, whereas the main BSI/splice network reaches ESP `5,19`; hands-free ECU `8240` reaches the ENT INFO dashboard splices through `IC91B / 14,15`, whereas BSI `60V JN / 34,36` goes to the alternative parking ECU; airbag ECU `6570` reaches the passenger-compartment Brown-connector branch through `IC91B / 19,20`, whereas climate ECU `8080`, steering controls `CV00` and steering lock `AE00` are on the Blue-connector branch. [S04, S05, S07]
 
@@ -327,7 +327,7 @@ The cloud does not necessarily send a CAN frame unchanged. The working model is:
 
 | Question | Current position |
 | --- | --- |
-| Where is the actual 84C4 ECU? | Owner reports roof eCall; source locator depicts dashboard. Distinguish ECU from roof console, then confirm hardware label and connectors. |
+| Where is the actual 84C4 ECU? | The installation record reports roof eCall; source locator depicts dashboard. Distinguish ECU from roof console, then confirm hardware label and connectors. |
 | Which pair carries the original remote request? | Unknown. Capture both `9A35A / 9A36A` and `9034C / 9035C`. |
 | Are telematics, main HS CAN 1 and OBD transparently connected? | Not established by section naming or separate BSI pins. The earlier OBD-isolation assumption is under review; continuity measurements and passive captures are required. |
 | CAN-H/L and bitrate at 84C4? | Not assigned from wire codes; measure or obtain an explicit matching connector/signal specification. |
@@ -344,7 +344,7 @@ Local source root:
 C:\work\bev\service manual\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\EWD
 ```
 
-Paths below are relative to that root. `p.` is the PDF page number. Several sheets carry a VIN-specific selection and OPR 16098, with a printed date of 07/11/2021. This collection includes equipment alternatives and at least one diesel-only sheet; its folder title does not make every diagram applicable to the owner's car.
+Paths below are relative to that root. `p.` is the PDF page number. Several sheets carry a VIN-specific selection and OPR 16098, with a printed date of 07/11/2021. This collection includes equipment alternatives and at least one diesel-only sheet; its folder title does not make every diagram applicable to the test vehicle.
 
 | ID | Source path / locator |
 | --- | --- |

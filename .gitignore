@@ -8,6 +8,7 @@ artifacts/
 signing/
 *.jks
 *.keystore
+*.p12
 *.apk
 *.aab
 *.log

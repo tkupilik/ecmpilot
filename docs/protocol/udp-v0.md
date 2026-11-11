@@ -237,7 +237,7 @@ For a structurally parseable request, rejection is a `status` with `command.phas
 
 For `preconditioning_rejected`, `status.command` may include
 `preconditioning_feedback`, an integer0..15 retained with the command result.
-Code4 means doors open or vehicle unlocked (owner-verified unlocked refusal);
+Code4 means doors open or vehicle unlocked (vehicle-validated unlocked refusal);
 source-defined codes5/6/7 mean low battery SOC, low fuel, and too many unused
 preconditioning sessions. These three causes have not been individually verified
 on the Corsa-e. The app translates known codes and includes the numeric code;

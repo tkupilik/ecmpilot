@@ -1,0 +1,7 @@
+First eCMPilot release.
+- Local gateway connection and automatic discovery.
+- Battery, charging, preconditioning, doors and trip status.
+- Weekly charging pause schedules and SOC charge limit.
+- Gateway automatic refresh and deep sleep settings.
+- Vehicle date/time and data freshness.
+Requires a compatible eCMPilot gateway; demo mode included.

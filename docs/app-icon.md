@@ -1,6 +1,6 @@
 # Car and lightning launcher icon
 
-The owner selected concept 1, **Car + energy**, on 4 November 2026. The original
+Concept 1, **Car + energy**, was selected on 4 November 2026. The original
 concept was generated with the built-in imagegen tool. The shipping icon is a
 native Android VectorDrawable adaptation, not a scaled screenshot.
 

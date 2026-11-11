@@ -2,15 +2,15 @@
 
 [Editable SVG](ecmpilot-can-map.svg) | [Vector PDF](ecmpilot-can-map.pdf) | [Endpoint/source manifest](ecmpilot-can-map-data.json) | [Engineering notes](../../wiring.md)
 
-Revision 2, 2026-10-28. One A0 landscape sheet combines an architecture view and six detailed network panels. The SVG contains editable text and vector primitives. The PDF contains vector paths and selectable text, with no embedded images. Colours of the network lines identify networks; the actual conductor colours are written in English at each endpoint. The original French connector codes are retained in parentheses for searching the source sheets.
+Revision 3, 2026-11-11. One A0 landscape sheet combines an architecture view and six detailed network panels. The SVG contains editable text and vector primitives. The PDF contains vector paths and selectable text, with no embedded images. Colours of the network lines identify networks; the actual conductor colours are written in English at each endpoint. The original French connector codes are retained in parentheses for searching the source sheets.
 
-Revision 2 adds the second OBD diagnostic pair to the architecture view: C001 pins 3/8, wires 9028 Grey / 9029 Brown, to BSI1 60-way Black pins 8/10. It is drawn as a separate grey pair bundle with unknown internal network assignment. It is not labelled HS CAN2, ENT INFO or eCAN. The first pair, OBD 6/14, remains detailed in panel A.
+The second OBD diagnostic pair is shown in the architecture view: C001 pins 3/8, wires 9028 Grey / 9029 Brown, to BSI1 60-way Black pins 8/10. It is drawn as a separate grey pair bundle with unknown internal network assignment. It is not labelled HS CAN2, ENT INFO or eCAN. The first pair, OBD 6/14, remains detailed in panel A. Revision 3 uses general evidence wording without changing the wiring or its confidence.
 
 ## Drawing conventions and limits
 
 - Each coloured network line represents a **two-conductor CAN pair**, not one wire. The endpoint card lists both cavities, wire identifiers and physical colours. These cards are logical port descriptions, not connector-face drawings. CAN-H/L polarity is not assigned.
 - Solid external network connections are transcribed from the cited OEM sheets. Dots represent shared splice connectivity. Multiple splice stages are simplified; their physical order and location are not reproduced.
-- Solid internal eCAN continuity inside **VCU 1775** is marked **U01 / owner-confirmed**. On 2026-10-28 the owner stated that the OBC branch and motor/battery branch are connected inside the VCU. No measurement record was supplied. The OEM sheet alone does not expose this internal join.
+- Solid internal eCAN continuity inside **VCU 1775** is marked **U01 / reported continuity**. On 2026-10-28 the installation report stated that the OBC branch and motor/battery branch are connected inside the VCU. No measurement record was supplied. The OEM sheet alone does not expose this internal join.
 - Amber dashed internal paths with **?** inside BSI and ESP are **hypotheses**, not verified connections. Separate BSI ports are preserved. ESP 7800 main-bus pins 5/19 are kept separate from VCU-branch pins 4/18. No electrical continuity or transparent forwarding is established by the box outline.
 - The same ECU may occur in several panels. This does not imply that its different CAN interfaces are electrically joined. The VCU eCAN connection U01 is the explicit exception.
 - Alternative equipment layouts are labelled. In particular the camera uses BSI 35-way Black pins 6/8 differently in the HS CAN2 and ADAS sheets. Parking ECU 7500 also has alternative network assignments. These alternatives must not be treated as one fitted vehicle configuration.
@@ -47,9 +47,9 @@ C:\work\bev\service manual\Opel PSA e-Corsa eP2JO 2019-2021 Wiring Diagrams\EWD
 | L | D3CZV79G | `General Points/Interconnections/CAN Network Interconnection/wiring.pdf` | 1 |
 | P | BSI fuse allocation | `General Points/Matching of Fuses/Allocation of BSI1 Fuses.pdf` | 1-3 |
 | Q | D3CZV7FG | `General Points/Sockets_Terminals_Connectors/Diagnostic Socket/wiring.pdf` | 1 |
-| U01 | Owner evidence, 2026-10-28 | VCU internal eCAN branch connection; statement in project conversation | Not an OEM sheet |
+| U01 | Installation report, 2026-10-28 | VCU internal eCAN branch connection; statement in project conversation | Not an OEM sheet |
 
-The source collection includes equipment alternatives. Its nominal vehicle/year does not prove fitment on the owner's car. `wiring.md` records the remaining questions about BSI routing, OBD visibility, supply behaviour and physical access. The manifest retains absolute source paths and the port records used to draw the sheet. PDF source captions link to the local source PDFs.
+The source collection includes equipment alternatives. Its nominal vehicle/year does not prove fitment on the test vehicle. `wiring.md` records the remaining questions about BSI routing, OBD visibility, supply behaviour and physical access. The manifest retains absolute source paths and the port records used to draw the sheet. PDF source captions link to the local source PDFs.
 
 ## Regenerate and verify
 
@@ -59,4 +59,4 @@ From the repository root, using Python with `reportlab` and `pypdf`:
 python tools/draw_can_map.py
 ```
 
-The generator emits SVG, PDF and the JSON manifest. It checks card text width, page bounds, SVG syntax, expected PDF text, single-page output and absence of embedded raster images. It does not automatically establish electrical correctness. The output was rendered with Poppler and all six detail panels, architecture and legend were visually inspected against the relevant source pages. The revision 2 architecture and legend edits were rendered and inspected again.
+The generator emits SVG, PDF and the JSON manifest. It checks card text width, page bounds, SVG syntax, expected PDF text, single-page output and absence of embedded raster images. It does not automatically establish electrical correctness. The diagram was initially checked against the relevant source pages. Revision 3 was rendered with Poppler and visually reviewed across all six detail panels, architecture and legend; this wording revision adds no new electrical validation.

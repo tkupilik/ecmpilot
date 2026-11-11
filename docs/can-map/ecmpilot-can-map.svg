@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1189mm" height="841mm" viewBox="0 0 3600 2546" role="img">
 <title>Corsa-e CAN networks - consolidated engineering map</title>
-<desc>Editable vector redraw. Solid external wiring is sourced; VCU internal continuity is owner-confirmed; possible BSI and ESP internal connections are dashed and unverified.</desc>
+<desc>Editable vector redraw. Solid external wiring is sourced; VCU internal continuity is reported without a measurement record; possible BSI and ESP internal connections are dashed and unverified.</desc>
 <rect x="0" y="0" width="3600" height="2546" rx="0" fill="#f2f6f8" stroke="none" stroke-width="1.5"/>
 <text x="42" y="65" font-family="Helvetica,Arial,sans-serif" font-size="44" font-weight="700" fill="#152c3c">eCMPilot | Corsa-e CAN networks</text>
-<text x="44" y="105" font-family="Helvetica,Arial,sans-serif" font-size="21" font-weight="400" fill="#506778">Consolidated vector schematic | English wire colours | P2JO / P2J0 wiring collection | revision 2 / 2026-10-28</text>
+<text x="44" y="105" font-family="Helvetica,Arial,sans-serif" font-size="21" font-weight="400" fill="#506778">Consolidated vector schematic | English wire colours | P2JO / P2J0 wiring collection | revision 3 / 2026-11-11</text>
 <text x="2540" y="61" font-family="Helvetica,Arial,sans-serif" font-size="22" font-weight="700" fill="#a86d09">ENGINEERING REFERENCE</text>
 <text x="2540" y="91" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">Source-derived wiring; vehicle fitment not yet verified</text>
 <rect x="40" y="145" width="3520" height="455" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
@@ -51,10 +51,10 @@
 <text x="2857" y="283" font-family="Helvetica,Arial,sans-serif" font-size="21" font-weight="700" fill="#152c3c">1775 | Electric drivetrain supervisor / VCU</text>
 <text x="2857" y="310" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#152c3c">HS CAN1 + HS CAN2 interfaces</text>
 <text x="2857" y="335" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#152c3c">eCAN: 120-way Black 36/57 + 70-way Black 35/51</text>
-<text x="2930" y="389" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#188063">Internal eCAN tie: owner-confirmed [U01]</text>
+<text x="2930" y="389" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#188063">Internal eCAN tie: reported continuity [U01]</text>
 <text x="1900" y="464" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">D: HS CAN2   |   E: passenger-compartment CAN   |   F: ADAS</text>
 <text x="1900" y="496" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">C: VCU eCAN feeds motor / battery / OBC. F: local headlamp CAN behind 6606.</text>
-<text x="1900" y="528" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">Only the VCU eCAN internal tie is confirmed by owner evidence; BSI/ESP ties remain hypotheses.</text>
+<text x="1900" y="528" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">VCU internal continuity is reported without a measurement record; BSI/ESP ties remain hypotheses.</text>
 <rect x="40" y="640" width="1130" height="1005" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
 <rect x="41" y="641" width="1128" height="7" rx="0" fill="#1573a4" stroke="none" stroke-width="1.5"/>
 <text x="62" y="677" font-family="Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#1573a4">A  HS CAN1 / telematics + OBD + vehicle</text>
@@ -244,7 +244,7 @@
 <rect x="2370" y="640" width="1190" height="1005" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
 <rect x="2371" y="641" width="1188" height="7" rx="0" fill="#188063" stroke="none" stroke-width="1.5"/>
 <text x="2392" y="677" font-family="Helvetica,Arial,sans-serif" font-size="25" font-weight="700" fill="#188063">C  eCAN / VCU + traction system + OBC</text>
-<text x="2392" y="704" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">93P5 / 93P6 | Internal OBC-to-motor/battery branch continuity: owner-confirmed.</text>
+<text x="2392" y="704" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="400" fill="#506778">93P5 / 93P6 | Internal OBC-to-motor/battery branch continuity: reported.</text>
 <rect x="2390" y="735" width="410" height="415" rx="8" fill="#eff8f3" stroke="#188063" stroke-width="1.5"/>
 <text x="2405" y="764" font-family="Helvetica,Arial,sans-serif" font-size="24" font-weight="700" fill="#188063">1775 | VCU</text>
 <text x="2405" y="791" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="400" fill="#152c3c">Electric drivetrain supervisor</text>
@@ -259,7 +259,7 @@
 <polyline points="2585,903 2585,1030" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
 <rect x="2412" y="938" width="360" height="48" rx="8" fill="#eff8f3" stroke="none" stroke-width="1.5"/>
 <text x="2420" y="959" font-family="Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#188063">Internal pair connection [U01]</text>
-<text x="2420" y="979" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">owner-confirmed; no measurement record</text>
+<text x="2420" y="979" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#506778">reported; no measurement record</text>
 <polyline points="2785,859 2860,859" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
 <polyline points="2860,784 2860,1100" fill="none" stroke="#188063" stroke-width="3" stroke-linejoin="round"/>
 <rect x="2910" y="740" width="625" height="88" rx="8" fill="#ffffff" stroke="#188063" stroke-width="1.5"/>
@@ -293,7 +293,7 @@
 <text x="2402" y="1309" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="400" fill="#506778">32-way Black (32V NR)</text>
 <text x="2402" y="1329" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">E2: 93P5B | Green</text>
 <text x="2402" y="1346" font-family="Helvetica,Arial,sans-serif" font-size="14" font-weight="400" fill="#152c3c">E1: 93P6B | Green</text>
-<text x="2392" y="1400" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">The two externally drawn eCAN runs are joined inside 1775 according to the owner [U01].</text>
+<text x="2392" y="1400" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">The two eCAN runs are reported to join inside 1775 in the installation notes [U01].</text>
 <text x="2392" y="1428" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">The source sheet alone does not depict this internal continuity. No VCU cross-bus forwarding</text>
 <text x="2392" y="1456" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778">or electrical join to HS CAN1 / HS CAN2 is implied.</text>
 <text x="2392" y="1484" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="400" fill="#506778"></text>
@@ -473,7 +473,7 @@
 <rect x="40" y="2340" width="3520" height="172" rx="8" fill="#ffffff" stroke="#ccdae1" stroke-width="1.5"/>
 <text x="62" y="2369" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#152c3c">HOW TO READ THIS SHEET</text>
 <text x="62" y="2397" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Solid network line: one CAN pair. Both conductors are listed at each endpoint. Dots: simplified shared splices.</text>
-<text x="62" y="2423" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Solid green inside VCU [U01]: internal eCAN tie reported by the owner. Dashed amber + ?: unverified internal tie.</text>
+<text x="62" y="2423" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Solid green inside VCU [U01]: reported internal eCAN tie. Dashed amber + ?: unverified internal tie.</text>
 <text x="62" y="2449" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Card rows = cavity : printed wire ID | English physical wire colour. Network stroke colours are only visual grouping.</text>
 <text x="62" y="2475" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">H/L polarity and bitrate are not assigned. Connector cavity viewing direction is not established.</text>
 <text x="1510" y="2369" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#152c3c">FR COLOUR CODES -&gt; ENGLISH</text>
@@ -483,7 +483,7 @@
 <text x="1510" y="2475" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">RB / BB: unresolved. Slash colours retain both components.</text>
 <text x="2495" y="2369" font-family="Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#152c3c">SCOPE / TRACEABILITY</text>
 <text x="2495" y="2397" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Source keys A-F / T / L / Q are resolved in the adjacent README and JSON.</text>
-<text x="2495" y="2423" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">OBD [Q]: D3CZV7FG. Power: T + BSI fuse allocation [P]. U01: owner, 2026-10-28.</text>
+<text x="2495" y="2423" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">OBD [Q]: D3CZV7FG. Power: T + BSI fuse allocation [P]. U01: installation notes, 2026-10-28.</text>
 <text x="2495" y="2449" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Not a full harness: LIN, diesel DEPOLLUTION and trailer options omitted.</text>
 <text x="2495" y="2475" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="400" fill="#506778">Variants are not a single verified vehicle configuration. No CAN commands implied.</text>
 </svg>

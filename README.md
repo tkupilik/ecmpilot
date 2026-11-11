@@ -8,7 +8,7 @@ Check battery level, charging, preconditioning and vehicle status over your own 
 
 The companion firmware is **`ecmpilot-gw`**, built for the **Waveshare ESP32-S3-RS485-CAN**. This repository contains the Android app and its local communication protocol.
 
-**Status:** working development prototype, Android app **0.2.0**. The first tested vehicle is the owner's Corsa-e. Other Stellantis eCMP models are research targets, not a compatibility claim. This project is independent of Opel, Stellantis and Waveshare.
+**Status:** working development prototype, Android app **0.3.0**, tested with an Opel Corsa-e. Other Stellantis eCMP models are research targets, not a compatibility claim. This project is independent of Opel, Stellantis and Waveshare.
 
 ## A look at the app
 
@@ -92,7 +92,12 @@ On other systems, configure Java/Android SDK and use the wrapper:
 ./gradlew :app:testDebugUnitTest :app:lintDebug
 ```
 
-No release signing keys or store publishing are configured in this repository. Keep local SDK paths, signing keys and build artifacts out of version control.
+Release builds use an upload key and `signing/release.properties`, both local and
+ignored by Git. `dev.ps1 release` builds the signed Play AAB and release APK and
+runs JVM unit tests and release lint. See [release instructions](docs/releasing.md) for
+first-key creation, backups, artifact checks and Git tagging. Debug builds do not
+require a release key. Keep local SDK paths, passwords and build artifacts out of
+version control.
 
 ## Documentation and tests
 
@@ -109,6 +114,7 @@ No release signing keys or store publishing are configured in this repository. K
 | [Testing](docs/testing.md) | Unit/UI checks, demo scenes and Python UDP simulator |
 | [Artwork](docs/app-icon.md) | App-icon provenance; [vehicle artwork](docs/assets/vehicle-top.md) |
 | [Changelog](CHANGELOG.md) | Development changes |
+| [Releasing](docs/releasing.md) | Signed Play AAB/APK, upload-key backup and version tags |
 
 Vehicle research and wiring notes are under [wiring.md](wiring.md); the firmware repository is the installation reference. Signal availability depends on the selected bus, the vehicle's sleep state and the specific equipment/software version. Do not assume that a matching CAN ID proves the same meaning on another model.
 

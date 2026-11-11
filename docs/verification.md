@@ -12,7 +12,7 @@
 - Debug APK:30,330,197bytes, SHA-256
   `08ef4ac836e2d069432a51dc38dc6d18ffe8c0881f977d9d0e5d035d99f96ed9`.
   Path:app/build/outputs/apk/debug/app-debug.apk.
-- After the owner connected Samsung A55 DEVICE_SERIAL and requested installation,
+- With Samsung A55 DEVICE_SERIAL connected for installation,
   `adb install -r` succeeded and MainActivity opened. Package inspection confirms
   version0.2.0/code2; existing application data/settings are retained.
   New LCD firmware is prepared without upload; physical setpoint verification
@@ -23,7 +23,7 @@
 ## BSI auxiliary battery integration — 2026-10-31
 
 - Added optional independent auxiliary SOC/voltage decoding and Home/details UI.
-  Owner CAN sample `00 8E A3 00 C8 09` decodes to **12.6 V /81.5%** in LCD firmware.
+  Recorded CAN sample `00 8E A3 00 C8 09` decodes to **12.6 V /81.5%** in LCD firmware.
   The 863-byte compact native C-codec fixture is read by the Kotlin contract test.
 - Offline debug app/test builds succeeded; **15 JVM tests** passed. Android lint:
   **0 errors, 1 existing ObsoleteSdkInt resource warning**. Version remains0.2.0,
@@ -68,7 +68,7 @@
 - Independent LCD diagnostics: TCP23 accepted the SavvyCAN-style startup sequence,
   bus parameters (one listen-only 125 kbit/s bus), time sync and repeated keepalives
   in a 12-second session. Initial physical CAN count was zero while the car slept.
-  After the owner woke it and connected SavvyCAN, device diagnostics reported
+  After the vehicle was woken and SavvyCAN was connected, device diagnostics reported
   CAN_RX_COUNT=19065, GVRET_SENT=14728 and zero bus errors. No LCD firmware edits
   were needed. The final LCD sample still had DASH_DEMO_ENABLED=1; phone readings
   therefore reflected local replay until that setting is disabled.

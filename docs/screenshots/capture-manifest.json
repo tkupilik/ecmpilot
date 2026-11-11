@@ -24,7 +24,7 @@
       "source": "live",
       "app_apk_sha256": "9b30f9b2e07ce3fc55a7691f30659911a373d696c6e04553f34137c6e8dee704",
       "ui_check": "OK (1 test)",
-      "actions": "Passive reads and screen navigation only; preconditioning started by the owner before capture",
+      "actions": "Passive reads and screen navigation only; preconditioning was started before capture",
       "note": "Retained earlier interface; not recaptured or presented as current UI."
     }
   ],

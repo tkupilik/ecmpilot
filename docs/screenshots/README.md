@@ -79,7 +79,7 @@ writes affect only that demo instance. Original phone settings are restored.
 
 These retained images show the **2026-11-04 interface**, before the current
 vehicle-clock and charging-schedule changes. Connected to the installed
-`ecmpilot-gw` on the owner's Corsa-e; the owner started preconditioning before
+`ecmpilot-gw` on the test Corsa-e; preconditioning was started before
 capture. Home reports **91% SOC**, **262 km estimated range**, **9.0 °C outside**,
 **87.5% 12 V SOC**, BSI Normal and preconditioning Running. These are
 vehicle-reported observations at capture time, not a new vehicle test.

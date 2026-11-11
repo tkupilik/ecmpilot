@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('build','check','install','devices')][string]$Action = 'build',
+    [ValidateSet('build','check','release','install','devices')][string]$Action = 'build',
     [string]$Device,
     [switch]$Offline
 )
@@ -17,7 +17,11 @@ $adbPath = Join-Path $env:ANDROID_HOME 'platform-tools\adb.exe'
 Push-Location $PSScriptRoot
 try {
     if ($Action -eq 'devices') { & $adbPath devices -l; exit $LASTEXITCODE }
-    [string[]]$tasks = if ($Action -eq 'check') { @(':app:testDebugUnitTest', ':app:lintDebug') } else { @(':app:assembleDebug') }
+    [string[]]$tasks = switch ($Action) {
+        'check' { @(':app:testDebugUnitTest', ':app:lintDebug') }
+        'release' { @(':app:testDebugUnitTest', ':app:lintRelease', ':app:bundleRelease', ':app:assembleRelease') }
+        default { @(':app:assembleDebug') }
+    }
     [string[]]$flags = @('--no-daemon','--console=plain'); if ($Offline) { $flags += '--offline' }
     & '.\gradlew.bat' @flags @tasks
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+
+val releaseSigningFile = rootProject.file("signing/release.properties")
+val releaseSigning = Properties().apply {
+    if (releaseSigningFile.isFile) releaseSigningFile.inputStream().use { load(it) }
+}
+fun signingValue(name: String): String = releaseSigning.getProperty(name)?.takeIf { it.isNotBlank() }
+    ?: throw GradleException("Missing $name in signing/release.properties")
+
 android {
     namespace = "cz.ecmpilot"
     compileSdk { version = release(37) }
@@ -9,14 +19,35 @@ android {
         applicationId = "cz.ecmpilot"
         minSdk = 28
         targetSdk = 37
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        if (releaseSigningFile.isFile) create("upload") {
+            storeFile = rootProject.file(signingValue("storeFile"))
+            storePassword = signingValue("storePassword")
+            keyAlias = signingValue("keyAlias")
+            keyPassword = signingValue("keyPassword")
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            isDebuggable = false
+            if (releaseSigningFile.isFile) signingConfig = signingConfigs.getByName("upload")
+        }
     }
     buildFeatures { compose = true; buildConfig = true }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+tasks.matching { it.name in setOf("packageRelease", "packageReleaseBundle", "signReleaseBundle", "bundleRelease", "assembleRelease") }.configureEach {
+    doFirst {
+        check(releaseSigningFile.isFile) {
+            "Release signing is not configured. See docs/releasing.md; debug builds do not require a release key."
+        }
     }
 }
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }

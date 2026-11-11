@@ -5,7 +5,7 @@
     "ecmpilot/README.md",
     "ecmpilot-gw/README.md"
   ],
-  "gateway_wiring": "IC91B 14/15 INFO pair; IC95A 16 permanent supply owner-reported; H/L and factory power/fuse route not invented",
+  "gateway_wiring": "IC91B 14/15 INFO pair; IC95A 16 permanent supply reported; H/L and factory power/fuse route not invented",
   "local_links_checked": 69,
   "broken_local_links": 0,
   "screenshots": {

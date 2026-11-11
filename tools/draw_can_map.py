@@ -65,7 +65,7 @@ class Drawing:
     def __init__(self):
         self.svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="1189mm" height="841mm" viewBox="0 0 {W} {H}" role="img">',
                     '<title>Corsa-e CAN networks - consolidated engineering map</title>',
-                    '<desc>Editable vector redraw. Solid external wiring is sourced; VCU internal continuity is owner-confirmed; possible BSI and ESP internal connections are dashed and unverified.</desc>']
+                    '<desc>Editable vector redraw. Solid external wiring is sourced; VCU internal continuity is reported without a measurement record; possible BSI and ESP internal connections are dashed and unverified.</desc>']
         self.pdf = canvas.Canvas(str(OUT / "ecmpilot-can-map.pdf"), pagesize=landscape(A0), pageCompression=1)
         self.pdf.setTitle("eCMPilot | Corsa-e consolidated CAN map")
         self.pdf.setAuthor("eCMPilot project")
@@ -150,14 +150,14 @@ class Drawing:
         images = list(reader.pages[0].images)
         assert not images, "PDF must contain vector drawing and text only"
         txt = reader.pages[0].extract_text()
-        for term in ("BSI1", "84C4", "1775", "7800", "9034C", "9A35A", "93P5B", "owner-confirmed", "unresolved"):
+        for term in ("BSI1", "84C4", "1775", "7800", "9034C", "9A35A", "93P5B", "reported continuity", "unresolved"):
             assert term in txt, term
         assert len(ENDPOINTS) >= 35
         record = {
-            "revision": "2026-10-28 / 2", "vehicle": "Opel Corsa-e P2JO / P2J0",
+            "revision": "2026-11-11 / 3", "vehicle": "Opel Corsa-e P2JO / P2J0",
             "scope": "Consolidated CAN topology, not a complete vehicle harness or VIN-verified installation pinout",
             "sources": {k: {"sheet": v[0], "path": str(SOURCE_ROOT / v[1]), "pages": [1, 2, 3] if k == "P" else [1]} for k, v in SOURCES.items()},
-            "owner_evidence": {"U01": "Owner states VCU 1775 internally connects OBC eCAN branch and motor/battery eCAN branch. No measurement record supplied."},
+            "installation_evidence": {"U01": "Internal continuity between the OBC and motor/battery eCAN branches in VCU 1775 was reported in the installation notes. No measurement record was supplied."},
             "unresolved_colour_codes": ["RB", "BB"],
             "endpoints": ENDPOINTS,
             "verification": {"page_count": 1, "embedded_images": len(images), "endpoint_count": len(ENDPOINTS), "text_labels": len(self.bounds)},
@@ -169,7 +169,7 @@ class Drawing:
 d = Drawing()
 d.rect(0, 0, W, H, BG, None, 0)
 d.text(42, 65, "eCMPilot | Corsa-e CAN networks", 44, bold=True)
-d.text(44, 105, "Consolidated vector schematic | English wire colours | P2JO / P2J0 wiring collection | revision 2 / 2026-10-28", 21, MUTED)
+d.text(44, 105, "Consolidated vector schematic | English wire colours | P2JO / P2J0 wiring collection | revision 3 / 2026-11-11", 21, MUTED)
 d.text(2540, 61, "ENGINEERING REFERENCE", 22, WARN, True)
 d.text(2540, 91, "Source-derived wiring; vehicle fitment not yet verified", 17, MUTED)
 
@@ -222,8 +222,8 @@ d.text(2570, 339, "A: 9A35Z / 9A36Z", 15, COL["hs1"])
 d.rect(2840, 255, 650, 165, stroke=COL["ev"])
 d.text(2857, 283, "1775 | Electric drivetrain supervisor / VCU", 21, bold=True)
 d.lines(2857, 310, ["HS CAN1 + HS CAN2 interfaces", "eCAN: 120-way Black 36/57 + 70-way Black 35/51"], 17, 25)
-d.text(2930, 389, "Internal eCAN tie: owner-confirmed [U01]", 17, COL["ev"], True)
-d.lines(1900, 464, ["D: HS CAN2   |   E: passenger-compartment CAN   |   F: ADAS", "C: VCU eCAN feeds motor / battery / OBC. F: local headlamp CAN behind 6606.", "Only the VCU eCAN internal tie is confirmed by owner evidence; BSI/ESP ties remain hypotheses."], 17, 32, color=MUTED)
+d.text(2930, 389, "Internal eCAN tie: reported continuity [U01]", 17, COL["ev"], True)
+d.lines(1900, 464, ["D: HS CAN2   |   E: passenger-compartment CAN   |   F: ADAS", "C: VCU eCAN feeds motor / battery / OBC. F: local headlamp CAN behind 6606.", "VCU internal continuity is reported without a measurement record; BSI/ESP ties remain hypotheses."], 17, 32, color=MUTED)
 
 # A. Preserve all separate HS CAN1 external runs, including the ESP-to-VCU branch.
 X, Y, PW = 40, 640, 1130
@@ -298,7 +298,7 @@ d.source(X+22, 1634, "T", PW-44)
 # C. Owner-confirmed internal continuity is shown explicitly inside VCU 1775.
 X, PW = 2370, 1190
 c = COL["ev"]
-d.panel(X, Y, PW, 1005, "C", "eCAN / VCU + traction system + OBC", "93P5 / 93P6 | Internal OBC-to-motor/battery branch continuity: owner-confirmed.", c)
+d.panel(X, Y, PW, 1005, "C", "eCAN / VCU + traction system + OBC", "93P5 / 93P6 | Internal OBC-to-motor/battery branch continuity: reported.", c)
 d.rect(X+20, 735, 410, 415, "#eff8f3", c)
 d.text(X+35, 764, "1775 | VCU", 24, c, True)
 d.text(X+35, 791, "Electric drivetrain supervisor", 18)
@@ -311,7 +311,7 @@ ENDPOINTS.append(dict(unit="1775", connector="70V NR", pins=[(35,"93P5B","VE"),(
 d.line([(X+215, 903), (X+215, 1030)], c, 3)
 d.rect(X+42, 938, 360, 48, "#eff8f3", None)
 d.text(X+50, 959, "Internal pair connection [U01]", 18, c, True)
-d.text(X+50, 979, "owner-confirmed; no measurement record", 14, MUTED)
+d.text(X+50, 979, "reported; no measurement record", 14, MUTED)
 d.pair(X+415, X+490, 859, c)
 d.line([(X+490, 784), (X+490, 1100)], c, 3)
 for i, node in enumerate([
@@ -325,7 +325,7 @@ d.lines(X+535, 1198, ["Shared splices:", "E935J = 93P5 family", "E936J = 93P6 fa
 d.line([(X+215, 1118), (X+215, 1270)], c, 3)
 d.text(X+240, 1222, "OBC branch", 18, c, True)
 d.card(X+20, 1270, 410, "1708", "Charger / DC-DC", "32V NR", [("E2", "93P5B", "VE"), ("E1", "93P6B", "VE")], "C", c)
-d.lines(X+22, 1400, ["The two externally drawn eCAN runs are joined inside 1775 according to the owner [U01].", "The source sheet alone does not depict this internal continuity. No VCU cross-bus forwarding", "or electrical join to HS CAN1 / HS CAN2 is implied.", "", "93P5B / 93P6B at 1708 and 1778 are distinct external wire runs; identical labels", "must not be used to bypass the VCU branch routing."], 17, 28, color=MUTED)
+d.lines(X+22, 1400, ["The two eCAN runs are reported to join inside 1775 in the installation notes [U01].", "The source sheet alone does not depict this internal continuity. No VCU cross-bus forwarding", "or electrical join to HS CAN1 / HS CAN2 is implied.", "", "93P5B / 93P6B at 1708 and 1778 are distinct external wire runs; identical labels", "must not be used to bypass the VCU branch routing."], 17, 28, color=MUTED)
 d.source(X+22, 1634, "C", PW-44)
 
 # D. Baseline is wiring 1; radar and loop alternatives are textually separated.
@@ -389,9 +389,9 @@ d.source(X+22, 2297, "L", PW-44)
 # Legend and provenance, printed on the same sheet.
 d.rect(40, 2340, 3520, 172)
 d.text(62, 2369, "HOW TO READ THIS SHEET", 17, bold=True)
-d.lines(62, 2397, ["Solid network line: one CAN pair. Both conductors are listed at each endpoint. Dots: simplified shared splices.", "Solid green inside VCU [U01]: internal eCAN tie reported by the owner. Dashed amber + ?: unverified internal tie.", "Card rows = cavity : printed wire ID | English physical wire colour. Network stroke colours are only visual grouping.", "H/L polarity and bitrate are not assigned. Connector cavity viewing direction is not established."], 16, 26, color=MUTED)
+d.lines(62, 2397, ["Solid network line: one CAN pair. Both conductors are listed at each endpoint. Dots: simplified shared splices.", "Solid green inside VCU [U01]: reported internal eCAN tie. Dashed amber + ?: unverified internal tie.", "Card rows = cavity : printed wire ID | English physical wire colour. Network stroke colours are only visual grouping.", "H/L polarity and bitrate are not assigned. Connector cavity viewing direction is not established."], 16, 26, color=MUTED)
 d.text(1510, 2369, "FR COLOUR CODES -> ENGLISH", 17, bold=True)
 d.lines(1510, 2397, ["NR Black | BE Blue | BA White | GR Grey | VE Green", "MR Brown | RS Pink | VI Violet | BG Beige | RG Red", "OR Orange | JN Yellow | VJ Green/Yellow | ND Unspecified", "RB / BB: unresolved. Slash colours retain both components."], 16, 26, color=MUTED)
 d.text(2495, 2369, "SCOPE / TRACEABILITY", 17, bold=True)
-d.lines(2495, 2397, ["Source keys A-F / T / L / Q are resolved in the adjacent README and JSON.", "OBD [Q]: D3CZV7FG. Power: T + BSI fuse allocation [P]. U01: owner, 2026-10-28.", "Not a full harness: LIN, diesel DEPOLLUTION and trailer options omitted.", "Variants are not a single verified vehicle configuration. No CAN commands implied."], 16, 26, color=MUTED)
+d.lines(2495, 2397, ["Source keys A-F / T / L / Q are resolved in the adjacent README and JSON.", "OBD [Q]: D3CZV7FG. Power: T + BSI fuse allocation [P]. U01: installation notes, 2026-10-28.", "Not a full harness: LIN, diesel DEPOLLUTION and trailer options omitted.", "Variants are not a single verified vehicle configuration. No CAN commands implied."], 16, 26, color=MUTED)
 d.finish()

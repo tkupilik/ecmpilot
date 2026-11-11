@@ -1,0 +1,7 @@
+# Copy to signing/release.properties only when using an existing upload key.
+# Otherwise run tools/create_upload_key.py to generate both the key and configuration.
+# Paths are relative to the repository root. Never commit actual passwords.
+storeFile=signing/ecmpilot-upload.p12
+storePassword=REPLACE_WITH_KEYSTORE_PASSWORD
+keyAlias=ecmpilot-upload
+keyPassword=REPLACE_WITH_KEY_PASSWORD

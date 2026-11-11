@@ -1,10 +1,9 @@
-# UI wording review — owner approved items 1 and 2 only
+# UI wording review - implemented items 1 and 2
 
-Owner decision: implement **1 and 2 only**. Items 3–8 are not approved and remain
+Implemented scope: **1 and 2 only**. Items 3–8 remain proposals and are
 unchanged. The changes below do not alter vehicle commands,
 capabilities, freshness rules or the connection protocol. English remains the
-application language. Keep the explicit BSI status and diagnostic export, which
-the owner previously requested.
+application language. Explicit BSI status and diagnostic export remain available.
 
 Items 1 and 2 are implemented in the debug APK installed on the connected phone.
 
