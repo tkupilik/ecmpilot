@@ -30,6 +30,8 @@ data class Status(
     val correlationId: Long? = null,
     val lowPower: LowPowerStatus? = null,
     val chargeSchedule: ChargeScheduleStatus? = null,
+    val elm: ElmStatus? = null,
+    val obd: ObdPage? = null,
 )
 
 /** Tree-based Gson parsing avoids reflection and keeps the Android and JVM test codecs identical. */
@@ -174,6 +176,39 @@ object Protocol {
                     VehicleClock(local,(clock.optionalLong("second") ?: 0).also { require(it in 0..59) }.toInt(),
                         clock.optionalLong("age_ms"),receivedMs))
             }
+            val elm = root.obj("elm327")?.let { e ->
+                fun adapter(address: String, type: String, rssi: Int? = null): ObdAdapter {
+                    require(Regex("(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}").matches(address))
+                    require(type in setOf("public", "random"))
+                    return ObdAdapter(address.uppercase(java.util.Locale.ROOT), type, rssi)
+                }
+                val address = e.string("address")
+                val found = requireNotNull(e.array("scan")).also { require(it.size() <= 6) }.map { value ->
+                    val row = value.asJsonArray.also { require(it.size() == 3) }
+                    require(row[0].isJsonPrimitive && row[0].asJsonPrimitive.isString)
+                    require(row[1].isJsonPrimitive && row[1].asJsonPrimitive.isNumber && row[1].asString in setOf("0", "1"))
+                    require(row[2].isJsonPrimitive && row[2].asJsonPrimitive.isNumber && Regex("-?[0-9]+").matches(row[2].asString))
+                    require(row[2].asDouble in -127.0..20.0)
+                    adapter(row[0].asString, if (row[1].asInt == 0) "public" else "random", row[2].asInt.also { require(it in -127..20) })
+                }
+                ElmStatus(e.long("rev").also { require(it in 1..Int.MAX_VALUE.toLong()) },
+                    if (address.isBlank()) null else adapter(address,e.string("address_type")), requireNotNull(e.bool("busy")),
+                    e.long("generation").also { require(it in 0..Int.MAX_VALUE.toLong()) },
+                    e.long("completed").also { require(it in 0..Int.MAX_VALUE.toLong()) },
+                    e.long("operation").also { require(it in 0..4) }.toInt(), e.long("result").also { require(it in 0..12) }.toInt(), found)
+            }
+            val obd = root.obj("obd")?.let { o ->
+                require(o.long("pages") == ObdFields.PAGES.toLong())
+                val page = o.long("page").also { require(it in 0L until ObdFields.PAGES.toLong()) }.toInt()
+                val allowed = ObdFields.all.drop(page * 6).take(6).associateBy { it.key }
+                val readings = requireNotNull(o.obj("readings")).entrySet().associate { (key,value) ->
+                    val field = requireNotNull(allowed[key]) { "Unexpected OBD field" }
+                    val reading = value.asJsonObject
+                    key to Reading(reading.number("value",field.range), stamp(reading))
+                }
+                require(readings.keys == allowed.keys) { "Incomplete OBD page" }
+                ObdPage(page,readings)
+            }
             val command = root.obj("command")?.let { c ->
                 val phase = c.string("phase").also { require(it in setOf("accepted", "executing", "succeeded", "rejected", "failed", "unknown")) }
                 val correlation = c.optionalLong("correlation_id")?.let { Correlation(c.string("client_session"), it) }
@@ -182,7 +217,7 @@ object Protocol {
                 CommandResult(c.string("id").also { require(idPattern.matches(it)) }, c.long("revision"), phase, c.errorCode("error"), c.optionalString("reason"), correlation, preconditioningFeedback)
             }
             val correlationId = root.optionalLong("correlation_id")?.also { require(it in 1..0xffff_ffffL) }
-            return Status(gw, boot, reply, seq, now, info, state, command, root.errorCode("error"), receivedMs, roundTripMs, details, programs, autoRefresh, correlationId, lowPower, chargeSchedule)
+            return Status(gw, boot, reply, seq, now, info, state, command, root.errorCode("error"), receivedMs, roundTripMs, details, programs, autoRefresh, correlationId, lowPower, chargeSchedule, elm, obd)
         } catch (error: Exception) {
             if (error is ProtocolException) throw error
             throw ProtocolException("Invalid gateway response: ${error.message?.take(140) ?: "JSON error"}")
@@ -232,8 +267,10 @@ class StatusTracker {
     var autoRefresh: AutoRefreshStatus? = null; private set
     var lowPower: LowPowerStatus? = null; private set
     var chargeSchedule: ChargeScheduleStatus? = null; private set
+    var elm: ElmStatus? = null; private set
+    var obd: Map<String, Reading> = emptyMap(); private set
     fun accept(status: Status): Boolean {
-        if (boot != status.boot) { boot = status.boot; seq = -1; snapshot = null; details = null; programs = null; autoRefresh = null; lowPower = null; chargeSchedule = null }
+        if (boot != status.boot) { boot = status.boot; seq = -1; snapshot = null; details = null; programs = null; autoRefresh = null; lowPower = null; chargeSchedule = null; elm = null; obd = emptyMap() }
         if (status.seq <= seq) return false
         seq = status.seq
         status.state?.let { snapshot = it }
@@ -242,6 +279,8 @@ class StatusTracker {
         status.autoRefresh?.let { autoRefresh = it }
         status.lowPower?.let { lowPower = it }
         status.chargeSchedule?.let { chargeSchedule = it }
+        status.elm?.let { elm = it }
+        status.obd?.let { obd = obd + it.readings }
         return true
     }
 }

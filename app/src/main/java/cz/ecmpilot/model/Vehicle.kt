@@ -138,6 +138,11 @@ data class PilotState(
     val lowPowerSaving: Boolean = false,
     val lowPowerError: String? = null,
     val lowPowerSavedRevision: Long? = null,
+    val elm: ElmStatus? = null,
+    val elmPending: Boolean = false,
+    val elmError: String? = null,
+    val elmMessage: String? = null,
+    val obd: Map<String, Reading> = emptyMap(),
 ) {
     val readOnly get() = settings.source == Source.UDP && !settings.allowLabControls
     fun controlReady(domain: String): Boolean {

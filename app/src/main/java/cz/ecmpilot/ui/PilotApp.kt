@@ -84,7 +84,8 @@ fun PilotApp(repository: PilotRepository, onRequestPermission: () -> Unit) {
                 onPrograms = { sheet = null; repository.submit(it) })
             Sheet.CHARGING -> ChargingSheet(state, onClose = { sheet = null }, onApply = repository::submit, onAutoRefresh = repository::saveAutoRefresh, onSchedule = repository::saveChargeSchedule, onReload = repository::reconnect)
             Sheet.CONNECTION -> ConnectionSheet(state, onClose = { sheet = null }, onSave = { repository.saveSettings(it) }, onRefresh = repository::reconnect, onPermission = onRequestPermission)
-            Sheet.GATEWAY -> GatewaySheet(state, onClose = { sheet = null }, onAutoRefresh = repository::saveAutoRefresh, onLowPower = repository::saveLowPower, onReload = repository::reconnect)
+            Sheet.GATEWAY -> GatewaySheet(state, onClose = { sheet = null }, onAutoRefresh = repository::saveAutoRefresh, onLowPower = repository::saveLowPower, onReload = repository::reconnect,
+                onObdScan = repository::scanObdAdapters, onObdSave = repository::saveObdAdapter)
             Sheet.DETAILS -> DetailsSheet(state, repository::diagnosticText, onClose = { sheet = null })
             Sheet.BODY -> SheetFrame("Doors & locks", onClose = { sheet = null }) { BodyContent(state) }
             Sheet.TRIPS -> SheetFrame("Trips & consumption", onClose = { sheet = null }) { TripsContent(state) }
@@ -151,7 +152,7 @@ private fun Home(s: PilotState, modifier: Modifier, onSettings: () -> Unit, onDe
         item { VehicleOverview(s, onClimate, onCharge, onBody) }
         item { HomeMenuRow("Trips & consumption", "Trip 1 · Trip 2 · Consumption history", onTrips, "menu-trips") }
         item { HomeMenuRow("Vehicle details", v?.reading("odometer_km")?.value?.let { "${String.format(Locale.UK, "%,.0f", it)} km" } ?: "Vehicle readings & diagnostics", onDetails, "menu-details") }
-        item { HomeMenuRow("Gateway", "Automatic vehicle refresh", onGateway, "menu-gateway") }
+        item { HomeMenuRow("Gateway", "Refresh, sleep & OBD adapter", onGateway, "menu-gateway") }
         if (s.error != null) item { SecondaryText(s.error) }
     }
 }
@@ -301,7 +302,8 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
     }
 }
 
-@Composable private fun GatewaySheet(s: PilotState, onClose: () -> Unit, onAutoRefresh: (AutoRefreshSettings) -> Unit, onLowPower: (LowPowerSettings) -> Unit, onReload: () -> Unit) {
+@Composable private fun GatewaySheet(s: PilotState, onClose: () -> Unit, onAutoRefresh: (AutoRefreshSettings) -> Unit, onLowPower: (LowPowerSettings) -> Unit, onReload: () -> Unit,
+    onObdScan: () -> Unit, onObdSave: (ObdAdapter) -> Unit) {
     SheetFrame("Gateway", onClose) {
         val gateway = if (s.settings.source == Source.DEMO) "Demo gateway" else s.gatewayAddress ?: s.settings.host
         val refreshStatus = s.autoRefresh?.description ?: "Reading gateway settings…"
@@ -311,6 +313,7 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
         HorizontalDivider(Modifier.padding(top = 10.dp))
         LowPowerContent(s, onLowPower, onReload)
         ChargeLimitContent(s, onAutoRefresh, onReload, showTarget = false)
+        ObdAdapterContent(s, onObdScan, onObdSave, onReload)
     }
 }
 
@@ -386,6 +389,7 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
             val reading = s.vehicle?.reading(key)
             ValueRow(names.first, reading?.value?.let { "${number(it, 1)} ${names.second}" } ?: "—", reading?.freshForDisplay(s.nowMs) != true)
         }
+        ObdDetailsContent(s)
         HorizontalDivider()
         ValueRow("Gateway", s.gatewayId ?: "Unavailable"); ValueRow("Firmware", s.info?.firmware ?: "Unavailable"); ValueRow("Transport profile", s.info?.security ?: "Unknown")
         s.command?.let { SecondaryText("Last request: ${it.ref?.label ?: "Request"} · ${it.phase}\n${it.message}") }

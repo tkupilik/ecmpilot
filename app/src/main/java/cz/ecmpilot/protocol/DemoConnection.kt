@@ -2,6 +2,8 @@ package cz.ecmpilot.protocol
 
 import cz.ecmpilot.model.ChargeScheduleSettings
 import cz.ecmpilot.model.LowPowerSettings
+import cz.ecmpilot.model.ObdAdapter
+import cz.ecmpilot.model.ObdFields
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonNull
@@ -28,6 +30,10 @@ class DemoConnection(private val scene: DemoScene, private val clock: () -> Long
     private val commands = mutableMapOf<String, Pending>()
     private var sleepSettings=LowPowerSettings()
     private var chargeSchedule=ChargeScheduleSettings()
+    private var obdAdapter: ObdAdapter? = null
+    private var elmRevision = 1L
+    private var elmGeneration = 0L
+    private var scanUntil = 0L
     override suspend fun exchange(request: Request, retry: Boolean): Status {
         delay(70)
         if (scene == DemoScene.OFFLINE) throw IOException("Demo gateway offline")
@@ -42,6 +48,29 @@ class DemoConnection(private val scene: DemoScene, private val clock: () -> Long
             "info.get" -> json.add("info", info())
             "state.get" -> json.add("state", state())
             "vehicle.details.get" -> json.add("details", details())
+            "obd.get" -> json.add("obd", obd(request.json.getAsJsonObject("args").get("page").asInt))
+            "elm327.get" -> json.add("elm327", elm())
+            "elm327.scan" -> {
+                val generation = request.json.getAsJsonObject("args").get("generation").asLong
+                when {
+                    request.json.get("boot")?.asString != boot -> json.addProperty("error","wrong_boot")
+                    generation == elmGeneration && clock() >= scanUntil -> { elmGeneration++; scanUntil = clock() + 1500; json.add("elm327",elm()) }
+                    generation + 1 == elmGeneration -> json.add("elm327",elm())
+                    else -> json.addProperty("error","elm_busy")
+                }
+            }
+            "elm327.set" -> {
+                val args = request.json.getAsJsonObject("args")
+                val adapter = ObdAdapter(args.get("address").asString,args.get("address_type").asString)
+                val rev = args.get("rev").asLong
+                when {
+                    request.json.get("boot")?.asString != boot -> json.addProperty("error","wrong_boot")
+                    clock() < scanUntil -> json.addProperty("error","elm_busy")
+                    rev + 1 == elmRevision && adapter == obdAdapter -> json.add("elm327",elm())
+                    rev != elmRevision -> json.addProperty("error","settings_conflict")
+                    else -> { obdAdapter = adapter; elmRevision++; json.add("elm327",elm()) }
+                }
+            }
             "climate.programs.get" -> json.add("programs", programs())
             "charge.schedule.get" -> json.add("charge_schedule",schedule())
             "charge.schedule.set" -> {
@@ -150,13 +179,38 @@ class DemoConnection(private val scene: DemoScene, private val clock: () -> Long
     }
     private fun info() = JsonObject().apply {
         addProperty("firmware", "in-process demo 0.1"); addProperty("security", "demo"); addProperty("timezone", "Europe/Prague")
-        add("fields", JsonArray().apply { listOf("soc_pct", "range_km", "cabin_c", "outside_c", "battery_min_c", "battery_max_c", "odometer_km", "vehicle_details", "climate_programs", "auto_refresh", "charge_limit", "low_power", "charge_schedule").forEach(::add) })
+        add("fields", JsonArray().apply { listOf("soc_pct", "range_km", "cabin_c", "outside_c", "battery_min_c", "battery_max_c", "odometer_km", "vehicle_details", "climate_programs", "auto_refresh", "charge_limit", "low_power", "charge_schedule", "elm327", "obd").forEach(::add) })
         add("operations", JsonObject().apply {
             if (scene != DemoScene.READ_ONLY) {
                 add("vehicle.refresh", JsonObject().apply { addProperty("verified", true); addProperty("confirmation", true) })
                 add("climate.set", JsonObject().apply { addProperty("verified", true); addProperty("confirmation", true); add("enabled", JsonArray().apply { add(true); add(false) }) })
                 add("climate.programs.set", JsonObject().apply { addProperty("verified", true); addProperty("confirmation", true); addProperty("persistent_schedule", true) })
                 add("charge.mode.set", JsonObject().apply { addProperty("verified", true); addProperty("confirmation", true); addProperty("persistent_schedule", true); add("modes", JsonArray().apply { add("immediate"); add("deferred") }) })
+            }
+        })
+    }
+    private fun elm() = JsonObject().apply {
+        val busy = clock() < scanUntil
+        addProperty("address",obdAdapter?.address ?: ""); addProperty("address_type",obdAdapter?.addressType ?: "public")
+        addProperty("rev",elmRevision); addProperty("busy",busy); addProperty("generation",elmGeneration)
+        addProperty("completed",if (busy) elmGeneration - 1 else elmGeneration)
+        addProperty("operation",if (elmGeneration == 0L) 0 else 1); addProperty("result",if (elmGeneration == 0L) 0 else if (busy) 1 else 2)
+        add("scan",JsonArray().apply {
+            if (elmGeneration > 0 && !busy) add(JsonArray().apply { add("00:10:CC:4F:36:03"); add(0); add(-65) })
+        })
+    }
+    private fun obd(page: Int) = JsonObject().apply {
+        require(page in 0 until ObdFields.PAGES)
+        val values = listOf(28.224,41.6,68.2,365.5,4.5,125.0,8.0,9.0,3.801,3.812,11.0,2500.0,95.0,94.0,
+            24.0,19.0,18.0,1.2,15.5,32.0,40.0,5.0,6.2,20.5,25.0,24.0,0.0)
+        val age = if (scene == DemoScene.ASLEEP && !refreshed) 600_000L else 100L
+        addProperty("page",page); addProperty("pages",ObdFields.PAGES)
+        add("readings",JsonObject().apply {
+            ObdFields.all.withIndex().drop(page * 6).take(6).forEach { (index,field) ->
+                add(field.key,JsonObject().apply {
+                    if (scene == DemoScene.LIMITED) { add("value",JsonNull.INSTANCE); add("age_ms",JsonNull.INSTANCE) }
+                    else { addProperty("value",values[index]); addProperty("age_ms",age) }
+                })
             }
         })
     }

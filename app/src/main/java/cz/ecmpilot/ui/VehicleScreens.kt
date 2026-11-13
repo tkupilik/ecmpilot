@@ -45,6 +45,7 @@ internal fun VehicleOverview(s: PilotState, onClimate: () -> Unit, onCharging: (
     val v = s.vehicle
     val soc = v?.reading("soc_pct"); val range = v?.reading("range_km"); val outside = v?.reading("outside_c")
     val auxSoc = v?.reading("aux_battery_soc_pct")
+    val batteryAverage = s.obd["battery_average_c"]
     Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface) {
         Column(Modifier.fillMaxWidth().padding(20.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -64,7 +65,12 @@ internal fun VehicleOverview(s: PilotState, onClimate: () -> Unit, onCharging: (
                     v?.charge?.mode == "deferred" && v.charge.modeStamp.freshForDisplay(s.nowMs) -> delayedBlue
                     else -> chargingGreen
                 })
-            Row(Modifier.fillMaxWidth().padding(top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(batteryAverage?.value?.let { "Battery temperature · ${fmt(it, 1)} °C" } ?: "Battery temperature · —",
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp).testTag("home-battery-temperature")
+                    .alpha(if (s.connected && batteryAverage?.freshForDisplay(s.nowMs) == true) 1f else .5f),
+                maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,
+                fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Row(Modifier.fillMaxWidth().padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(outside?.value?.let { "Outside · ${fmt(it, 1)} °C" } ?: "Outside · —",
                     modifier = Modifier.weight(1f).padding(end = 12.dp).alpha(if (s.connected && outside?.freshForDisplay(s.nowMs) == true) 1f else .5f),
                     maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis,

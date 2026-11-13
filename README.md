@@ -26,14 +26,15 @@ See the **[full screenshot gallery](docs/screenshots/README.md)** for charging, 
 
 ## What it does
 
-- **Home:** traction-battery SOC, estimated range, outside temperature, 12 V battery SOC, BSI state, observation age and the vehicle's own date/time.
+- **Home:** traction-battery SOC, estimated range, average battery temperature, outside temperature, 12 V battery SOC, BSI state, observation age and the vehicle's own date/time.
 - **Charging:** reported state and remaining time, immediate/delayed charging and its stored start time. Mode changes send immediately; valid time edits save after a short pause, without Apply. **Charge limit** has its own switch and a 30–100% slider, grey when disabled.
 - **Charging → Schedules:** up to eight weekly high-tariff periods during which the gateway pauses charging, then resumes after its own pause. Uses the car's clock, without phone timezone or daylight-saving conversion. [How schedules work](docs/charging-schedules.md).
 - **Preconditioning:** explicit Start/Stop, the reported state and four vehicle weekly program slots with time/day editors.
 - **Doors & locks:** an overhead vehicle view with individual door/boot indications and reported locking state. This screen is for observation; it does not lock or unlock the car.
 - **Trips & consumption:** Trip 1/2, electric consumption and six vehicle history slots. History slot duration/order is still under investigation.
-- **Vehicle details:** available measurements and connection diagnostics.
+- **Vehicle details:** INFO CAN measurements, 27 HSCAN/OBD readings grouped by battery, powertrain and heating/cooling, and connection diagnostics.
 - **Gateway settings:** automatic vehicle refresh intervals and a minimum 12 V SOC, followed by automatic deep sleep and Charge limit. These features run on the gateway even when the phone app is closed.
+- **Gateway → OBD adapter:** scan for compatible BLE ELM327 adapters and save one on the gateway. [Adapter support and HSCAN observations](docs/gateway-obd.md).
 
 The gateway advertises its available fields and operations; unsupported functions stay unavailable. Reported preconditioning status is vehicle feedback, not independent measurement of heat or airflow. Some body/trip mappings and program writes still need further vehicle validation.
 

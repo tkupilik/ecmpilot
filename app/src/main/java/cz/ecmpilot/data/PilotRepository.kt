@@ -30,6 +30,9 @@ class PilotRepository(private val context: Context) {
     private val lowSaves=Channel<LowSave>(1)
     private data class ScheduleSave(val settings: ChargeScheduleSettings,val gw:String,val boot:String,val host:String,val port:Int,val source:Source)
     private val scheduleSaves=Channel<ScheduleSave>(1)
+    private data class ElmAction(val adapter: ObdAdapter?, val revision: Long, val generation: Long,
+        val gw: String, val boot: String, val host: String, val port: Int, val source: Source)
+    private val elmActions = Channel<ElmAction>(1)
     private data class VehicleRequest(val desired: DesiredCommand, val correlation: Correlation)
     private val vehicleRequests = Channel<VehicleRequest>(1)
     @Volatile private var visible = false
@@ -43,6 +46,7 @@ class PilotRepository(private val context: Context) {
     fun setVisible(value: Boolean) {
         visible = value; pause?.cancel()
         if (value) start() else {
+            if (elmActions.tryReceive().isSuccess) mutable.update { it.copy(elmPending = false, elmError = "Request cancelled before sending.") }
             while (vehicleRequests.tryReceive().isSuccess) Unit
             if(scheduleSaves.tryReceive().isSuccess)mutable.update {it.copy(chargeScheduleSaving=false,chargeScheduleError="Save cancelled before sending.")}
             if(lowSaves.tryReceive().isSuccess)mutable.update {it.copy(lowPowerSaving=false,lowPowerError="Save cancelled before sending.")}
@@ -63,15 +67,28 @@ class PilotRepository(private val context: Context) {
         require(!state.value.autoRefreshSaving) { "Wait for automatic refresh settings to finish saving" }
         require(!state.value.chargeScheduleSaving) { "Wait for off-peak settings to finish saving" }
         require(!state.value.lowPowerSaving) { "Wait for low-power settings to finish saving" }
+        require(!state.value.elmPending) { "Wait for the OBD adapter request to finish" }
         stop()
         store.save(s)
-        mutable.update { it.copy(settings = s, connected = false, connecting = true, gatewayId = null, boot = null, info = null, vehicle = null, details = null, programs = null, autoRefresh = null, lowPower = null, chargeSchedule = null, chargeScheduleSavedRevision = null, chargeScheduleError = null, lowPowerSavedRevision = null, lowPowerError = null, autoRefreshSavedRevision = null, autoRefreshError = null, error = null,
+        mutable.update { it.copy(settings = s, connected = false, connecting = true, gatewayId = null, boot = null, info = null, vehicle = null, details = null, programs = null, autoRefresh = null, lowPower = null, chargeSchedule = null, elm = null, obd = emptyMap(), elmError = null, elmMessage = null, chargeScheduleSavedRevision = null, chargeScheduleError = null, lowPowerSavedRevision = null, lowPowerError = null, autoRefreshSavedRevision = null, autoRefreshError = null, error = null,
             command = if (s.source == Source.UDP) store.loadCommand() else null) }
         if (visible) start()
     }
     // Reconnect/passive reads must never issue vehicle.refresh (including settings save).
-    fun reconnect() { refreshRequested = true; mutable.update { it.copy(autoRefreshError = null, lowPowerError = null, chargeScheduleError = null) } }
+    fun reconnect() { refreshRequested = true; mutable.update { it.copy(autoRefreshError = null, lowPowerError = null, chargeScheduleError = null, elmError = null, elmMessage = null) } }
     fun refresh() { submit(DesiredCommand.VehicleRefresh) }
+    fun scanObdAdapters() = requestElm(null)
+    fun saveObdAdapter(adapter: ObdAdapter) = requestElm(adapter)
+    private fun requestElm(adapter: ObdAdapter?) {
+        val s = state.value
+        val elm = s.elm ?: return
+        if (!visible || !s.connected || s.elmPending || elm.busy || "elm327" !in (s.info?.fields ?: emptySet()) ||
+            s.settings.source == Source.UDP && (!s.permissionGranted || s.info?.security != "lab-plain")) return
+        val action = ElmAction(adapter, elm.revision, elm.generation, s.gatewayId ?: return,
+            s.boot ?: return, s.settings.host, s.settings.port, s.settings.source)
+        mutable.update { it.copy(elmPending = true, elmError = null, elmMessage = null) }
+        if (!elmActions.trySend(action).isSuccess) mutable.update { it.copy(elmPending = false, elmError = "Another adapter request is pending.") }
+    }
     fun saveAutoRefresh(settings: AutoRefreshSettings) {
         val s = state.value
         if (!visible || !s.connected || s.autoRefresh == null || "auto_refresh" !in (s.info?.fields ?: emptySet()) ||
@@ -127,8 +144,10 @@ class PilotRepository(private val context: Context) {
         while (autoSaves.tryReceive().isSuccess) Unit
         while (lowSaves.tryReceive().isSuccess) Unit
         while (scheduleSaves.tryReceive().isSuccess) Unit
+        while (elmActions.tryReceive().isSuccess) Unit
         while (vehicleRequests.tryReceive().isSuccess) Unit
-        mutable.update { it.copy(connected = false, connecting = false, autoRefreshSaving = false, lowPowerSaving = false, chargeScheduleSaving = false,
+        mutable.update { it.copy(connected = false, connecting = false, autoRefreshSaving = false, lowPowerSaving = false, chargeScheduleSaving = false, elmPending = false,
+            elmError = if (it.elmPending) "Request interrupted. Reload to check the result." else it.elmError,
             chargeScheduleError = if (it.chargeScheduleSaving) "Save interrupted. Reload to check the result." else it.chargeScheduleError,
             lowPowerError = if (it.lowPowerSaving) "Save interrupted. Reload gateway settings to check the result." else it.lowPowerError,
             autoRefreshError = if (it.autoRefreshSaving) "Save interrupted. Reload gateway settings to check the result." else it.autoRefreshError) }
@@ -163,6 +182,8 @@ class PilotRepository(private val context: Context) {
                 var lastAutoRefreshMs = Long.MIN_VALUE / 2
                 var lastLowPowerMs = Long.MIN_VALUE / 2
                 var lastScheduleMs = Long.MIN_VALUE / 2
+                var lastElmMs = Long.MIN_VALUE / 2
+                var obdPage = 0
                 suspend fun exchange(request: Request, retry: Boolean = false): Status {
                     val response = gateway.exchange(request, retry)
                     currentCoroutineContext().ensureActive()
@@ -179,7 +200,9 @@ class PilotRepository(private val context: Context) {
                     failures = 0
                     mutable.update { it.copy(connected = true, connecting = false, gatewayId = response.gw, boot = response.boot, gatewayAddress = gateway.addressLabel,
                         info = response.info ?: if (previousBoot != null && previousBoot != response.boot) null else it.info,
-                        vehicle = tracker.snapshot, details = tracker.details, programs = tracker.programs, autoRefresh = tracker.autoRefresh, lowPower = tracker.lowPower, chargeSchedule = tracker.chargeSchedule, error = null, nowMs = clock()) }
+                        vehicle = tracker.snapshot, details = tracker.details, programs = tracker.programs, autoRefresh = tracker.autoRefresh, lowPower = tracker.lowPower, chargeSchedule = tracker.chargeSchedule, elm = tracker.elm, obd = tracker.obd,
+                        elmError = if (previousBoot != null && previousBoot != response.boot) null else it.elmError,
+                        elmMessage = if (previousBoot != null && previousBoot != response.boot) null else it.elmMessage, error = null, nowMs = clock()) }
                     val current = state.value.command
                     response.command?.takeIf { current?.ref != null && current.ref.boot == response.boot && current.ref.gatewayId == response.gw &&
                         (if (current.ref.correlation != null) it.correlation == current.ref.correlation else it.id == current.ref.id && it.correlation == null) &&
@@ -219,6 +242,28 @@ class PilotRepository(private val context: Context) {
                     val refreshCommand = refreshRequested
                     refreshRequested = false
                     if (refreshCommand || state.value.info == null || clock() - lastInfoMs > 30_000) info(required = false)
+                    elmActions.tryReceive().getOrNull()?.let { action ->
+                        try {
+                            require(visible && action.gw == identity && action.boot == boot && action.host == settings.host &&
+                                action.port == settings.port && action.source == settings.source) { "Gateway session changed. Reload before trying again." }
+                            val args = JsonObject().apply {
+                                if (action.adapter == null) addProperty("generation", action.generation)
+                                else {
+                                    addProperty("rev", action.revision); addProperty("address", action.adapter.address)
+                                    addProperty("address_type", action.adapter.addressType)
+                                }
+                            }
+                            val result = exchange(Protocol.request(store.clientId, if (action.adapter == null) "elm327.scan" else "elm327.set",
+                                action.gw, action.boot, args), retry = true)
+                            require(result.boot == action.boot) { "Gateway restarted. Reload to check the result." }
+                            result.error?.let { throw IOException(elmError(it)) }
+                            requireNotNull(result.elm) { "Gateway did not return adapter settings." }
+                            mutable.update { it.copy(elmPending = false, elmError = null,
+                                elmMessage = if (action.adapter == null) null else "Saved on gateway.") }
+                            lastElmMs = Long.MIN_VALUE / 2
+                        } catch (cancel: CancellationException) { throw cancel }
+                        catch (error: Exception) { mutable.update { it.copy(elmPending = false, elmError = error.message ?: "Adapter request unconfirmed. Reload to check the result.") } }
+                    }
                     autoSaves.tryReceive().getOrNull()?.let { save ->
                         try {
                             require(visible && save.gw == identity && save.boot == boot && save.host == settings.host &&
@@ -346,7 +391,19 @@ class PilotRepository(private val context: Context) {
                     if (response == null) { delay(1000); continue }
                     if (response.error != null || response.state == null) throw ProtocolException("Gateway did not return vehicle observations")
                     var extrasOk = true
-                    if ("vehicle_details" in (state.value.info?.fields ?: emptySet()) &&
+                    if ("elm327" in (state.value.info?.fields ?: emptySet()) &&
+                        (refreshCommand || clock() - lastElmMs >= if (state.value.elm?.busy == true) 1000 else 5000)) {
+                        val elm = read(Protocol.request(store.clientId, "elm327.get", identity, boot))
+                        if (elm == null) extrasOk = false
+                        lastElmMs = clock()
+                    }
+                    if (extrasOk && "obd" in (state.value.info?.fields ?: emptySet()) && state.value.command?.pending != true) {
+                        val data = read(Protocol.request(store.clientId, "obd.get", identity, boot,
+                            JsonObject().apply { addProperty("page", obdPage) }))
+                        if (data == null) extrasOk = false
+                        else if (data.obd != null) obdPage = (obdPage + 1) % ObdFields.PAGES
+                    }
+                    if (extrasOk && "vehicle_details" in (state.value.info?.fields ?: emptySet()) &&
                         state.value.command?.pending != true && clock() - lastDetailsMs >= 2000) {
                         val detail = read(Protocol.request(store.clientId, "vehicle.details.get", identity, boot))
                         if (detail == null) extrasOk = false

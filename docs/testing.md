@@ -4,6 +4,19 @@ The Android app is a native Compose implementation. Its initial source is in-pro
 
 ## Automated checks
 
+`ObdProtocolTest` covers adapter scan/save retransmission, strict paged HSCAN
+parsing, individual observation ages, missing values and cache clearing on boot
+change. `ObdUiTest` provides a demo-only adapter selection and Vehicle details
+scenario. On 2026-11-13, the Samsung A55 passed this scenario, covering scan,
+selection/save, all three detail groups and three-decimal cell voltage. Original
+connection settings and the temporary keep-awake setting were restored. Evidence:
+`artifacts/obd-device-test.log` and `artifacts/obd-*-demo.png`. The same run passed
+82 JVM tests and Android lint; the companion firmware passed 391 host tests.
+The updated scenario checks Home's average battery temperature, one-decimal
+temperature formatting, three-decimal cell voltages and removal of candidate
+labels. Evidence: `artifacts/temperature-device-test.log` and
+`artifacts/temperature-obd-*-demo.png`.
+
 [UDP correlation and recovery](udp-correlation.md) adds actual loopback tests for
 lost replies, 3.1 s delay, incorrect correlation and a late old reply after a
 read timeout. These tests need no emulator, phone or vehicle.

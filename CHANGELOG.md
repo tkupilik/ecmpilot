@@ -4,6 +4,16 @@ Notable changes to eCMPilot will be documented here.
 
 ## [Unreleased]
 
+- Show average battery temperature above outside temperature on Home; format
+  all temperatures with one decimal place. Keep cell voltages at three decimals.
+- Remove candidate labels from the vehicle-validated HSCAN readings.
+
+- Add gateway-owned BLE OBD adapter discovery and selection in Gateway settings.
+- Show 27 HSCAN/OBD observations in Vehicle details, preserving each
+  reading's age, three decimal places for cell voltages, and stale-value shading.
+- Add bounded, paged OBD transport and retry-safe adapter configuration, with an
+  in-process demo for discovery, saving and cached observations.
+
 ## [0.3.0] - 2026-11-11
 
 First signed Google Play distribution build, with an AAB upload artifact and a
