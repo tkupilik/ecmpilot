@@ -4,7 +4,7 @@
 
 **A local Android companion for the Opel Corsa-e, using an ESP32 gateway on the vehicle's INFO CAN bus.**
 
-Check battery level, charging, preconditioning and vehicle status over your own Wi-Fi network. The phone talks directly to the gateway; normal use does not require the manufacturer's cloud. An in-app demo lets you explore the interface without a gateway or vehicle.
+Check battery level, charging, preconditioning and vehicle status over Bluetooth or your local Wi-Fi network. The phone talks directly to the gateway; normal use does not require the manufacturer's cloud. An in-app demo lets you explore the interface without a gateway or vehicle.
 
 The companion firmware is **`ecmpilot-gw`**, built for the **Waveshare ESP32-S3-RS485-CAN**. This repository contains the Android app and its local communication protocol.
 
@@ -40,14 +40,47 @@ The gateway advertises its available fields and operations; unsupported function
 
 ## How it connects
 
+**The phone connects to the gateway (GW), which talks to the car.** There
+are two separate Bluetooth links: one between the phone and GW, and an optional
+one between GW and an ELM327 OBD adapter. The phone does not connect to ELM directly.
+
 ```mermaid
-flowchart LR
-    Car["Corsa-e · INFO CAN 125 kbit/s"] <--> GW["Waveshare ESP32-S3 gateway"]
-    GW <-->|"Local UDP · 42840"| App["eCMPilot Android"]
-    GW -->|"MQTT telemetry"| HA["Home Assistant"]
+flowchart TB
+    App["Phone: eCMPilot"] <-->|"Bluetooth - fallback"| GW["Waveshare gateway in the car"]
+    App <-->|"Local Wi-Fi - preferred"| GW
+    GW <-->|"Wired INFO CAN"| INFO["Car: main status and charging controls"]
+    GW <-->|"Bluetooth - optional"| ELM["ELM327 adapter in the OBD socket"]
+    ELM <-->|"HSCAN through the OBD socket"| HS["Car: extra battery and heating/cooling data"]
 ```
 
-MQTT is an optional, separate gateway-to-Home Assistant path. The Android app does not need an MQTT broker. The current MQTT integration publishes telemetry only.
+- **Phone to gateway:** eCMPilot automatically looks for the saved gateway while
+  the app is open. Reachable local Wi-Fi takes priority. Bluetooth discovery and
+  connection start only if GW does not answer over the network. While using
+  Bluetooth, the app checks the network in the background every five seconds and
+  returns to Wi-Fi when GW responds, releasing its Bluetooth connection. Bluetooth does not require joining the gateway's Wi-Fi access
+  point, so the phone can keep using mobile internet. No system Bluetooth pairing
+  or PIN is needed. Home shows **Gateway connected via Bluetooth** when active.
+- **Gateway to car:** GW is wired to INFO CAN for the main vehicle status and
+  charging/preconditioning controls. These functions do not require an ELM adapter.
+- **Optional ELM adapter:** a compatible BLE ELM327 plugs into the car's OBD socket.
+  Select it once in **Gateway / OBD adapter**. After a vehicle refresh, GW briefly
+  connects to ELM to collect extra battery and heating/cooling readings, then
+  disconnects from the adapter while keeping the phone's connection available. The extra readings appear on Home and in **Vehicle details**.
+
+The gateway stores the last readings and their ages. The phone displays those
+readings through either connection; changing the connection does not make old
+vehicle data fresh. Connecting to GW alone does not start an ELM snapshot.
+
+Home Assistant is optional: GW can publish readings to it over Wi-Fi/MQTT. The
+phone needs no MQTT broker or manufacturer's cloud. GW's web page and firmware
+updates still require Wi-Fi; the phone's Bluetooth link does not share its mobile
+internet with GW.
+
+Automatic phone-to-GW Bluetooth discovery and connection were confirmed on
+**2026-11-13** with a physical phone and gateway. See
+[connection and adapter setup](docs/gateway-obd.md) for supported adapters and
+remaining validation checks.
+Dashboard integration and general UDS diagnostic services remain planned.
 
 Opening the app, reconnecting and reading cached data **do not wake the car**. **Refresh** explicitly runs a vehicle wake/read sequence; an enabled automatic refresh does the same on a gateway-owned schedule. A refresh can also activate charging, as observed on the test vehicle.
 
@@ -63,13 +96,31 @@ Charge limit uses delayed charging to pause at the target after an updated SOC i
 
 ## Connect to your gateway
 
-1. Install and configure the `ecmpilot-gw` firmware, including its vehicle wiring and Wi-Fi.
-2. Put the phone and gateway on the same reachable local network.
-3. In the app's settings, select **Local gateway**. **Find gateway automatically** is on by default: mDNS finds the saved gateway even if its IP changes, including on the gateway's own AP. The hostname/IP field is a fallback; defaults are **`ecmpilot-gw.lan`**, UDP **`42840`**. Disable automatic discovery for manual-only operation. The `.lan` fallback depends on your router's DNS; direct AP IP is **`192.168.4.1`**.
-4. Grant local-network permission if requested, then **Save & connect**. The app remembers the gateway identity; use **Forget saved gateway** when replacing the device.
-5. Monitoring is passive. Supported control operations additionally use the gateway's capability checks and the relevant experimental-control opt-in.
+1. Install and configure the `ecmpilot-gw` firmware, including its vehicle wiring
+   and Wi-Fi. Install the matching Android app.
+2. Turn on the phone's Bluetooth. In the app's **Settings / Connection**, select
+   **Local gateway**, tap **Allow Bluetooth & local network**, and grant the
+   requested permissions.
+3. Choose **Save & connect**. The app first tries to reach GW over the local
+   network. If GW is unavailable there, it scans for the saved gateway over
+   Bluetooth. For first Bluetooth setup without a saved identity, keep only one
+   eCMPilot gateway advertising nearby. The app remembers its identity; use **Forget saved
+   gateway** when replacing the device. This is separate from selecting an ELM
+   adapter in **Gateway / OBD adapter**.
+4. For the preferred Wi-Fi connection, put the phone and GW on the same reachable local network,
+   or connect the phone to GW's access point. **Find gateway automatically** is
+   on by default: mDNS finds GW even if its IP changes. The hostname/IP field is
+   a fallback; defaults are **`ecmpilot-gw.lan`**, UDP **`42840`**. Disable automatic
+   discovery for manual-only Wi-Fi operation. The `.lan` fallback depends on your
+   router's DNS; direct AP IP is **`192.168.4.1`**. Bluetooth can be off or denied
+   when using Wi-Fi alone.
+5. Monitoring is passive. Supported control operations additionally use the
+   gateway's capability checks and the relevant experimental-control opt-in.
 
-Local UDP currently has **no authentication or encryption**; the remembered identity is not cryptographic pairing. Use a trusted network and do not expose the gateway ports to the internet. A VPN must allow a route to the local gateway; connection diagnostics records the selected routing path.
+Local BLE and UDP currently have **no authentication or encryption**; the
+remembered identity is not cryptographic pairing. Use a trusted network and do
+not expose the gateway ports to the internet. A VPN must allow a route to the
+local gateway; connection diagnostics records the selected routing path.
 
 ## Build
 
@@ -106,6 +157,7 @@ version control.
 | --- | --- |
 | [Screenshots](docs/screenshots/README.md) | Real-phone live and demo gallery; reproducible capture procedure |
 | [Screen/data guide](docs/home-screens.md) | Vehicle screens, data availability and freshness |
+| [Connections and OBD adapter](docs/gateway-obd.md) | Phone/GW/ELM roles, Bluetooth setup and extra HSCAN readings |
 | [Vehicle refresh](docs/vehicle-refresh.md) | Passive connection versus explicit vehicle action |
 | [Automatic refresh](docs/auto-refresh.md) | Gateway timer configuration and Charge limit |
 | [Charging schedules](docs/charging-schedules.md) | High-tariff pause periods and the vehicle clock |

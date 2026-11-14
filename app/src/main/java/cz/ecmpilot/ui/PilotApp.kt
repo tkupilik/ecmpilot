@@ -117,10 +117,10 @@ private fun Home(s: PilotState, modifier: Modifier, onSettings: () -> Unit, onDe
                 }
             }
             val label = when {
-                s.settings.source == Source.UDP && !s.permissionGranted -> "Local network access needed"
+                s.settings.source == Source.UDP && !s.connectionPermitted -> "Connection permission needed"
                 s.connecting -> "Connecting…"
                 !s.connected -> "Gateway offline"
-                else -> "Gateway connected"
+                else -> if (s.gatewayAddress == "Bluetooth") "Gateway connected via Bluetooth" else "Gateway connected"
             }
             val socAge = v?.reading("soc_pct")?.takeIf { it.value != null }?.stamp?.age(s.nowMs)
             val bsi = v?.bsi?.label ?: "unknown"
@@ -345,10 +345,10 @@ private fun controlReason(s: PilotState, domain: String, supported: Boolean): St
             }
             OutlinedTextField(host, { host = it.trim() }, label = { Text(if (autoDiscovery) "Fallback hostname or IP" else "Gateway hostname or IP") }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri), modifier = Modifier.testTag("gateway-host").fillMaxWidth())
             OutlinedTextField(port, { port = it.filter(Char::isDigit).take(5) }, label = { Text("Local UDP port") }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.testTag("gateway-port").fillMaxWidth())
-            if (!s.permissionGranted) Button(onClick = onPermission, modifier = Modifier.fillMaxWidth()) { Text("Allow local network access") }
-            SecondaryText("Phone and gateway must share a local Wi-Fi or Ethernet network.")
+            if (!s.permissionGranted || !s.bluetoothPermissionGranted) Button(onClick = onPermission, modifier = Modifier.fillMaxWidth()) { Text("Allow Bluetooth & local network") }
+            SecondaryText("Uses Wi-Fi or Ethernet first, and Bluetooth when the gateway is unavailable on the network. Returns automatically when the network connection is restored.")
             Row(Modifier.fillMaxWidth().clickable { lab = !lab }.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(lab, { lab = it }, modifier = Modifier.testTag("allow-controls")); Column(Modifier.weight(1f)) { Text("Allow experimental local controls", fontSize = 14.sp); SecondaryText("Unencrypted lab UDP. Only gateway-advertised, confirmed operations are enabled.") }
+                Checkbox(lab, { lab = it }, modifier = Modifier.testTag("allow-controls")); Column(Modifier.weight(1f)) { Text("Allow experimental local controls", fontSize = 14.sp); SecondaryText("Unencrypted local connection. Only gateway-advertised, confirmed operations are enabled.") }
             }
             if (s.settings.gatewayId.isNotEmpty()) {
                 SecondaryText("Saved gateway: ${s.settings.gatewayId}")

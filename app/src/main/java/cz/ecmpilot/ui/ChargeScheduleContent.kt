@@ -30,7 +30,7 @@ internal fun ChargeScheduleContent(s: PilotState, onSave: (ChargeScheduleSetting
         if (status!=null && (!dirty || submitted && !s.chargeScheduleSaving && s.chargeScheduleError==null && s.chargeScheduleSavedRevision==status.settings.revision)) load(status.settings)
     }
     val editable=baseline!=null && s.connected && !s.chargeScheduleSaving && !s.autoRefreshSaving && !s.lowPowerSaving && s.command?.pending!=true &&
-        (s.settings.source!=Source.UDP || s.permissionGranted && s.info?.security=="lab-plain")
+        (s.settings.source!=Source.UDP || s.connectionPermitted && s.info?.security=="lab-plain")
     HorizontalDivider(Modifier.padding(top=12.dp))
     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
         Text("Schedules",Modifier.weight(1f),fontWeight=FontWeight.SemiBold)

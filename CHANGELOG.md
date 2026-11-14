@@ -4,6 +4,17 @@ Notable changes to eCMPilot will be documented here.
 
 ## [Unreleased]
 
+- Prefer Wi-Fi/UDP and start BLE discovery only when the gateway is unreachable
+  over the network. While using BLE, probe UDP in parallel every five seconds and
+  return automatically, releasing BLE at a request boundary. Preserve the original
+  request/correlation identity when an exchange changes transport. Add foreground gateway discovery, Android
+  Bluetooth permissions and a Bluetooth connection status label. Automatic
+  discovery and phone-to-GW connection were confirmed on hardware on 2026-11-13.
+
+- Explain the phone/GW/optional ELM connections for everyday use, including
+  Wi-Fi priority and Bluetooth fallback. Keep planned dashboard UDS services
+  distinct from the implemented phone transport and HSCAN snapshots.
+
 - Show average battery temperature above outside temperature on Home; format
   all temperatures with one decimal place. Keep cell voltages at three decimals.
 - Remove candidate labels from the vehicle-validated HSCAN readings.

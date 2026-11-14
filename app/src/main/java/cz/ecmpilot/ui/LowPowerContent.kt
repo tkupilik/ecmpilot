@@ -34,7 +34,7 @@ internal fun LowPowerContent(s: PilotState, onSave: (LowPowerSettings) -> Unit, 
     }
     Text(status?.description(s.nowMs) ?: "Reading gateway settings…", modifier=Modifier.testTag("low-power-status"))
     val editable=s.connected && status!=null && !s.lowPowerSaving && !s.autoRefreshSaving && !s.chargeScheduleSaving && s.command?.pending!=true &&
-        (s.settings.source!=Source.UDP || s.permissionGranted && s.info?.security=="lab-plain")
+        (s.settings.source!=Source.UDP || s.connectionPermitted && s.info?.security=="lab-plain")
     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
         Text("Sleep when the vehicle is inactive",Modifier.weight(1f))
         Switch(enabled,{ enabled=it; dirty=true },enabled=editable,modifier=Modifier.testTag("low-power-enabled"))

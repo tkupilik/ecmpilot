@@ -121,6 +121,7 @@ data class PilotState(
     val connected: Boolean = false, val connecting: Boolean = true,
     val gatewayId: String? = null, val boot: String? = null,
     val gatewayAddress: String? = null,
+    val bluetoothPermissionGranted: Boolean = false,
     val info: GatewayInfo? = null, val vehicle: VehicleState? = null,
     val command: CommandUi? = null, val error: String? = null,
     val diagnostics: List<String> = emptyList(),
@@ -144,9 +145,10 @@ data class PilotState(
     val elmMessage: String? = null,
     val obd: Map<String, Reading> = emptyMap(),
 ) {
+    val connectionPermitted get() = permissionGranted || bluetoothPermissionGranted
     val readOnly get() = settings.source == Source.UDP && !settings.allowLabControls
     fun controlReady(domain: String): Boolean {
-        if (!connected || settings.source == Source.UDP && !permissionGranted || command?.pending == true || autoRefreshSaving || lowPowerSaving || chargeScheduleSaving) return false
+        if (!connected || settings.source == Source.UDP && !connectionPermitted || command?.pending == true || autoRefreshSaving || lowPowerSaving || chargeScheduleSaving) return false
         if (settings.source == Source.UDP && info?.security != "lab-plain") return false
         if (domain == "refresh") return info?.refresh() == true
         if (readOnly) return false

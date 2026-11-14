@@ -42,7 +42,7 @@ internal fun AutoRefreshContent(s: PilotState, onSave: (AutoRefreshSettings) -> 
         return
     }
     val editable = s.connected && status != null && !s.autoRefreshSaving && !s.lowPowerSaving && !s.chargeScheduleSaving && s.command?.pending != true &&
-        (s.settings.source != Source.UDP || s.permissionGranted && s.info?.security == "lab-plain")
+        (s.settings.source != Source.UDP || s.connectionPermitted && s.info?.security == "lab-plain")
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text("Enable automatic refresh", Modifier.weight(1f))
         Switch(enabled, { enabled = it; if (!it) chargeLimit = false; dirty = true }, enabled = editable, modifier = Modifier.testTag("auto-refresh-enabled"))
@@ -81,7 +81,7 @@ internal fun ChargeLimitContent(s: PilotState, onSave: (AutoRefreshSettings) -> 
     val settings = status.settings
     var target by remember(s.gatewayId, s.boot, settings.chargeLimitSocPct) { mutableFloatStateOf(settings.chargeLimitSocPct.toFloat()) }
     val editable = s.connected && !s.autoRefreshSaving && !s.lowPowerSaving && !s.chargeScheduleSaving && s.command?.pending != true &&
-        (s.settings.source != Source.UDP || s.permissionGranted && s.info?.security == "lab-plain")
+        (s.settings.source != Source.UDP || s.connectionPermitted && s.info?.security == "lab-plain")
     HorizontalDivider(Modifier.padding(top = 10.dp))
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text("Charge limit", Modifier.weight(1f), fontWeight = FontWeight.SemiBold)

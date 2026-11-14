@@ -12,6 +12,40 @@ import cz.ecmpilot.protocol.UdpConnection
 import java.io.IOException
 import java.net.DatagramSocket
 import java.net.InetAddress
+import cz.ecmpilot.protocol.PreferredConnection
+import cz.ecmpilot.protocol.Protocol
+import android.os.Build
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+
+fun localNetworkPermitted(context: Context) = Build.VERSION.SDK_INT < 37 ||
+    ContextCompat.checkSelfPermission(context, "android.permission.ACCESS_LOCAL_NETWORK") == PackageManager.PERMISSION_GRANTED
+
+fun openGatewayConnection(context: Context, settings: Settings, clientId: String, clock: () -> Long,
+                          diagnostic: (String) -> Unit = {}): GatewayConnection {
+    val bluetooth = GatewayBleConnector(context, clientId, settings.gatewayId, clock, diagnostic)
+    return PreferredConnection(
+        openUdp = {
+            if (!localNetworkPermitted(context)) throw IOException("Allow local network access or connect over Bluetooth")
+            try {
+                openLocalConnection(context, settings.copy(gatewayId = bluetooth.expectedId), clock, diagnostic)
+            } catch (error: SecurityException) { throw IOException("Local network access denied", error) }
+        },
+        currentBle = bluetooth::current,
+        startBle = { diagnostic("Local UDP unavailable; trying Bluetooth"); bluetooth.start() },
+        stopBle = { bluetooth.stop(); diagnostic("Local UDP ready; Bluetooth released") },
+        discardBle = bluetooth::discard,
+        probeUdp = { connection ->
+            val expected = bluetooth.expectedId.takeIf { it.isNotBlank() }
+            val reply = connection.exchange(Protocol.request(clientId, "info.get", expected))
+            if (reply.error != null || reply.info == null) throw IOException("Gateway UDP probe failed")
+            bluetooth.acceptIdentity(reply.gw)
+        },
+        canUseBle = { GatewayBle.permitted(context) },
+        onResponse = { bluetooth.acceptIdentity(it.gw) },
+        onClose = bluetooth::close,
+    )
+}
 
 suspend fun openLocalConnection(
     context: Context, settings: Settings, clock: () -> Long,

@@ -23,7 +23,7 @@ internal fun ObdAdapterContent(s: PilotState, onScan: () -> Unit, onSave: (ObdAd
     val status = s.elm
     var selected by remember(s.gatewayId, s.boot, status?.revision) { mutableStateOf(status?.adapter) }
     val editable = s.connected && status != null && !status.busy && !s.elmPending &&
-        (s.settings.source != Source.UDP || s.permissionGranted && s.info?.security == "lab-plain")
+        (s.settings.source != Source.UDP || s.connectionPermitted && s.info?.security == "lab-plain")
     Text("Saved adapter: ${status?.adapter?.address ?: "None"}", style = MaterialTheme.typography.bodySmall,
         modifier = Modifier.testTag("obd-saved-adapter"))
     Text("The gateway reads OBD data after a vehicle refresh. Supports compatible Bluetooth Low Energy adapters; disconnect other OBD apps before use.",

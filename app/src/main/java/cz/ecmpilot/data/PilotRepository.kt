@@ -59,6 +59,11 @@ class PilotRepository(private val context: Context) {
         if (mutable.value.permissionGranted == granted) return
         mutable.update { it.copy(permissionGranted = granted) }; restart()
     }
+    fun setPermissions(local: Boolean, bluetooth: Boolean) {
+        if (state.value.permissionGranted == local && state.value.bluetoothPermissionGranted == bluetooth) return
+        mutable.update { it.copy(permissionGranted = local, bluetoothPermissionGranted = bluetooth) }
+        restart()
+    }
     fun saveSettings(s: Settings) {
         require(s.host.isNotBlank() && s.host.length <= 253 && !s.host.contains(Regex("[\\s/]"))) { "Enter a hostname or IP address, without a URL scheme" }
         require(s.port in 1..65535) { "Port must be between 1 and 65535" }
@@ -83,7 +88,7 @@ class PilotRepository(private val context: Context) {
         val s = state.value
         val elm = s.elm ?: return
         if (!visible || !s.connected || s.elmPending || elm.busy || "elm327" !in (s.info?.fields ?: emptySet()) ||
-            s.settings.source == Source.UDP && (!s.permissionGranted || s.info?.security != "lab-plain")) return
+            s.settings.source == Source.UDP && (!s.connectionPermitted || s.info?.security != "lab-plain")) return
         val action = ElmAction(adapter, elm.revision, elm.generation, s.gatewayId ?: return,
             s.boot ?: return, s.settings.host, s.settings.port, s.settings.source)
         mutable.update { it.copy(elmPending = true, elmError = null, elmMessage = null) }
@@ -93,7 +98,7 @@ class PilotRepository(private val context: Context) {
         val s = state.value
         if (!visible || !s.connected || s.autoRefresh == null || "auto_refresh" !in (s.info?.fields ?: emptySet()) ||
             s.autoRefreshSaving || s.lowPowerSaving || s.chargeScheduleSaving || s.command?.pending == true || !settings.valid() ||
-            s.settings.source == Source.UDP && (!s.permissionGranted || s.info?.security != "lab-plain")) return
+            s.settings.source == Source.UDP && (!s.connectionPermitted || s.info?.security != "lab-plain")) return
         val request = AutoSave(settings, s.gatewayId ?: return, s.boot ?: return, s.settings.host, s.settings.port, s.settings.source)
         mutable.update { it.copy(autoRefreshSaving = true, autoRefreshError = null, autoRefreshSavedRevision = null) }
         if (!autoSaves.trySend(request).isSuccess) mutable.update { it.copy(autoRefreshSaving = false, autoRefreshError = "Another settings save is pending.") }
@@ -102,7 +107,7 @@ class PilotRepository(private val context: Context) {
         val s=state.value
         if(!visible || !s.connected || s.lowPower==null || "low_power" !in (s.info?.fields ?: emptySet()) ||
             s.lowPowerSaving || s.autoRefreshSaving || s.chargeScheduleSaving || s.command?.pending==true || !settings.valid() ||
-            s.settings.source==Source.UDP && (!s.permissionGranted || s.info?.security!="lab-plain")) return
+            s.settings.source==Source.UDP && (!s.connectionPermitted || s.info?.security!="lab-plain")) return
         val request=LowSave(settings,s.gatewayId ?: return,s.boot ?: return,s.settings.host,s.settings.port,s.settings.source)
         mutable.update { it.copy(lowPowerSaving=true,lowPowerError=null,lowPowerSavedRevision=null) }
         if(!lowSaves.trySend(request).isSuccess) mutable.update {it.copy(lowPowerSaving=false,lowPowerError="Another settings save is pending.")}
@@ -111,7 +116,7 @@ class PilotRepository(private val context: Context) {
         val s=state.value
         if (!visible || !s.connected || s.chargeSchedule==null || "charge_schedule" !in (s.info?.fields ?: emptySet()) ||
             s.chargeScheduleSaving || s.autoRefreshSaving || s.lowPowerSaving || s.command?.pending==true || !settings.valid() ||
-            s.settings.source==Source.UDP && (!s.permissionGranted || s.info?.security!="lab-plain")) return
+            s.settings.source==Source.UDP && (!s.connectionPermitted || s.info?.security!="lab-plain")) return
         val save=ScheduleSave(settings,s.gatewayId ?: return,s.boot ?: return,s.settings.host,s.settings.port,s.settings.source)
         mutable.update { it.copy(chargeScheduleSaving=true,chargeScheduleError=null,chargeScheduleSavedRevision=null) }
         if (!scheduleSaves.trySend(save).isSuccess) mutable.update {it.copy(chargeScheduleSaving=false,chargeScheduleError="Another settings save is pending.")}
@@ -163,16 +168,19 @@ class PilotRepository(private val context: Context) {
         var failures = 0
         val tracker = StatusTracker()
         var watchSince = 0L
+        var transport: GatewayConnection? = null
+        try {
         while (currentCoroutineContext().isActive) {
             val settings = state.value.settings
-            if (settings.source == Source.UDP && !state.value.permissionGranted) {
-                mutable.update { it.copy(connecting = false, connected = false, error = "Allow local network access to connect to the gateway.") }
+            if (settings.source == Source.UDP && !state.value.connectionPermitted) {
+                mutable.update { it.copy(connecting = false, connected = false, error = "Allow Bluetooth or local network access to connect to the gateway.") }
                 delay(500); continue
             }
             var local: GatewayConnection? = null
             try {
                 mutable.update { it.copy(connecting = true) }
-                val gateway = if (settings.source == Source.DEMO) DemoConnection(settings.scene, clock) else openLocalConnection(context, settings, clock, ::log)
+                val gateway = if (settings.source == Source.DEMO) DemoConnection(settings.scene, clock)
+                    else transport ?: openGatewayConnection(context, settings, store.clientId, clock, ::log).also { transport = it }
                 local = gateway; connection = gateway
                 var identity: String? = settings.gatewayId.takeIf { it.isNotBlank() && settings.source == Source.UDP }
                 var boot: String? = tracker.boot
@@ -458,11 +466,16 @@ class PilotRepository(private val context: Context) {
                 if(scheduleSaves.tryReceive().isSuccess)mutable.update {it.copy(chargeScheduleSaving=false,chargeScheduleError="Connection interrupted before sending settings.")}
                 if(lowSaves.tryReceive().isSuccess)mutable.update {it.copy(lowPowerSaving=false,lowPowerError="Connection interrupted before sending settings.")}
                 mutable.update { it.copy(connected = false, connecting = false, error = message) }
-            } finally { local?.close(); if (connection === local) connection = null }
+            } finally {
+                if (settings.source == Source.DEMO) local?.close()
+                // A UDP outage must not restart an ongoing BLE scan/connection.
+                if (connection === local) connection = null
+            }
             val wait = if (failures < 3) 1000L else (1000L shl (failures - 2).coerceAtMost(3))
             var waited = 0L
             while (waited < wait && !refreshRequested) { delay(100); waited += 100 }
             refreshRequested = false
         }
+        } finally { transport?.close() }
     }
 }
